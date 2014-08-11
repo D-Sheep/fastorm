@@ -1,6 +1,6 @@
 
 namespace Fastorm\Db;
 
-class DbException extends \Exception {
+class DbException extends \Fastorm\Exception {
 	
 }

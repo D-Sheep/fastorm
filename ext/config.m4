@@ -9,6 +9,8 @@ if test "$PHP_FASTORM" = "yes"; then
 	fastorm/objectmetadata.zep.c
 	fastorm/db/connection.zep.c
 	fastorm/db/dbexception.zep.c
+	fastorm/db/dibicolumninfo.zep.c
+	fastorm/db/drivers/mysqlidriver.zep.c
 	fastorm/db/iresultdriver.zep.c
 	fastorm/db/query.zep.c
 	fastorm/db/translator.zep.c "

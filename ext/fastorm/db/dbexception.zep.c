@@ -16,7 +16,7 @@
 
 ZEPHIR_INIT_CLASS(Fastorm_Db_DbException) {
 
-	ZEPHIR_REGISTER_CLASS_EX(Fastorm\\Db, DbException, fastorm, db_dbexception, zend_exception_get_default(TSRMLS_C), NULL, 0);
+	ZEPHIR_REGISTER_CLASS_EX(Fastorm\\Db, DbException, fastorm, db_dbexception, fastorm_exception_ce, NULL, 0);
 
 	return SUCCESS;
 

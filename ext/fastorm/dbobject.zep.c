@@ -14,9 +14,9 @@
 #include "kernel/main.h"
 
 
-ZEPHIR_INIT_CLASS(FastOrm_DbObject) {
+ZEPHIR_INIT_CLASS(Fastorm_DbObject) {
 
-	ZEPHIR_REGISTER_CLASS_EX(FastOrm, DbObject, fastorm, dbobject, fastorm_dataobject_ce, NULL, 0);
+	ZEPHIR_REGISTER_CLASS_EX(Fastorm, DbObject, fastorm, dbobject, fastorm_dataobject_ce, NULL, 0);
 
 	return SUCCESS;
 

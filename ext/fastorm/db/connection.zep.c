@@ -404,7 +404,7 @@ PHP_METHOD(Fastorm_Db_Connection, translateArgs) {
 PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *sql, *ressult = NULL, *e = NULL, *_0, *_1, *_2 = NULL;
+	zval *sql, *res = NULL, *e = NULL, *_0, *_1, *_2 = NULL;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 0, &sql);
@@ -416,13 +416,13 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "connect", NULL);
 		zephir_check_call_status();
 	}
-	ZEPHIR_INIT_VAR(ressult);
-	ZVAL_NULL(ressult);
+	ZEPHIR_INIT_VAR(res);
+	ZVAL_NULL(res);
 
 	/* try_start_1: */
 
 		_1 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(&ressult, _1, "query", NULL, sql);
+		ZEPHIR_CALL_METHOD(&res, _1, "query", NULL, sql);
 		zephir_check_call_status_or_jump(try_end_1);
 
 	try_end_1:
@@ -436,16 +436,16 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 			return;
 		}
 	}
-	if (zephir_is_true(ressult)) {
-		ZEPHIR_CALL_METHOD(&_2, this_ptr, "createresultset", NULL, ressult);
+	if (zephir_is_true(res)) {
+		ZEPHIR_CALL_METHOD(&_2, this_ptr, "createresultset", NULL, res);
 		zephir_check_call_status();
-		ZEPHIR_CPY_WRT(ressult, _2);
+		ZEPHIR_CPY_WRT(res, _2);
 	} else {
 		_1 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(&ressult, _1, "getaffectedrows",  NULL);
+		ZEPHIR_CALL_METHOD(&res, _1, "getaffectedrows",  NULL);
 		zephir_check_call_status();
 	}
-	RETURN_CCTOR(ressult);
+	RETURN_CCTOR(res);
 
 }
 
