@@ -260,19 +260,18 @@ class Connection {
 		try {
 			let res = this->driver->query(sql);
 
+			if res {
+				let res = this->createResultSet(res);
+			} else {
+				let res = this->driver->getAffectedRows();
+			}
+
+			/*event && this->onEvent(event->done(res));*/
+			return res;
 		} catch DbException, e {
 			/*event && this->onEvent(event->done(e));*/
 			throw e;
 		}
-
-		if res {
-			let res = this->createResultSet(res);
-		} else {
-			let res = this->driver->getAffectedRows();
-		}
-
-		/*event && this->onEvent(event->done(res));*/
-		return res;
 	}
 
 
