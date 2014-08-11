@@ -51,6 +51,18 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 				"socket": ini_get("mysqli.default_socket"),
 				"port": null ]);
 
+			var host;
+			if !isset config["host"] {
+				let host = ini_get("mysqli.default_host");
+				if host {
+					let config["host"] = host;
+					let config["port"] = ini_get("mysqli.default_port");
+				} else {
+					let config["host"] = NULL;
+					let config["port"] = NULL;
+				}
+			}
+
 			var foo;
 			let foo = config["database"];
 

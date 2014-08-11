@@ -32,4 +32,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/davidmenger/Development/fastorm/ext/modules'
+libdir='/Library/WebServer/Documents/fastorm/ext/modules'
