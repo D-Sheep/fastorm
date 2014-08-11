@@ -437,9 +437,9 @@ class Connection {
 	public function update(table, args) -> <Query>
 	{
 		if !(is_array(args) || (args instanceof \Traversable)) {
-			throw new InvalidArgumentException("Arguments must be array or Traversable.");
+			throw new \InvalidArgumentException("Arguments must be array or Traversable.");
 		}
-		return this->command()->update("%n", table)->set(args);
+		return this->command()->__call("update", ["%n", table])->__call("set", args);
 	}
 
 
@@ -455,11 +455,11 @@ class Connection {
 			let args = iterator_to_array(args);
 		} else {
 			if is_array(args) === false {
-				throw new InvalidArgumentException("Arguments must be array or Traversable.");
+				throw new \InvalidArgumentException("Arguments must be array or Traversable.");
 			}
 		}
-		return this->command()->insert()
-			->into("%n", table, "(%n)", array_keys(args))->values("%l", args);
+		return this->command()->__call("insert", 
+			["%n", table, "(%n)", array_keys(args)])->__call("values", ["%l", args]);
 	}
 
 
@@ -470,7 +470,7 @@ class Connection {
 	 */
 	public function delete(table)  -> <Query>
 	{
-		return this->command()->delete()->from("%n", table);
+		return this->command()->__call("delete", ["%n", table]);
 	}
 
 

@@ -94,7 +94,7 @@ class Query
 		];
 	}
 
-	public function __call(string clause, args) {
+	public function __call(string clause, args) -> <Query> {
 		var sep, arg;
 		boolean removeArray;
 		let removeArray = count(args) === 1 && args[0] === false;

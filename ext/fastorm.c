@@ -24,9 +24,12 @@
 #include "kernel/fcall.h"
 #include "kernel/memory.h"
 
+zend_class_entry *fastorm_db_iresultdriver_ce;
 zend_class_entry *fastorm_dataobject_ce;
 zend_class_entry *fastorm_db_connection_ce;
+zend_class_entry *fastorm_db_dbexception_ce;
 zend_class_entry *fastorm_db_query_ce;
+zend_class_entry *fastorm_db_translator_ce;
 zend_class_entry *fastorm_dbobject_ce;
 zend_class_entry *fastorm_exception_ce;
 zend_class_entry *fastorm_modelmanager_ce;
@@ -196,10 +199,13 @@ static PHP_MINIT_FUNCTION(fastorm)
 	setlocale(LC_ALL, "C");
 #endif
 
+	ZEPHIR_INIT(Fastorm_Db_IResultDriver);
 	ZEPHIR_INIT(Fastorm_DataObject);
 	ZEPHIR_INIT(FastOrm_DbObject);
 	ZEPHIR_INIT(Fastorm_Db_Connection);
+	ZEPHIR_INIT(Fastorm_Db_DbException);
 	ZEPHIR_INIT(Fastorm_Db_Query);
+	ZEPHIR_INIT(Fastorm_Db_Translator);
 	ZEPHIR_INIT(Fastorm_Exception);
 	ZEPHIR_INIT(Fastorm_ModelManager);
 	ZEPHIR_INIT(Fastorm_ObjectMetadata);

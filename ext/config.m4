@@ -8,7 +8,10 @@ if test "$PHP_FASTORM" = "yes"; then
 	fastorm/modelmanager.zep.c
 	fastorm/objectmetadata.zep.c
 	fastorm/db/connection.zep.c
-	fastorm/db/query.zep.c "
+	fastorm/db/dbexception.zep.c
+	fastorm/db/iresultdriver.zep.c
+	fastorm/db/query.zep.c
+	fastorm/db/translator.zep.c "
 	PHP_NEW_EXTENSION(fastorm, $fastorm_sources, $ext_shared)
 
 	old_CPPFLAGS=$CPPFLAGS
