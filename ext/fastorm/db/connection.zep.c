@@ -144,10 +144,8 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 	zephir_update_property_this(this_ptr, SL("driver"), _12 TSRMLS_CC);
 	ZEPHIR_INIT_VAR(_15);
 	object_init_ex(_15, fastorm_db_translator_ce);
-	if (zephir_has_constructor(_15 TSRMLS_CC)) {
-		ZEPHIR_CALL_METHOD(NULL, _15, "__construct", NULL, this_ptr);
-		zephir_check_call_status();
-	}
+	ZEPHIR_CALL_METHOD(NULL, _15, "__construct", NULL, this_ptr);
+	zephir_check_call_status();
 	zephir_update_property_this(this_ptr, SL("translator"), _15 TSRMLS_CC);
 	ZEPHIR_OBS_VAR(_16);
 	zephir_array_fetch_string(&_16, config, SL("lazy"), PH_NOISY, "fastorm/db/Connection.zep", 95 TSRMLS_CC);
@@ -441,7 +439,7 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 274 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 273 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -479,7 +477,7 @@ PHP_METHOD(Fastorm_Db_Connection, getAffectedRows) {
 		_4 = ZEPHIR_LT_LONG(rows, 0);
 	}
 	if (_4) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 295);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 292);
 		return;
 	}
 	RETURN_CCTOR(rows);
@@ -515,7 +513,7 @@ PHP_METHOD(Fastorm_Db_Connection, getInsertId) {
 	zephir_check_call_status();
 	id = zephir_get_intval(_2);
 	if (id < 1) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 316);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 313);
 		return;
 	}
 	RETURN_MM_LONG(id);
@@ -558,7 +556,7 @@ PHP_METHOD(Fastorm_Db_Connection, begin) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 341 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 338 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -603,7 +601,7 @@ PHP_METHOD(Fastorm_Db_Connection, commit) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 365 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 362 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -648,7 +646,7 @@ PHP_METHOD(Fastorm_Db_Connection, rollback) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 389 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 386 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -777,7 +775,7 @@ PHP_METHOD(Fastorm_Db_Connection, update) {
 		_0 = (zephir_is_instance_of(args, SL("Traversable") TSRMLS_CC));
 	}
 	if (!(_0)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 442);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 439);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&_1, this_ptr, "command",  NULL);
@@ -825,7 +823,7 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
 		ZEPHIR_CPY_WRT(args, _0);
 	} else {
 		if (Z_TYPE_P(args) == IS_ARRAY == 0) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 460);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 457);
 			return;
 		}
 	}
