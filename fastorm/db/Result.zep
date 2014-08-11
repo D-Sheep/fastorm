@@ -6,8 +6,8 @@ class Result {
 	/** @var array  IResultDriver */
 	private driver;
 
-	/** @var array  Translate table */
-	private types = [];
+	
+	private _types;
 
 	/** @var DibiResultInfo */
 	private meta;
@@ -121,7 +121,7 @@ class Result {
 	 */
 	public function fetchRow()
 	{
-		var row, className;
+		var row;
 		let row = this->getResultDriver()->fetchRow(true);
 		if !is_array(row) {
 			return false;
@@ -130,6 +130,7 @@ class Result {
 		let row = this->normalize(row);
 
 		if this->rowClass !== null {
+			var className;
 			let className = this->rowClass;
 			let row = new {className}(row);
 		}
@@ -238,13 +239,14 @@ class Result {
 	 */
 	private function detectTypes()
 	{
-		var cache, columns, col, nativetype, e;
-		let cache = ColumnInfo::getTypeCache();
+		var columns, col, nativetype, e;
+
 		try {
+			let this->_types = [];
 			let columns = this->getResultDriver()->getResultColumns();
 			for col in columns {
 				let nativetype = col["nativetype"];
-				let this->types[col["name"]] = cache->{nativetype};
+				let this->_types[col["name"]] = \Fastorm\Db\ColumnInfo::detectType(nativetype);
 			}
 		} catch DbException, e {
 			return;
@@ -257,19 +259,22 @@ class Result {
 	 * @param  array
 	 * @return void
 	 */
-	private function normalize(array row)
+	private function normalize(row)
 	{
 		var key, type, value, tmp, left, right;
+
 
 		if typeof row !== "array" {
 			let row = [];
 		}
 
-		for key, type in this->types {
+		for key, type in this->_types {
+
 
 			if !isset(row[key]) { // null
 				continue;
 			}
+
 			let value = row[key];
 
 			if (value === false || type === Query::TYPE_TEXT) {
@@ -312,6 +317,10 @@ class Result {
 				let row[key] = this->getResultDriver()->unescape(value, type);
 			}}}}}
 		}
+
+
+
+
 		return row;
 	}
 
@@ -324,7 +333,7 @@ class Result {
 	 */
 	public function setType(col, type)
 	{
-		let this->types[col] = type;
+		let this->_types[col] = type;
 		return this;
 	}
 
@@ -335,7 +344,11 @@ class Result {
 	 */
 	public function getType(col)
 	{
-		return isset(this->types[col]) ? this->types[col] : null;
+		if isset(this->_types[col]) {
+			return this->_types[col];
+		} else {
+			return null;
+		}
 	}
 
 

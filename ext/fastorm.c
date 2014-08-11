@@ -31,7 +31,6 @@ zend_class_entry *fastorm_exception_ce;
 zend_class_entry *fastorm_db_columninfo_ce;
 zend_class_entry *fastorm_db_connection_ce;
 zend_class_entry *fastorm_db_dbexception_ce;
-zend_class_entry *fastorm_db_dibicolumninfo_ce;
 zend_class_entry *fastorm_db_drivers_mysqlidriver_ce;
 zend_class_entry *fastorm_db_query_ce;
 zend_class_entry *fastorm_db_result_ce;
@@ -211,7 +210,6 @@ static PHP_MINIT_FUNCTION(fastorm)
 	ZEPHIR_INIT(Fastorm_Db_ColumnInfo);
 	ZEPHIR_INIT(Fastorm_Db_Connection);
 	ZEPHIR_INIT(Fastorm_Db_DbException);
-	ZEPHIR_INIT(Fastorm_Db_DibiColumnInfo);
 	ZEPHIR_INIT(Fastorm_Db_Drivers_MysqliDriver);
 	ZEPHIR_INIT(Fastorm_Db_Query);
 	ZEPHIR_INIT(Fastorm_Db_Result);

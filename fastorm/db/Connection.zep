@@ -11,7 +11,7 @@ class Connection {
 
 	private translator;
 
-	private connected = false;
+	private connected;
 
 
 	/**
@@ -33,6 +33,8 @@ class Connection {
 		var key, val, tmp;
 		string driver, driverClass;
 		
+		let this->connected = false;
+
 		// DSN string
 		if is_string(config) {
 			parse_str(config, config);
@@ -92,7 +94,7 @@ class Connection {
 			}
 		}*/
 
-		if empty(config["lazy"]) {
+		if !isset(config["lazy"]) {
 			this->connect();
 		}
 	}
@@ -106,9 +108,10 @@ class Connection {
 	public function __destruct()
 	{
 		// disconnects and rolls back transaction - do not rely on auto-disconnect and rollback!
-		if this->connected && this->driver->getResource() !== null {
+		if this->connected && this->driver !== null && this->driver->getResource() !== null {
 			this->disconnect();
 		}
+		
 	}
 
 
@@ -141,7 +144,6 @@ class Connection {
 	public function disconnect()
 	{
 		this->driver->disconnect();
-		let this->connected = true;
 	}
 
 

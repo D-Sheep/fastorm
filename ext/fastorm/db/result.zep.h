@@ -36,7 +36,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_fetchpairs, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_normalize, 0, 0, 1)
-	ZEND_ARG_ARRAY_INFO(0, row, 0)
+	ZEND_ARG_INFO(0, row)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_settype, 0, 0, 2)

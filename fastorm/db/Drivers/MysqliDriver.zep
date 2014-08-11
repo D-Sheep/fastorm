@@ -36,20 +36,24 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 * @return void
 	 * @throws DbException
 	 */
-	public function connect(array config)
+	public function connect(config)
 	{
 		mysqli_report(MYSQLI_REPORT_OFF);
 		if isset config["resource"] {
 			let this->connection = config["resource"];
 		} else {
-			// default values
-			let config = array_merge(config, [
+			var defaults;
+			let defaults = [
 				"charset" : "utf8",
-				"timezone": date('P'),
+				"timezone": date("P"),
 				"username": ini_get("mysqli.default_user"),
 				"password": ini_get("mysqli.default_pw"),
 				"socket": ini_get("mysqli.default_socket"),
-				"port": null ]);
+				"port": null,
+				"flags": null
+			];
+			// default values
+			let config = array_merge(defaults, config);
 
 			var foo;
 			let foo = config["database"];
@@ -57,7 +61,6 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 			let this->connection = mysqli_init();
 			if isset config["options"] {
 				if is_scalar(config["options"]) {
-					let config["flags"] = config["options"]; // back compatibility
 					trigger_error(__CLASS__ . ": configuration item 'options' must be array; for constants MYSQLI_CLIENT_* use 'flags'.", E_USER_NOTICE);
 				} else {
 					var key, value, iterate;
@@ -67,7 +70,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 					}
 				}
 			}
-			if empty config["persistent"] {
+			if !isset config["persistent"] {
 				mysqli_real_connect(this->connection, "" . config["host"], config["username"], config["password"], config["database"], config["port"], config["socket"], config["flags"]); // intentionally @	
 			} else {
 				mysqli_real_connect(this->connection, "p:" . config["host"], config["username"], config["password"], config["database"], config["port"], config["socket"], config["flags"]); // intentionally @
@@ -87,19 +90,21 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 				let ok = mysqli_set_charset(this->connection, config["charset"]);
 			}
 			if !ok {
-				this->query("SET NAMES 'config[charset]'");
+				this->query("SET NAMES '".config["charset"]."'");
 			}
 		}
 
 		if isset(config["sqlmode"]) {
-			this->query("SET sql_mode='config[sqlmode]'");
+			this->query("SET sql_mode='".config["sqlmode"]."'");
 		}
 
 		if isset(config["timezone"]) {
-			this->query("SET time_zone='config[timezone]'");
+			this->query("SET time_zone='".config["timezone"]."'");
 		}
 
-		let this->buffered = empty(config["unbuffered"]);
+		
+
+		let this->buffered = !isset(config["unbuffered"]);
 	}
 
 
@@ -109,7 +114,10 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 */
 	public function disconnect()
 	{
-		mysqli_close(this->connection);
+		if this->connection !== null {
+			mysqli_close(this->connection);
+			let this->connection = null;
+		}
 	}
 
 
@@ -128,7 +136,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 			let res = mysqli_query(this->connection, sql,   MYSQLI_USE_RESULT); // intentionally @
 		}
 		if mysqli_errno(this->connection) {
-			throw new \Fastorm\Db\DbException("Db not supported exception:".mysqli_error(this->connection), mysqli_errno(this->connection), sql);
+			throw new \Fastorm\Db\DbException("Db not supported exception:".mysqli_error(this->connection), mysqli_errno(this->connection), null, sql);
 
 		} else { if is_object(res) {
 			return this->createResultDriver(res);
@@ -145,7 +153,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 		var res = [];
 		var matches, m;
 		let matches =[];
-		preg_match_all("#(.+?): +(\d+) *#", mysqli_info(this->connection), matches, PREG_SET_ORDER);
+		preg_match_all("#(.+?): +(\\d+) *#", mysqli_info(this->connection), matches, PREG_SET_ORDER);
 		if preg_last_error() {
 			throw new \Fastorm\Db\DbException("Db Pcre Exception");
 		}
@@ -237,7 +245,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 */
 	public function getResource()
 	{
-		if this->connection->thread_id {
+		if isset this->connection && isset(this->connection->thread_id) && this->connection->thread_id {
 			return this->connection;
 		} else {
 			return null;
@@ -276,7 +284,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 				return "_binary'" . mysqli_real_escape_string(this->connection, value) . "'";
 
 			case \Fastorm\Db\Query::IDENTIFIER:
-				return "`" . str_replace('`', '``', value) . "`";
+				return "`" . str_replace("`", "``", value) . "`";
 
 			case \Fastorm\Db\Query::TYPE_BOOL:
 				if value {
@@ -343,25 +351,29 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 * Injects LIMIT/OFFSET to the SQL query.
 	 * @return void
 	 */
-	public function applyLimit(sql, limit, offset) -> string
+	public function applyLimit(string sql, int limit, int offset) -> string
 	{
 		if limit >= 0 || offset > 0 {
 			// see http://dev.mysql.com/doc/refman/5.0/en/select.html
+			string lmtString, ofsString;
+
+			let limit = (int) limit;
+			let offset = (int) offset;
 
 			if limit < 0 {
-				let limit = "18446744073709551615";
+				let lmtString = "18446744073709551615" . "";
 			} else {
-				let limit = limit;
+				let lmtString = limit . "";
 			}
 
 			if offset > 0 {
-				let offset = " OFFSET ". offset;
+				let ofsString = " OFFSET ". offset;
 			} else {
-				let offset = "";
+				let ofsString = "";
 			}
 
 
-			return sql . " LIMIT " . limit . offset;
+			return sql . " LIMIT " . lmtString . ofsString;
 		}
 		return "";
 	}
@@ -426,8 +438,10 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 */
 	public function free()
 	{
-		mysqli_free_result(this->resultSet);
-		let this->resultSet = null;
+		if this->resultSet !== null {
+			mysqli_free_result(this->resultSet);
+			let this->resultSet = null;
+		}
 	}
 
 
@@ -435,11 +449,13 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 * Returns metadata for all columns in a result set.
 	 * @return array
 	 */
-	public function getResultColumns() -> array
+	public function getResultColumns()
 	{
+
 		if empty(self::types) {
 			var consts, key, value;
 			let consts = get_defined_constants(true);
+			let self::types = [];
 			for key, value in consts["mysqli"] {
 				if strncmp(key, "MYSQLI_TYPE_", 12) === 0 {
 					let self::types[value] = substr(key, 12);
@@ -451,23 +467,25 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 		}
 
 		var row, count, i, table;
-		let count = mysqli_num_fields(this->resultSet);
+		let count = mysqli_num_fields(this->resultSet) - 1;
 		var columns = [];
-		for i in range(1 ,count) {
+		for i in range(0, count) {
 			let row = mysqli_fetch_field_direct(this->resultSet, i);
-			if row["table"] {
-				let table =row["table"] . "." . row["name"];
+
+			if row->table {
+				let table = row->table . "." . row->name;
 			} else {
-				let table = row["name"];
+				let table = row->name;
 			}
 			//TODO - funguje detect type spravne?
 			let columns[] = [
-				"name" : row["name"],
-				"table" : row["orgtable"],
+				"name" : row->name,
+				"table" : row->orgtable,
 				"fullname" : table,
-				"nativetype" : \Fastorm\Db\DibiColumnInfo::detectType(self::types[row["type"]]),
+				"nativetype" : self::types[row->type],
 				"vendor" : row ];
 		}
+
 		return columns;
 	}
 
@@ -479,7 +497,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	public function getResultResource()
 	{
 		let this->autoFree = false;
-		if this->resultSet->type === null {
+		if this->resultSet === null || this->resultSet->type === null {
 			return null;
 		} else {
 			return this->resultSet;

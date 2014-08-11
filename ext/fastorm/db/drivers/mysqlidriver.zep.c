@@ -82,19 +82,17 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, __construct) {
  */
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, connect) {
 
-	zephir_fcall_cache_entry *_15 = NULL, *_24 = NULL;
-	HashTable *_12;
-	HashPosition _11;
-	zval *_9;
-	zephir_nts_static zephir_fcall_cache_entry *_5 = NULL, *_7 = NULL, *_10 = NULL, *_27 = NULL;
+	zephir_fcall_cache_entry *_13 = NULL, *_22 = NULL;
+	HashTable *_10;
+	HashPosition _9;
+	zval *_7;
+	zephir_nts_static zephir_fcall_cache_entry *_3 = NULL, *_6 = NULL, *_8 = NULL, *_25 = NULL;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *config_param = NULL, _0 = zval_used_for_init, *_1, *_2 = NULL, *_4 = NULL, *foo, *_6 = NULL, *_8, *key = NULL, *value = NULL, *iterate, **_13, *_14, *_16, *_17 = NULL, *_18, *_19, *_20, *_21, *_22, *_23, *_25, *ok = NULL, _26, *_28, *_29;
-	zval *config = NULL, *_3;
+	zval *config = NULL, _0 = zval_used_for_init, *_1, *defaults, *_2 = NULL, *_4 = NULL, *foo, *_5 = NULL, *key = NULL, *value = NULL, *iterate, **_11, *_12, *_14, *_15 = NULL, *_16, *_17, *_18, *_19, *_20, *_21, *_23, *ok = NULL, _24, *_26;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &config_param);
+	zephir_fetch_params(1, 1, 0, &config);
 
-	zephir_get_arrval(config, config_param);
 	ZEPHIR_SEPARATE_PARAM(config);
 
 
@@ -106,137 +104,134 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, connect) {
 		zephir_array_fetch_string(&_1, config, SL("resource"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 43 TSRMLS_CC);
 		zephir_update_property_this(this_ptr, SL("connection"), _1 TSRMLS_CC);
 	} else {
-		ZEPHIR_INIT_VAR(_2);
-		ZEPHIR_INIT_VAR(_3);
-		array_init_size(_3, 11);
-		add_assoc_stringl_ex(_3, SS("charset"), SL("utf8"), 1);
+		ZEPHIR_INIT_VAR(defaults);
+		array_init_size(defaults, 9);
+		add_assoc_stringl_ex(defaults, SS("charset"), SL("utf8"), 1);
 		ZEPHIR_SINIT_NVAR(_0);
-		ZVAL_LONG(&_0, 'P');
-		ZEPHIR_CALL_FUNCTION(&_4, "date", NULL, &_0);
+		ZVAL_STRING(&_0, "P", 0);
+		ZEPHIR_CALL_FUNCTION(&_2, "date", NULL, &_0);
 		zephir_check_call_status();
-		zephir_array_update_string(&_3, SL("timezone"), &_4, PH_COPY | PH_SEPARATE);
+		zephir_array_update_string(&defaults, SL("timezone"), &_2, PH_COPY | PH_SEPARATE);
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "mysqli.default_user", 0);
-		ZEPHIR_CALL_FUNCTION(&_4, "ini_get", &_5, &_0);
+		ZEPHIR_CALL_FUNCTION(&_2, "ini_get", &_3, &_0);
 		zephir_check_call_status();
-		zephir_array_update_string(&_3, SL("username"), &_4, PH_COPY | PH_SEPARATE);
+		zephir_array_update_string(&defaults, SL("username"), &_2, PH_COPY | PH_SEPARATE);
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "mysqli.default_pw", 0);
-		ZEPHIR_CALL_FUNCTION(&_4, "ini_get", &_5, &_0);
+		ZEPHIR_CALL_FUNCTION(&_2, "ini_get", &_3, &_0);
 		zephir_check_call_status();
-		zephir_array_update_string(&_3, SL("password"), &_4, PH_COPY | PH_SEPARATE);
+		zephir_array_update_string(&defaults, SL("password"), &_2, PH_COPY | PH_SEPARATE);
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "mysqli.default_socket", 0);
-		ZEPHIR_CALL_FUNCTION(&_4, "ini_get", &_5, &_0);
+		ZEPHIR_CALL_FUNCTION(&_2, "ini_get", &_3, &_0);
 		zephir_check_call_status();
-		zephir_array_update_string(&_3, SL("socket"), &_4, PH_COPY | PH_SEPARATE);
-		zephir_array_update_string(&_3, SL("port"), &ZEPHIR_GLOBAL(global_null), PH_COPY | PH_SEPARATE);
-		zephir_fast_array_merge(_2, &(config), &(_3) TSRMLS_CC);
+		zephir_array_update_string(&defaults, SL("socket"), &_2, PH_COPY | PH_SEPARATE);
+		zephir_array_update_string(&defaults, SL("port"), &ZEPHIR_GLOBAL(global_null), PH_COPY | PH_SEPARATE);
+		zephir_array_update_string(&defaults, SL("flags"), &ZEPHIR_GLOBAL(global_null), PH_COPY | PH_SEPARATE);
+		ZEPHIR_INIT_VAR(_4);
+		zephir_fast_array_merge(_4, &(defaults), &(config) TSRMLS_CC);
+		ZEPHIR_CPY_WRT(config, _4);
 		ZEPHIR_OBS_VAR(foo);
-		zephir_array_fetch_string(&foo, config, SL("database"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 55 TSRMLS_CC);
-		ZEPHIR_CALL_FUNCTION(&_4, "mysqli_init", NULL);
+		zephir_array_fetch_string(&foo, config, SL("database"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 59 TSRMLS_CC);
+		ZEPHIR_CALL_FUNCTION(&_2, "mysqli_init", NULL);
 		zephir_check_call_status();
-		zephir_update_property_this(this_ptr, SL("connection"), _4 TSRMLS_CC);
+		zephir_update_property_this(this_ptr, SL("connection"), _2 TSRMLS_CC);
 		if (zephir_array_isset_string(config, SS("options"))) {
-			zephir_array_fetch_string(&_1, config, SL("options"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 59 TSRMLS_CC);
-			ZEPHIR_CALL_FUNCTION(&_6, "is_scalar", &_7, _1);
+			zephir_array_fetch_string(&_1, config, SL("options"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 63 TSRMLS_CC);
+			ZEPHIR_CALL_FUNCTION(&_5, "is_scalar", &_6, _1);
 			zephir_check_call_status();
-			if (zephir_is_true(_6)) {
-				zephir_array_fetch_string(&_8, config, SL("options"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 60 TSRMLS_CC);
-				zephir_array_update_string(&config, SL("flags"), &_8, PH_COPY | PH_SEPARATE);
-				ZEPHIR_INIT_VAR(_9);
-				ZEPHIR_CONCAT_SS(_9, "MysqliDriver", ": configuration item 'options' must be array; for constants MYSQLI_CLIENT_* use 'flags'.");
+			if (zephir_is_true(_5)) {
+				ZEPHIR_INIT_VAR(_7);
+				ZEPHIR_CONCAT_SS(_7, "MysqliDriver", ": configuration item 'options' must be array; for constants MYSQLI_CLIENT_* use 'flags'.");
 				ZEPHIR_SINIT_NVAR(_0);
 				ZVAL_LONG(&_0, 1024);
-				ZEPHIR_CALL_FUNCTION(NULL, "trigger_error", &_10, _9, &_0);
+				ZEPHIR_CALL_FUNCTION(NULL, "trigger_error", &_8, _7, &_0);
 				zephir_check_call_status();
 			} else {
 				ZEPHIR_OBS_VAR(iterate);
-				zephir_array_fetch_string(&iterate, config, SL("options"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 64 TSRMLS_CC);
-				zephir_is_iterable(iterate, &_12, &_11, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 68);
+				zephir_array_fetch_string(&iterate, config, SL("options"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 67 TSRMLS_CC);
+				zephir_is_iterable(iterate, &_10, &_9, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 71);
 				for (
-				  ; zephir_hash_get_current_data_ex(_12, (void**) &_13, &_11) == SUCCESS
-				  ; zephir_hash_move_forward_ex(_12, &_11)
+				  ; zephir_hash_get_current_data_ex(_10, (void**) &_11, &_9) == SUCCESS
+				  ; zephir_hash_move_forward_ex(_10, &_9)
 				) {
-					ZEPHIR_GET_HMKEY(key, _12, _11);
-					ZEPHIR_GET_HVALUE(value, _13);
-					_14 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-					ZEPHIR_CALL_FUNCTION(NULL, "mysqli_options", &_15, _14, key, value);
+					ZEPHIR_GET_HMKEY(key, _10, _9);
+					ZEPHIR_GET_HVALUE(value, _11);
+					_12 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+					ZEPHIR_CALL_FUNCTION(NULL, "mysqli_options", &_13, _12, key, value);
 					zephir_check_call_status();
 				}
 			}
 		}
-		zephir_array_fetch_string(&_8, config, SL("persistent"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 70 TSRMLS_CC);
-		if (ZEPHIR_IS_EMPTY(_8)) {
-			_14 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-			zephir_array_fetch_string(&_16, config, SL("host"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			ZEPHIR_INIT_VAR(_17);
-			ZEPHIR_CONCAT_SV(_17, "", _16);
-			zephir_array_fetch_string(&_18, config, SL("username"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			zephir_array_fetch_string(&_19, config, SL("password"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			zephir_array_fetch_string(&_20, config, SL("database"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			zephir_array_fetch_string(&_21, config, SL("port"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			zephir_array_fetch_string(&_22, config, SL("socket"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			zephir_array_fetch_string(&_23, config, SL("flags"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 71 TSRMLS_CC);
-			ZEPHIR_CALL_FUNCTION(NULL, "mysqli_real_connect", &_24, _14, _17, _18, _19, _20, _21, _22, _23);
+		if (!(zephir_array_isset_string(config, SS("persistent")))) {
+			_12 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+			zephir_array_fetch_string(&_14, config, SL("host"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			ZEPHIR_INIT_VAR(_15);
+			ZEPHIR_CONCAT_SV(_15, "", _14);
+			zephir_array_fetch_string(&_16, config, SL("username"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			zephir_array_fetch_string(&_17, config, SL("password"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			zephir_array_fetch_string(&_18, config, SL("database"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			zephir_array_fetch_string(&_19, config, SL("port"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			zephir_array_fetch_string(&_20, config, SL("socket"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			zephir_array_fetch_string(&_21, config, SL("flags"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 74 TSRMLS_CC);
+			ZEPHIR_CALL_FUNCTION(NULL, "mysqli_real_connect", &_22, _12, _15, _16, _17, _18, _19, _20, _21);
 			zephir_check_call_status();
 		} else {
-			_25 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-			zephir_array_fetch_string(&_16, config, SL("host"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			ZEPHIR_INIT_LNVAR(_17);
-			ZEPHIR_CONCAT_SV(_17, "p:", _16);
-			zephir_array_fetch_string(&_18, config, SL("username"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			zephir_array_fetch_string(&_19, config, SL("password"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			zephir_array_fetch_string(&_20, config, SL("database"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			zephir_array_fetch_string(&_21, config, SL("port"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			zephir_array_fetch_string(&_22, config, SL("socket"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			zephir_array_fetch_string(&_23, config, SL("flags"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 73 TSRMLS_CC);
-			ZEPHIR_CALL_FUNCTION(NULL, "mysqli_real_connect", &_24, _25, _17, _18, _19, _20, _21, _22, _23);
+			_23 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+			zephir_array_fetch_string(&_14, config, SL("host"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			ZEPHIR_INIT_LNVAR(_15);
+			ZEPHIR_CONCAT_SV(_15, "p:", _14);
+			zephir_array_fetch_string(&_16, config, SL("username"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			zephir_array_fetch_string(&_17, config, SL("password"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			zephir_array_fetch_string(&_18, config, SL("database"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			zephir_array_fetch_string(&_19, config, SL("port"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			zephir_array_fetch_string(&_20, config, SL("socket"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			zephir_array_fetch_string(&_21, config, SL("flags"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 76 TSRMLS_CC);
+			ZEPHIR_CALL_FUNCTION(NULL, "mysqli_real_connect", &_22, _23, _15, _16, _17, _18, _19, _20, _21);
 			zephir_check_call_status();
 		}
 	}
 	if (zephir_array_isset_string(config, SS("charset"))) {
 		ZEPHIR_INIT_VAR(ok);
 		ZVAL_BOOL(ok, 0);
-		ZEPHIR_INIT_NVAR(_2);
-		ZEPHIR_GET_CONSTANT(_2, "PHP_VERSION");
+		ZEPHIR_INIT_NVAR(_4);
+		ZEPHIR_GET_CONSTANT(_4, "PHP_VERSION");
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "5.1.5", 0);
-		ZEPHIR_SINIT_VAR(_26);
-		ZVAL_STRING(&_26, ">=", 0);
-		ZEPHIR_CALL_FUNCTION(&_4, "version_compare", &_27, _2, &_0, &_26);
+		ZEPHIR_SINIT_VAR(_24);
+		ZVAL_STRING(&_24, ">=", 0);
+		ZEPHIR_CALL_FUNCTION(&_2, "version_compare", &_25, _4, &_0, &_24);
 		zephir_check_call_status();
-		if (zephir_is_true(_4)) {
-			_25 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-			zephir_array_fetch_string(&_1, config, SL("charset"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 87 TSRMLS_CC);
-			ZEPHIR_CALL_FUNCTION(&ok, "mysqli_set_charset", NULL, _25, _1);
+		if (zephir_is_true(_2)) {
+			_23 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+			zephir_array_fetch_string(&_1, config, SL("charset"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 90 TSRMLS_CC);
+			ZEPHIR_CALL_FUNCTION(&ok, "mysqli_set_charset", NULL, _23, _1);
 			zephir_check_call_status();
 		}
 		if (!(zephir_is_true(ok))) {
-			ZEPHIR_INIT_VAR(_28);
-			ZVAL_STRING(_28, "SET NAMES 'config[charset]'", 0);
-			ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _28);
-			zephir_check_temp_parameter(_28);
+			zephir_array_fetch_string(&_14, config, SL("charset"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 93 TSRMLS_CC);
+			ZEPHIR_INIT_LNVAR(_15);
+			ZEPHIR_CONCAT_SVS(_15, "SET NAMES '", _14, "'");
+			ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _15);
 			zephir_check_call_status();
 		}
 	}
 	if (zephir_array_isset_string(config, SS("sqlmode"))) {
-		ZEPHIR_INIT_NVAR(_2);
-		ZVAL_STRING(_2, "SET sql_mode='config[sqlmode]'", 0);
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _2);
-		zephir_check_temp_parameter(_2);
+		zephir_array_fetch_string(&_1, config, SL("sqlmode"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 98 TSRMLS_CC);
+		ZEPHIR_INIT_LNVAR(_15);
+		ZEPHIR_CONCAT_SVS(_15, "SET sql_mode='", _1, "'");
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _15);
 		zephir_check_call_status();
 	}
 	if (zephir_array_isset_string(config, SS("timezone"))) {
-		ZEPHIR_INIT_NVAR(_2);
-		ZVAL_STRING(_2, "SET time_zone='config[timezone]'", 0);
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _2);
-		zephir_check_temp_parameter(_2);
+		zephir_array_fetch_string(&_1, config, SL("timezone"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 102 TSRMLS_CC);
+		ZEPHIR_INIT_VAR(_26);
+		ZEPHIR_CONCAT_SVS(_26, "SET time_zone='", _1, "'");
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "query", NULL, _26);
 		zephir_check_call_status();
 	}
-	ZEPHIR_OBS_VAR(_29);
-	zephir_array_fetch_string(&_29, config, SL("unbuffered"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 102 TSRMLS_CC);
-	zephir_update_property_this(this_ptr, SL("buffered"), (ZEPHIR_IS_EMPTY(_29)) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
+	zephir_update_property_this(this_ptr, SL("buffered"), (!zephir_array_isset_string(config, SS("unbuffered"))) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -248,13 +243,17 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, connect) {
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, disconnect) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *_0;
+	zval *_0, *_1;
 
 	ZEPHIR_MM_GROW();
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-	ZEPHIR_CALL_FUNCTION(NULL, "mysqli_close", NULL, _0);
-	zephir_check_call_status();
+	if (Z_TYPE_P(_0) != IS_NULL) {
+		_1 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+		ZEPHIR_CALL_FUNCTION(NULL, "mysqli_close", NULL, _1);
+		zephir_check_call_status();
+		zephir_update_property_this(this_ptr, SL("connection"), ZEPHIR_GLOBAL(global_null) TSRMLS_CC);
+	}
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -304,9 +303,9 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, query) {
 		_10 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
 		ZEPHIR_CALL_FUNCTION(&_11, "mysqli_errno", &_5, _10);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, _6, "__construct", NULL, _9, _11, sql);
+		ZEPHIR_CALL_METHOD(NULL, _6, "__construct", NULL, _9, _11, ZEPHIR_GLOBAL(global_null), sql);
 		zephir_check_call_status();
-		zephir_throw_exception_debug(_6, "fastorm/db/Drivers/MysqliDriver.zep", 131 TSRMLS_CC);
+		zephir_throw_exception_debug(_6, "fastorm/db/Drivers/MysqliDriver.zep", 139 TSRMLS_CC);
 		ZEPHIR_MM_RESTORE();
 		return;
 	} else {
@@ -342,7 +341,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getInfo) {
 	ZEPHIR_CALL_FUNCTION(&_1, "mysqli_info", NULL, _0);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_2);
-	ZVAL_STRING(_2, "#(.+?): +(\d+) *#", 0);
+	ZVAL_STRING(_2, "#(.+?): +(\\d+) *#", 0);
 	ZEPHIR_INIT_VAR(_3);
 	ZVAL_LONG(_3, 2);
 	Z_SET_ISREF_P(matches);
@@ -353,18 +352,18 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getInfo) {
 	ZEPHIR_CALL_FUNCTION(&_5, "preg_last_error", &_6);
 	zephir_check_call_status();
 	if (zephir_is_true(_5)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db Pcre Exception", "fastorm/db/Drivers/MysqliDriver.zep", 150);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db Pcre Exception", "fastorm/db/Drivers/MysqliDriver.zep", 158);
 		return;
 	}
-	zephir_is_iterable(matches, &_8, &_7, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 158);
+	zephir_is_iterable(matches, &_8, &_7, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 166);
 	for (
 	  ; zephir_hash_get_current_data_ex(_8, (void**) &_9, &_7) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_8, &_7)
 	) {
 		ZEPHIR_GET_HVALUE(m, _9);
-		zephir_array_fetch_long(&hod, m, 1, PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 155 TSRMLS_CC);
+		zephir_array_fetch_long(&hod, m, 1, PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 163 TSRMLS_CC);
 		ZEPHIR_OBS_NVAR(_10);
-		zephir_array_fetch_long(&_10, m, 2, PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 156 TSRMLS_CC);
+		zephir_array_fetch_long(&_10, m, 2, PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 164 TSRMLS_CC);
 		ZEPHIR_INIT_NVAR(_2);
 		ZVAL_LONG(_2, zephir_get_intval(_10));
 		zephir_array_update_zval(&res, hod, &_2, PH_COPY | PH_SEPARATE);
@@ -534,14 +533,24 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, rollback) {
  */
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResource) {
 
-	zval *_0, *_1;
+	zval *_1, *_3, *_4;
+	zend_bool _0, _2;
 
 	ZEPHIR_MM_GROW();
 
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
-	ZEPHIR_OBS_VAR(_1);
-	zephir_read_property(&_1, _0, SL("thread_id"), PH_NOISY_CC);
-	if (zephir_is_true(_1)) {
+	_0 = zephir_isset_property(this_ptr, SS("connection") TSRMLS_CC);
+	if (_0) {
+		_1 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+		_0 = zephir_isset_property(_1, SS("thread_id") TSRMLS_CC);
+	}
+	_2 = _0;
+	if (_2) {
+		_3 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
+		ZEPHIR_OBS_VAR(_4);
+		zephir_read_property(&_4, _3, SL("thread_id"), PH_NOISY_CC);
+		_2 = zephir_is_true(_4);
+	}
+	if (_2) {
 		RETURN_MM_MEMBER(this_ptr, "connection");
 	} else {
 		RETURN_MM_NULL();
@@ -612,9 +621,9 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, escape) {
 		if (ZEPHIR_IS_STRING(type, "n")) {
 			ZEPHIR_INIT_VAR(_3);
 			ZEPHIR_SINIT_VAR(_4);
-			ZVAL_LONG(&_4, '`');
+			ZVAL_STRING(&_4, "`", 0);
 			ZEPHIR_SINIT_VAR(_5);
-			ZVAL_LONG(&_5, '``');
+			ZVAL_STRING(&_5, "``", 0);
 			zephir_fast_str_replace(_3, &_4, &_5, value);
 			ZEPHIR_CONCAT_SVS(return_value, "`", _3, "`");
 			RETURN_MM();
@@ -660,7 +669,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, escape) {
 				RETURN_MM();
 			}
 		}
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Unsupported type.", "fastorm/db/Drivers/MysqliDriver.zep", 303);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Unsupported type.", "fastorm/db/Drivers/MysqliDriver.zep", 311);
 		return;
 	} while(0);
 
@@ -740,7 +749,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, unescape) {
 	if (ZEPHIR_IS_STRING_IDENTICAL(type, "bin")) {
 		RETURN_CCTORW(value);
 	}
-	ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Unsupported type.", "fastorm/db/Drivers/MysqliDriver.zep", 338);
+	ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Unsupported type.", "fastorm/db/Drivers/MysqliDriver.zep", 346);
 	return;
 
 }
@@ -752,34 +761,44 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, unescape) {
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, applyLimit) {
 
 	zend_bool _0;
-	zval *sql, *limit = NULL, *offset = NULL, *_1;
+	int limit, offset;
+	zval *sql_param = NULL, *limit_param = NULL, *offset_param = NULL, _1 = zval_used_for_init;
+	zval *sql = NULL, *lmtString = NULL, *ofsString = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 3, 0, &sql, &limit, &offset);
+	zephir_fetch_params(1, 3, 0, &sql_param, &limit_param, &offset_param);
 
-	ZEPHIR_SEPARATE_PARAM(limit);
-	ZEPHIR_SEPARATE_PARAM(offset);
+	zephir_get_strval(sql, sql_param);
+	limit = zephir_get_intval(limit_param);
+	offset = zephir_get_intval(offset_param);
 
 
-	_0 = ZEPHIR_GE_LONG(limit, 0);
+	_0 = limit >= 0;
 	if (!(_0)) {
-		_0 = ZEPHIR_GT_LONG(offset, 0);
+		_0 = offset > 0;
 	}
 	if (_0) {
-		if (ZEPHIR_LT_LONG(limit, 0)) {
-			ZEPHIR_INIT_NVAR(limit);
-			ZVAL_LONG(limit, 18446744073709551615);
+		limit = limit;
+		offset = offset;
+		if (limit < 0) {
+			ZEPHIR_INIT_VAR(lmtString);
+			ZEPHIR_CONCAT_SS(lmtString, "18446744073709551615", "");
 		} else {
+			ZEPHIR_SINIT_VAR(_1);
+			ZVAL_LONG(&_1, limit);
+			ZEPHIR_INIT_NVAR(lmtString);
+			ZEPHIR_CONCAT_VS(lmtString, &_1, "");
 		}
-		ZEPHIR_INIT_NVAR(offset);
-		if (ZEPHIR_GT_LONG(offset, 0)) {
-			ZEPHIR_INIT_VAR(_1);
-			ZEPHIR_CONCAT_SV(_1, " OFFSET ", offset);
-			ZEPHIR_CPY_WRT(offset, _1);
+		if (offset > 0) {
+			ZEPHIR_SINIT_NVAR(_1);
+			ZVAL_LONG(&_1, offset);
+			ZEPHIR_INIT_VAR(ofsString);
+			ZEPHIR_CONCAT_SV(ofsString, " OFFSET ", &_1);
 		} else {
-			ZVAL_STRING(offset, "", 1);
+			ZEPHIR_INIT_NVAR(ofsString);
+			ZVAL_EMPTY_STRING(ofsString);
 		}
-		ZEPHIR_CONCAT_VSVV(return_value, sql, " LIMIT ", limit, offset);
+		ZEPHIR_CONCAT_VSVV(return_value, sql, " LIMIT ", lmtString, ofsString);
 		RETURN_MM();
 	}
 	RETURN_MM_STRING("", 1);
@@ -828,7 +847,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getRowCount) {
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("buffered"), PH_NOISY_CC);
 	if (!(zephir_is_true(_0))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db not supported exception: Row count is not available for unbuffered queries.", "fastorm/db/Drivers/MysqliDriver.zep", 387);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db not supported exception: Row count is not available for unbuffered queries.", "fastorm/db/Drivers/MysqliDriver.zep", 399);
 		return;
 	}
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
@@ -890,7 +909,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, seek) {
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("buffered"), PH_NOISY_CC);
 	if (!(zephir_is_true(_0))) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db not supported exception: Cannot seek an unbuffered result set.", "fastorm/db/Drivers/MysqliDriver.zep", 417);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Db not supported exception: Cannot seek an unbuffered result set.", "fastorm/db/Drivers/MysqliDriver.zep", 429);
 		return;
 	}
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
@@ -907,14 +926,17 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, seek) {
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, free) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *_0;
+	zval *_0, *_1;
 
 	ZEPHIR_MM_GROW();
 
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
-	ZEPHIR_CALL_FUNCTION(NULL, "mysqli_free_result", NULL, _0);
-	zephir_check_call_status();
-	zephir_update_property_this(this_ptr, SL("resultSet"), ZEPHIR_GLOBAL(global_null) TSRMLS_CC);
+	if (Z_TYPE_P(_0) != IS_NULL) {
+		_1 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
+		ZEPHIR_CALL_FUNCTION(NULL, "mysqli_free_result", NULL, _1);
+		zephir_check_call_status();
+		zephir_update_property_this(this_ptr, SL("resultSet"), ZEPHIR_GLOBAL(global_null) TSRMLS_CC);
+	}
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -925,14 +947,14 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, free) {
  */
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultColumns) {
 
-	zval *_21 = NULL;
-	zephir_fcall_cache_entry *_18 = NULL, *_23 = NULL;
+	zval *_23 = NULL;
+	zephir_fcall_cache_entry *_18 = NULL;
 	zend_bool _14;
-	HashTable *_4;
-	HashPosition _3;
+	HashTable *_5;
+	HashPosition _4;
 	int ZEPHIR_LAST_CALL_STATUS, _15;
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL, *_9 = NULL, *_11 = NULL;
-	zval *_0, *consts = NULL, *key = NULL, *value = NULL, *_2, **_5, _6 = zval_used_for_init, _7 = zval_used_for_init, *_8 = NULL, *_10 = NULL, *_12 = NULL, *row = NULL, *count = NULL, *i = NULL, *table = NULL, *_13, *columns, *_16 = NULL, *_17, *_19, *_20, *_22 = NULL, *_24;
+	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL, *_10 = NULL, *_12 = NULL;
+	zval *_0, *consts = NULL, *key = NULL, *value = NULL, *_2 = NULL, *_3, **_6, _7 = zval_used_for_init, _8 = zval_used_for_init, *_9 = NULL, *_11 = NULL, *row = NULL, *count, *i = NULL, *table = NULL, *_13, *columns, *_16 = NULL, *_17, *_19 = NULL, *_20 = NULL, *_21 = NULL, *_22 = NULL, *_24;
 
 	ZEPHIR_MM_GROW();
 	ZEPHIR_INIT_VAR(columns);
@@ -942,43 +964,48 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultColumns) {
 	if (ZEPHIR_IS_EMPTY(_0)) {
 		ZEPHIR_CALL_FUNCTION(&consts, "get_defined_constants", &_1, ZEPHIR_GLOBAL(global_true));
 		zephir_check_call_status();
-		zephir_array_fetch_string(&_2, consts, SL("mysqli"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 443 TSRMLS_CC);
-		zephir_is_iterable(_2, &_4, &_3, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 448);
+		ZEPHIR_INIT_VAR(_2);
+		array_init(_2);
+		zephir_update_static_property_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), _2 TSRMLS_CC);
+		zephir_array_fetch_string(&_3, consts, SL("mysqli"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 459 TSRMLS_CC);
+		zephir_is_iterable(_3, &_5, &_4, 0, 0, "fastorm/db/Drivers/MysqliDriver.zep", 464);
 		for (
-		  ; zephir_hash_get_current_data_ex(_4, (void**) &_5, &_3) == SUCCESS
-		  ; zephir_hash_move_forward_ex(_4, &_3)
+		  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
+		  ; zephir_hash_move_forward_ex(_5, &_4)
 		) {
-			ZEPHIR_GET_HMKEY(key, _4, _3);
-			ZEPHIR_GET_HVALUE(value, _5);
-			ZEPHIR_SINIT_NVAR(_6);
-			ZVAL_STRING(&_6, "MYSQLI_TYPE_", 0);
+			ZEPHIR_GET_HMKEY(key, _5, _4);
+			ZEPHIR_GET_HVALUE(value, _6);
 			ZEPHIR_SINIT_NVAR(_7);
-			ZVAL_LONG(&_7, 12);
-			ZEPHIR_CALL_FUNCTION(&_8, "strncmp", &_9, key, &_6, &_7);
+			ZVAL_STRING(&_7, "MYSQLI_TYPE_", 0);
+			ZEPHIR_SINIT_NVAR(_8);
+			ZVAL_LONG(&_8, 12);
+			ZEPHIR_CALL_FUNCTION(&_9, "strncmp", &_10, key, &_7, &_8);
 			zephir_check_call_status();
-			if (ZEPHIR_IS_LONG_IDENTICAL(_8, 0)) {
-				ZEPHIR_SINIT_NVAR(_6);
-				ZVAL_LONG(&_6, 12);
-				ZEPHIR_CALL_FUNCTION(&_10, "substr", &_11, key, &_6);
+			if (ZEPHIR_IS_LONG_IDENTICAL(_9, 0)) {
+				ZEPHIR_SINIT_NVAR(_7);
+				ZVAL_LONG(&_7, 12);
+				ZEPHIR_CALL_FUNCTION(&_11, "substr", &_12, key, &_7);
 				zephir_check_call_status();
-				zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_10 TSRMLS_CC, SL("z"), 1, value);
+				zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_11 TSRMLS_CC, SL("z"), 1, value);
 			}
 		}
-		ZEPHIR_INIT_VAR(_12);
-		ZVAL_STRING(_12, "INT", 1);
-		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_12 TSRMLS_CC, SL("l"), 1, 1);
-		ZEPHIR_INIT_NVAR(_12);
-		ZVAL_STRING(_12, "INT", 1);
-		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_12 TSRMLS_CC, SL("l"), 1, 2);
-		ZEPHIR_INIT_NVAR(_12);
-		ZVAL_STRING(_12, "INT", 1);
-		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_12 TSRMLS_CC, SL("l"), 1, 3);
+		ZEPHIR_INIT_NVAR(_2);
+		ZVAL_STRING(_2, "INT", 1);
+		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_2 TSRMLS_CC, SL("l"), 1, 1);
+		ZEPHIR_INIT_NVAR(_2);
+		ZVAL_STRING(_2, "INT", 1);
+		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_2 TSRMLS_CC, SL("l"), 1, 2);
+		ZEPHIR_INIT_NVAR(_2);
+		ZVAL_STRING(_2, "INT", 1);
+		zephir_update_static_property_array_multi_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types"), &_2 TSRMLS_CC, SL("l"), 1, 3);
 	}
 	_13 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
-	ZEPHIR_CALL_FUNCTION(&count, "mysqli_num_fields", NULL, _13);
+	ZEPHIR_CALL_FUNCTION(&_9, "mysqli_num_fields", NULL, _13);
 	zephir_check_call_status();
+	ZEPHIR_INIT_VAR(count);
+	ZVAL_LONG(count, (zephir_get_numberval(_9) - 1));
 	ZEPHIR_CPY_WRT(_16, count);
-	_15 = 1;
+	_15 = 0;
 	_14 = 0;
 	if (ZEPHIR_GE_LONG(_16, _15)) {
 		while (1) {
@@ -995,34 +1022,37 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultColumns) {
 			_17 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
 			ZEPHIR_CALL_FUNCTION(&row, "mysqli_fetch_field_direct", &_18, _17, i);
 			zephir_check_call_status();
-			zephir_array_fetch_string(&_2, row, SL("table"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 458 TSRMLS_CC);
-			if (zephir_is_true(_2)) {
-				zephir_array_fetch_string(&_19, row, SL("table"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 459 TSRMLS_CC);
-				zephir_array_fetch_string(&_20, row, SL("name"), PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 459 TSRMLS_CC);
-				ZEPHIR_INIT_NVAR(table);
-				ZEPHIR_CONCAT_VSV(table, _19, ".", _20);
+			ZEPHIR_OBS_NVAR(_19);
+			zephir_read_property(&_19, row, SL("table"), PH_NOISY_CC);
+			if (zephir_is_true(_19)) {
+				ZEPHIR_OBS_NVAR(_20);
+				zephir_read_property(&_20, row, SL("table"), PH_NOISY_CC);
+				ZEPHIR_OBS_NVAR(_21);
+				zephir_read_property(&_21, row, SL("name"), PH_NOISY_CC);
+				ZEPHIR_INIT_LNVAR(_22);
+				ZEPHIR_CONCAT_VSV(_22, _20, ".", _21);
+				ZEPHIR_CPY_WRT(table, _22);
 			} else {
 				ZEPHIR_OBS_NVAR(table);
-				zephir_array_fetch_string(&table, row, SL("name"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 461 TSRMLS_CC);
+				zephir_read_property(&table, row, SL("name"), PH_NOISY_CC);
 			}
-			ZEPHIR_INIT_NVAR(_21);
-			array_init_size(_21, 7);
-			ZEPHIR_OBS_NVAR(_22);
-			zephir_array_fetch_string(&_22, row, SL("name"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 465 TSRMLS_CC);
-			zephir_array_update_string(&_21, SL("name"), &_22, PH_COPY | PH_SEPARATE);
-			ZEPHIR_OBS_NVAR(_22);
-			zephir_array_fetch_string(&_22, row, SL("orgtable"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 466 TSRMLS_CC);
-			zephir_array_update_string(&_21, SL("table"), &_22, PH_COPY | PH_SEPARATE);
-			zephir_array_update_string(&_21, SL("fullname"), &table, PH_COPY | PH_SEPARATE);
+			ZEPHIR_INIT_NVAR(_23);
+			array_init_size(_23, 7);
+			ZEPHIR_OBS_NVAR(_20);
+			zephir_read_property(&_20, row, SL("name"), PH_NOISY_CC);
+			zephir_array_update_string(&_23, SL("name"), &_20, PH_COPY | PH_SEPARATE);
+			ZEPHIR_OBS_NVAR(_20);
+			zephir_read_property(&_20, row, SL("orgtable"), PH_NOISY_CC);
+			zephir_array_update_string(&_23, SL("table"), &_20, PH_COPY | PH_SEPARATE);
+			zephir_array_update_string(&_23, SL("fullname"), &table, PH_COPY | PH_SEPARATE);
 			_24 = zephir_fetch_static_property_ce(fastorm_db_drivers_mysqlidriver_ce, SL("types") TSRMLS_CC);
-			ZEPHIR_OBS_NVAR(_22);
-			zephir_array_fetch_string(&_22, row, SL("type"), PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 468 TSRMLS_CC);
-			zephir_array_fetch(&_19, _24, _22, PH_NOISY | PH_READONLY, "fastorm/db/Drivers/MysqliDriver.zep", 468 TSRMLS_CC);
-			ZEPHIR_CALL_CE_STATIC(&_8, fastorm_db_dibicolumninfo_ce, "detecttype", &_23, _19);
-			zephir_check_call_status();
-			zephir_array_update_string(&_21, SL("nativetype"), &_8, PH_COPY | PH_SEPARATE);
-			zephir_array_update_string(&_21, SL("vendor"), &row, PH_COPY | PH_SEPARATE);
-			zephir_array_append(&columns, _21, PH_SEPARATE, "fastorm/db/Drivers/MysqliDriver.zep", 469);
+			ZEPHIR_OBS_NVAR(_20);
+			ZEPHIR_OBS_NVAR(_21);
+			zephir_read_property(&_21, row, SL("type"), PH_NOISY_CC);
+			zephir_array_fetch(&_20, _24, _21, PH_NOISY, "fastorm/db/Drivers/MysqliDriver.zep", 485 TSRMLS_CC);
+			zephir_array_update_string(&_23, SL("nativetype"), &_20, PH_COPY | PH_SEPARATE);
+			zephir_array_update_string(&_23, SL("vendor"), &row, PH_COPY | PH_SEPARATE);
+			zephir_array_append(&columns, _23, PH_SEPARATE, "fastorm/db/Drivers/MysqliDriver.zep", 486);
 		}
 	}
 	RETURN_CCTOR(columns);
@@ -1035,15 +1065,21 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultColumns) {
  */
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultResource) {
 
-	zval *_0, *_1;
+	zend_bool _1;
+	zval *_0, *_2, *_3;
 
 	ZEPHIR_MM_GROW();
 
 	zephir_update_property_this(this_ptr, SL("autoFree"), (0) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
-	ZEPHIR_OBS_VAR(_1);
-	zephir_read_property(&_1, _0, SL("type"), PH_NOISY_CC);
-	if (Z_TYPE_P(_1) == IS_NULL) {
+	_1 = Z_TYPE_P(_0) == IS_NULL;
+	if (!(_1)) {
+		_2 = zephir_fetch_nproperty_this(this_ptr, SL("resultSet"), PH_NOISY_CC);
+		ZEPHIR_OBS_VAR(_3);
+		zephir_read_property(&_3, _2, SL("type"), PH_NOISY_CC);
+		_1 = Z_TYPE_P(_3) == IS_NULL;
+	}
+	if (_1) {
 		RETURN_MM_NULL();
 	} else {
 		RETURN_MM_MEMBER(this_ptr, "resultSet");

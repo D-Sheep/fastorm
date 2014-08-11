@@ -28,7 +28,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultColumns);
 PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, getResultResource);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_drivers_mysqlidriver_connect, 0, 0, 1)
-	ZEND_ARG_ARRAY_INFO(0, config, 0)
+	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_drivers_mysqlidriver_query, 0, 0, 1)

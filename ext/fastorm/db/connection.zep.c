@@ -12,11 +12,11 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
+#include "kernel/object.h"
 #include "kernel/fcall.h"
 #include "kernel/exception.h"
 #include "kernel/memory.h"
 #include "kernel/hash.h"
-#include "kernel/object.h"
 #include "kernel/array.h"
 #include "kernel/string.h"
 #include "kernel/operators.h"
@@ -34,7 +34,7 @@ ZEPHIR_INIT_CLASS(Fastorm_Db_Connection) {
 
 	zend_declare_property_null(fastorm_db_connection_ce, SL("translator"), ZEND_ACC_PRIVATE TSRMLS_CC);
 
-	zend_declare_property_bool(fastorm_db_connection_ce, SL("connected"), 0, ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("connected"), ZEND_ACC_PRIVATE TSRMLS_CC);
 
 	return SUCCESS;
 
@@ -63,7 +63,7 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 	int ZEPHIR_LAST_CALL_STATUS;
 	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL, *_10 = NULL;
 	zval *driver = NULL, *driverClass = NULL, *_11 = NULL, *_13;
-	zval *config = NULL, *name = NULL, *key = NULL, *val = NULL, *tmp, **_3, *_4 = NULL, *_6 = NULL, *_7, _8, _9, *_12 = NULL, *_15, *_16, *_17;
+	zval *config = NULL, *name = NULL, *key = NULL, *val = NULL, *tmp, **_3, *_4 = NULL, *_6 = NULL, *_7, _8, _9, *_12 = NULL, *_15, *_16;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 1, &config, &name);
@@ -74,6 +74,7 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 	}
 
 
+	zephir_update_property_this(this_ptr, SL("connected"), (0) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	if (Z_TYPE_P(config) == IS_STRING) {
 		Z_SET_ISREF_P(config);
 		ZEPHIR_CALL_FUNCTION(NULL, "parse_str", &_0, config, config);
@@ -81,12 +82,12 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 		zephir_check_call_status();
 	} else {
 		if (Z_TYPE_P(config) == IS_ARRAY == 0) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Configuration must be array, string or object.", "fastorm/db/Connection.zep", 42);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Configuration must be array, string or object.", "fastorm/db/Connection.zep", 44);
 			return;
 		}
 		ZEPHIR_INIT_VAR(tmp);
 		array_init(tmp);
-		zephir_is_iterable(config, &_2, &_1, 0, 0, "fastorm/db/Connection.zep", 53);
+		zephir_is_iterable(config, &_2, &_1, 0, 0, "fastorm/db/Connection.zep", 55);
 		for (
 		  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -109,7 +110,7 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 		zephir_array_update_string(&config, SL("driver"), &_6, PH_COPY | PH_SEPARATE);
 	}
 	ZEPHIR_INIT_NVAR(_6);
-	zephir_array_fetch_string(&_7, config, SL("driver"), PH_NOISY | PH_READONLY, "fastorm/db/Connection.zep", 62 TSRMLS_CC);
+	zephir_array_fetch_string(&_7, config, SL("driver"), PH_NOISY | PH_READONLY, "fastorm/db/Connection.zep", 64 TSRMLS_CC);
 	zephir_fast_strtolower(_6, _7);
 	ZEPHIR_SINIT_VAR(_8);
 	ZVAL_STRING(&_8, "#[^a-z0-9_]#", 0);
@@ -128,7 +129,7 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 		ZEPHIR_CONCAT_SVS(_13, "Unable to create instance of dibi driver ", driverClass, ".");
 		ZEPHIR_CALL_METHOD(NULL, _12, "__construct", NULL, _13);
 		zephir_check_call_status();
-		zephir_throw_exception_debug(_12, "fastorm/db/Connection.zep", 65 TSRMLS_CC);
+		zephir_throw_exception_debug(_12, "fastorm/db/Connection.zep", 67 TSRMLS_CC);
 		ZEPHIR_MM_RESTORE();
 		return;
 	}
@@ -147,18 +148,16 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 	ZEPHIR_CALL_METHOD(NULL, _15, "__construct", NULL, this_ptr);
 	zephir_check_call_status();
 	zephir_update_property_this(this_ptr, SL("translator"), _15 TSRMLS_CC);
-	ZEPHIR_OBS_VAR(_16);
-	zephir_array_fetch_string(&_16, config, SL("lazy"), PH_NOISY, "fastorm/db/Connection.zep", 95 TSRMLS_CC);
-	if (ZEPHIR_IS_EMPTY(_16)) {
+	if (!(zephir_array_isset_string(config, SS("lazy")))) {
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "connect", NULL);
 		zephir_check_call_status();
 	}
 	ZEPHIR_INIT_NVAR(_6);
 	array_init(_6);
 	zephir_update_property_this(this_ptr, SL("onEvent"), _6 TSRMLS_CC);
-	ZEPHIR_INIT_VAR(_17);
-	array_init(_17);
-	zephir_update_property_this(this_ptr, SL("config"), _17 TSRMLS_CC);
+	ZEPHIR_INIT_VAR(_16);
+	array_init(_16);
+	zephir_update_property_this(this_ptr, SL("config"), _16 TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -170,8 +169,8 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 PHP_METHOD(Fastorm_Db_Connection, __destruct) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zend_bool _1;
-	zval *_0, *_2, *_3 = NULL;
+	zend_bool _1, _3;
+	zval *_0, *_2, *_4, *_5 = NULL;
 
 	ZEPHIR_MM_GROW();
 
@@ -179,11 +178,16 @@ PHP_METHOD(Fastorm_Db_Connection, __destruct) {
 	_1 = zephir_is_true(_0);
 	if (_1) {
 		_2 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(&_3, _2, "getresource",  NULL);
-		zephir_check_call_status();
-		_1 = Z_TYPE_P(_3) != IS_NULL;
+		_1 = Z_TYPE_P(_2) != IS_NULL;
 	}
-	if (_1) {
+	_3 = _1;
+	if (_3) {
+		_4 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
+		ZEPHIR_CALL_METHOD(&_5, _4, "getresource",  NULL);
+		zephir_check_call_status();
+		_3 = Z_TYPE_P(_5) != IS_NULL;
+	}
+	if (_3) {
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "disconnect", NULL);
 		zephir_check_call_status();
 	}
@@ -217,7 +221,7 @@ PHP_METHOD(Fastorm_Db_Connection, connect) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 131 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 134 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -240,7 +244,6 @@ PHP_METHOD(Fastorm_Db_Connection, disconnect) {
 	_0 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
 	ZEPHIR_CALL_METHOD(NULL, _0, "disconnect", NULL);
 	zephir_check_call_status();
-	zephir_update_property_this(this_ptr, SL("connected"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -283,7 +286,7 @@ PHP_METHOD(Fastorm_Db_Connection, getConfig) {
 		_0 = zephir_fetch_nproperty_this(this_ptr, SL("config"), PH_NOISY_CC);
 		if (zephir_array_isset(_0, key)) {
 			_1 = zephir_fetch_nproperty_this(this_ptr, SL("config"), PH_NOISY_CC);
-			zephir_array_fetch(&_2, _1, key, PH_NOISY | PH_READONLY, "fastorm/db/Connection.zep", 174 TSRMLS_CC);
+			zephir_array_fetch(&_2, _1, key, PH_NOISY | PH_READONLY, "fastorm/db/Connection.zep", 176 TSRMLS_CC);
 			RETURN_CTORW(_2);
 		} else {
 			RETURN_CCTORW(defaultValue);
@@ -439,7 +442,7 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 273 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 275 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -477,7 +480,7 @@ PHP_METHOD(Fastorm_Db_Connection, getAffectedRows) {
 		_4 = ZEPHIR_LT_LONG(rows, 0);
 	}
 	if (_4) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 292);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 294);
 		return;
 	}
 	RETURN_CCTOR(rows);
@@ -513,7 +516,7 @@ PHP_METHOD(Fastorm_Db_Connection, getInsertId) {
 	zephir_check_call_status();
 	id = zephir_get_intval(_2);
 	if (id < 1) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 313);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 315);
 		return;
 	}
 	RETURN_MM_LONG(id);
@@ -556,7 +559,7 @@ PHP_METHOD(Fastorm_Db_Connection, begin) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 338 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 340 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -601,7 +604,7 @@ PHP_METHOD(Fastorm_Db_Connection, commit) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 362 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 364 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -646,7 +649,7 @@ PHP_METHOD(Fastorm_Db_Connection, rollback) {
 		ZEPHIR_CPY_WRT(e, EG(exception));
 		if (zephir_is_instance_of(e, SL("DbException") TSRMLS_CC)) {
 			zend_clear_exception(TSRMLS_C);
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 386 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 388 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -775,7 +778,7 @@ PHP_METHOD(Fastorm_Db_Connection, update) {
 		_0 = (zephir_is_instance_of(args, SL("Traversable") TSRMLS_CC));
 	}
 	if (!(_0)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 439);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 441);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&_1, this_ptr, "command",  NULL);
@@ -823,14 +826,14 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
 		ZEPHIR_CPY_WRT(args, _0);
 	} else {
 		if (Z_TYPE_P(args) == IS_ARRAY == 0) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 457);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 459);
 			return;
 		}
 	}
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "command",  NULL);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_2);
-	array_init_size(_2, 7);
+	array_init_size(_2, 6);
 	ZEPHIR_INIT_VAR(_3);
 	ZVAL_STRING(_3, "%n", 1);
 	zephir_array_fast_append(_2, _3);

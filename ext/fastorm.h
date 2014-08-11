@@ -12,7 +12,6 @@
 #include "fastorm/db/columninfo.zep.h"
 #include "fastorm/db/connection.zep.h"
 #include "fastorm/db/dbexception.zep.h"
-#include "fastorm/db/dibicolumninfo.zep.h"
 #include "fastorm/db/drivers/mysqlidriver.zep.h"
 #include "fastorm/db/iresultdriver.zep.h"
 #include "fastorm/db/query.zep.h"

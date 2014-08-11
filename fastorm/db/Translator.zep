@@ -90,7 +90,7 @@ class Translator {
 			// simple string means SQL
 			if typeof arg === "string" {
 				// speed-up - is regexp required?
-				let toSkip = (int) strcspn(arg, "`['\":%?");
+				let toSkip = (int) strcspn(arg,  "`['\":%?");
 
 				if strlen(arg) === toSkip { // needn"t be translated
 					let sql[] = arg;
@@ -110,8 +110,9 @@ class Translator {
 						(\?)                         ## 11) placeholder
 					)/xs",
 */                  // note: this can change this->args & this->cursor & ...
-					. preg_replace_callback("/(?=[`['\":%?])(?:`(.+?)`|\[(.+?)\]|(')((?:''|[^'])*)'|(\")((?:\"\"|[^\"])*)\"|\"'|\")|:(\S*?:)([a-zA-Z0-9._]?)|%([a-zA-Z~][a-zA-Z0-9~]{0,5})|(\?))/s",
-							[ this, "cb" ],
+//	                                         /(?=[`[\'":%?])(?:`(.+?)`|\ [(.+?)\]|(\')((?:\'\'|[^\'])*)\'|(")((?:""|[^"])*)" |(\'|")|:(\S*?:)([a-zA-Z0-9._]?)|%([a-zA-Z~][a-zA-Z0-9~]{0,5})|(\?))/s
+					. preg_replace_callback("/(?=[`['\":%?])(?:`(.+?)`|\\[(.+?)\\]|(')((?:''|[^'])*)'|(\")((?:\"\"|[^\"])*)\"|('|\")|:(\\S*?:)([a-zA-Z0-9._]?)|%([a-zA-Z~][a-zA-Z0-9~]{0,5})|(\\?))/s",
+							[this, "cb"],
 							substr(arg, toSkip)
 					);
 					if preg_last_error() {
@@ -157,7 +158,7 @@ class Translator {
 			let sql[] = "*/";
 		}
 
-		let ret = (string) sql->join(" ");
+		let ret = (string) implode(" ", sql);
 
 		if (this->hasError) {
 			throw new DbException("SQL translate error", 0, sql);
@@ -182,6 +183,8 @@ class Translator {
 	{
 		var k, v, pair, vx, kx, proto;
 		string op;
+
+		//var_dump("formatValue", value, modifier);
 
 		if this->comment {
 			return "...";
@@ -240,7 +243,7 @@ class Translator {
 							let vx[] = this->formatValue(v, "ex");
 						}
 					}
-					return "(" . vx->join(") " . strtoupper(modifier) . " (") . ")";
+					return "(" . implode(") " . strtoupper(modifier) . " (", vx) . ")";
 
 				case "n":  // key, key, ... identifier names
 					for k, v in value {
@@ -257,7 +260,7 @@ class Translator {
 							let vx[] = this->delimite(pair[0]);
 						}
 					}
-					return vx->join(", ");
+					return implode(", ", vx);
 
 
 				case "a": // key=val, key=val, ...
@@ -265,7 +268,7 @@ class Translator {
 						let pair = explode("%", k, 2); // split into identifier & modifier
 						let vx[] = this->delimite(pair[0]) . "=" . this->fomattedPairValue(pair, v);
 					}
-					return vx->join(", ");
+					return implode(", ", vx);
 
 
 				case "in":// replaces scalar %in modifier!
@@ -275,7 +278,7 @@ class Translator {
 						let vx[] = this->fomattedPairValue(pair, v);
 					}
 					if vx || modifier === "l" {
-						return "(" . vx->join(", ") . ")";
+						return "(" . implode(", ", vx) . ")";
 					} else {
 						return "(null)";
 					}
@@ -286,7 +289,7 @@ class Translator {
 						let kx[] = this->delimite(pair[0]);
 						let vx[] = this->fomattedPairValue(pair, v);
 					}
-					return "(" . kx->join(", ") . ") VALUES (" . vx->join(", ") . ")";
+					return "(" . implode(", ", kx) . ") VALUES (" . implode(", ", vx) . ")";
 
 				case "m": // (key, key, ...) VALUES (val, val, ...), (val, val, ...), ...
 					boolean declared;
@@ -321,9 +324,9 @@ class Translator {
 						}
 					}
 					for k, v in vx {
-						let vx[k] = "(" . v->join(", ") . ")";
+						let vx[k] = "(" . implode(", ", v) . ")";
 					}
-					return "(" . kx->join(", ") . ") VALUES " . vx->join(", ");
+					return "(" . implode(", ", kx) . ") VALUES " . implode(", ", vx);
 
 				case "by": // key ASC, key DESC
 					for k, v in value {
@@ -340,7 +343,7 @@ class Translator {
 							let vx[] = this->delimite(v);
 						}}
 					}
-					return vx->join(", ");
+					return implode(", ", vx);
 
 				case "ex":
 				case "sql":
@@ -352,7 +355,7 @@ class Translator {
 					for v in value {
 						let vx[] = this->formatValue(v, modifier);
 					}
-					return vx->join(", ");
+					return implode(", ", vx);
 			}
 		}
 
@@ -384,7 +387,7 @@ class Translator {
 				case "i":  // signed int
 				case "u":  // unsigned int, ignored
 					// support for long numbers - keep them unchanged
-					if (is_string(value) && preg_match("#[+-]?\d++(e\d+)?\z#A", value)) {
+					if (is_string(value) && preg_match("#[+-]?\\d++(e\\d+)?\\z#A", value)) {
 						return value;
 					} else {
 						if (value === null) {
@@ -435,7 +438,7 @@ class Translator {
 					if (strlen(value) !== toSkip) {
 						let value = substr(value, 0, toSkip)
 						. preg_replace_callback(
-							"/(?=[`['\":])(?:`(.+?)`|\[(.+?)\]|(')((?:''|[^'])*)'|(\")((?:\"\"|[^\"])*)\"|('|\")|:(\S*?:)([a-zA-Z0-9._]?))/s",
+							"/(?=[`['\":])(?:`(.+?)`|\\[(.+?)\\]|(')((?:''|[^'])*)'|(\")((?:\"\"|[^\"])*)\"|('|\")|:(\\S*?:)([a-zA-Z0-9._]?))/s",
 							[ this, "cb" ],
 							substr(value, toSkip)
 						);
@@ -497,7 +500,7 @@ class Translator {
 		return "**Unexpected " . gettype(value) . "**";
 	}
 
-	private function fomattedPairValue(array pairArray, value) -> string
+	private function fomattedPairValue(pairArray, value) -> string
 	{
 		if isset(pairArray[1]) {
 			return this->formatValue(value,  pairArray[1]);
@@ -524,7 +527,7 @@ class Translator {
 	 * @param  array
 	 * @return string
 	 */
-	private function cb(matches)
+	public function cb(matches)
 	{
 		//    [1] => `ident`
 		//    [2] => [ident]
@@ -539,7 +542,7 @@ class Translator {
 		//    [11] => placeholder (when called from self::translate())
 
 
-		if !empty(matches[11]) { // placeholder
+		if isset(matches[11]) { // placeholder
 			
 			if (this->cursor >= count(this->args)) {
 				let this->hasError = true;
@@ -550,7 +553,7 @@ class Translator {
 			return this->formatValue(this->args[this->cursor - 1], false);
 		}
 
-		if !empty(matches[10]) { // modifier
+		if isset(matches[10]) { // modifier
 			var mod;
 
 			let mod = matches[10];
@@ -648,7 +651,9 @@ class Translator {
 			}
 		}
 
-		die("this should be never executed");
+		echo "\n\n";
+		var_dump(matches);
+		return "this should be never executed";
 	}
 
 
@@ -661,7 +666,7 @@ class Translator {
 	public function delimite(value)
 	{
 		var parts, k, v;
-		let value = this->connection->substitute(value);
+		//let value = this->connection->substitute(value);
 		let parts = explode(".", value);
 		for k, v in parts {
 			if v !== "*" {

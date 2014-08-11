@@ -94,28 +94,33 @@ class Query
 		];
 	}
 
-	public function __call(string clause, args) -> <Query> {
-		var sep, arg;
-		boolean removeArray;
+	public function __call(clause, args)  
+	{
+		var sep, argument, removeArray, cursor;
+
+
+
 		let removeArray = count(args) === 1 && args[0] === false;
 
 		let clause = self::_formatClause(clause);
 
-		if this->_command == null {
+		if empty this->_command {
 			this->initialize(clause);
 		}
 
 		// auto-switch to a clause
 		if isset self::swithes[clause] {
 			let this->_cursor = self::swithes[clause];
+			let cursor = this->_cursor;
 		} 
 
 		if array_key_exists(clause, this->_clauses) {
 			// append to clause
 			let this->_cursor = clause;
+			let cursor = this->_cursor;
 
 			if removeArray{
-				let this->clauses[this->_cursor] = null;
+				let this->clauses[cursor] = null;
 				return this;
 			}
 
@@ -135,50 +140,53 @@ class Query
 			if removeArray {
 				return this;
 			}
+			let cursor = this->_cursor;
 
-			let this->_clauses[this->_cursor][] = clause;
+			let this->_clauses[cursor][] = clause;
 		}
 
 		if this->_cursor === null {
 			let this->_cursor = clause;
+			let cursor = this->_cursor;
 		}
 
-		if !isset this->_clauses[this->_cursor] {
-			let this->_clauses[this->_cursor] = [];
+		if !isset this->_clauses[cursor] {
+			let this->_clauses[cursor] = [];
 		}
 
 		
 		// special types or argument
 		if count(args) === 1 {
-			let arg = args[0];
+			let argument = args[0];
 			
 			// TODO: really ignore TRUE?
-			if arg === true { // flag
+			if argument === true { // flag
 				return this;
 			}
 
-			if is_string(arg) && preg_match("#^[a-z:_][a-z0-9_.:]*$#i", arg) { // identifier
-				let args = ["%n", arg];
+			if is_string(argument) && preg_match("#^[a-z:_][a-z0-9_.:]*$#i", argument) { // identifier
+				let args = ["%n", argument];
 
 			} else {
-				if is_array(arg) || ((arg instanceof \Traversable) && !(arg instanceof self)) { // any array
+				if is_array(argument) || ((argument instanceof \Traversable) && !(argument instanceof self)) { // any array
 					if isset(self::$modifiers[clause]) {
-						let args = [ self::$modifiers[clause], arg ];
+						let args = [ self::$modifiers[clause], argument ];
 					} else {
-						if is_string(key(arg)) { // associative array
-							let args = [ "%a", arg ];
+						if is_string(key(argument)) { // associative array
+							let args = [ "%a", argument ];
 						}
 					}
 				}
 			} // case $arg === FALSE is handled above
 		}
 
-		for arg in args {
-			if (arg instanceof self) {
-				let arg = "(" . arg->__toString() . ")";
+		for argument in args {
+			if (argument instanceof self) {
+				let argument = "(" . argument->__toString() . ")";
 			}
-			let this->_clauses[this->_cursor][] = arg;
+			let this->_clauses[this->_cursor][] = argument;
 		}
+
 
 		return this;
 	}
@@ -199,7 +207,7 @@ class Query
 		if (s === "order" || s === "group") {
 			let s .= "By";
 		}
-		return strtoupper(preg_replace("#[a-z](?=[A-Z])#", "$0 ", s));
+		return (string) strtoupper(preg_replace("#[a-z](?=[A-Z])#", "$0 ", s));
 	}
 
 	/**
@@ -342,7 +350,7 @@ class Query
 
 		for cls, statement in data {
 			if statement !== null {
-				let args[] = clause;
+				let args[] = cls;
 				/*if clause === this->_command && $this->flags) {
 					$args[] = implode(" ", array_keys($this->flags));
 				}*/
@@ -351,6 +359,7 @@ class Query
 				}
 			}
 		}
+
 
 		return args;
 	}
