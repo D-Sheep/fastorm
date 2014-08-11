@@ -1,5 +1,5 @@
 
-namespace Fasotrm\Db;
+namespace Fastorm\Db;
 
 class ResultIterator {
 	

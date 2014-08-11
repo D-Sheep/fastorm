@@ -63,8 +63,7 @@ class Result {
 	}
 
 
-	/********************* rows ****************d*g**/
-
+	
 
 	/**
 	 * Moves cursor position without fetching row.
@@ -122,15 +121,17 @@ class Result {
 	 */
 	public function fetchRow()
 	{
-		var row;
+		var row, className;
 		let row = this->getResultDriver()->fetchRow(true);
 		if !is_array(row) {
 			return false;
 		}
 		let this->fetched = true;
-		let this->normalize(row);
+		let row = this->normalize(row);
+
 		if this->rowClass !== null {
-			row = new {this->rowClass}(row);
+			let className = this->rowClass;
+			let row = new {className}(row);
 		}
 		return row;
 	}
@@ -148,7 +149,7 @@ class Result {
 			return false;
 		}
 		let this->fetched = true;
-		let this->normalize(row);
+		let row = this->normalize(row);
 		return reset(row);
 	}
 
@@ -163,60 +164,73 @@ class Result {
 	 * @return array
 	 * @throws InvalidArgumentException
 	 */
-	public function fetchPairs(key = null, value = null)
+	public function fetchPairs(key = null, value = null) -> array
 	{
+		var row, tmp, data;
 		this->seek(0);
-		row = this->fetchRow();
-		if (!row) {
+		let row = this->fetchRow();
+
+		if !row {
 			return [];  // empty result set
 		}
 
-		data = [];
+		let data = [];
 
-		if (value === null) {
-			if (key !== null) {
-				throw new InvalidArgumentException("Either none or both columns must be specified.");
+		if value === null {
+			if key !== null {
+				throw new \InvalidArgumentException("Either none or both columns must be specified.");
 			}
 
 			// autodetect
-			tmp = array_keys(row->toArray());
-			key = tmp[0];
-			if (count(row) < 2) { // indexed-array
-				do {
-					data[] = row[key];
-				} while (row = this->fetch());
+			let tmp = array_keys(row->toArray());
+			let key = tmp[0];
+			if count(row) < 2 { // indexed-array
+				loop {
+					let data[] = row[key];
+					let row = this->fetchRow();
+					if !row {
+						break;
+					}
+				};
 				return data;
 			}
 
-			value = tmp[1];
+			let value = tmp[1];
 
 		} else {
-			if (!property_exists(row, value)) {
-				throw new InvalidArgumentException("Unknown value column "value".");
+			if !property_exists(row, value) {
+				throw new \InvalidArgumentException("Unknown value column '".value."'.");
 			}
 
-			if (key === null) { // indexed-array
-				do {
-					data[] = row[value];
-				} while (row = this->fetch());
+			if key === null { // indexed-array
+				loop {
+					let data[] = row[value];
+					let row = this->fetchRow();
+					if !row {
+						break;
+					}
+				} 
 				return data;
 			}
 
-			if (!property_exists(row, key)) {
-				throw new InvalidArgumentException("Unknown key column "key".");
+			if !property_exists(row, key) {
+				throw new \InvalidArgumentException("Unknown key column '".key."'.");
 			}
 		}
 
-		do {
-			data[ (string) row[key] ] = row[value];
-		} while (row = this->fetch());
+		loop {
+			let data[ (string) row[key] ] = row[value];
+			let row = this->fetchRow();
+			if !row {
+				break;
+			}
+		};
 
 		return data;
 	}
 
 
-	/********************* column types ****************d*g**/
-
+	
 
 	/**
 	 * Autodetect column types.
@@ -224,12 +238,17 @@ class Result {
 	 */
 	private function detectTypes()
 	{
-		cache = DibiColumnInfo::getTypeCache();
+		var cache, columns, col, nativetype, e;
+		let cache = ColumnInfo::getTypeCache();
 		try {
-			foreach (this->getResultDriver()->getResultColumns() as col) {
-				this->types[col["name"]] = cache->{col["nativetype"]};
+			let columns = this->getResultDriver()->getResultColumns();
+			for col in columns {
+				let nativetype = col["nativetype"];
+				let this->types[col["name"]] = cache->{nativetype};
 			}
-		} catch (DibiNotSupportedException e) {}
+		} catch DbException, e {
+			return;
+		}
 	}
 
 
@@ -240,11 +259,15 @@ class Result {
 	 */
 	private function normalize(array row)
 	{
-		var key, type, value, tmp;
+		var key, type, value, tmp, left, right;
+
+		if typeof row !== "array" {
+			let row = [];
+		}
 
 		for key, type in this->types {
 
-			if !isset(row[key])) { // null
+			if !isset(row[key]) { // null
 				continue;
 			}
 			let value = row[key];
@@ -254,23 +277,40 @@ class Result {
 			} 
 
 			if (type === Query::TYPE_INTEGER) {
-				let row[key] = is_float(tmp = value * 1) ? value : tmp;
-
-			} elseif (type === Query::TYPE_FLOAT) {
-				row[key] = ltrim((string) (tmp = (float) value), "0") === ltrim(rtrim(rtrim(value, "0"), "."), "0") ? tmp : value;
-
-			} elseif (type === Query::TYPE_BOOL) {
-				row[key] = ((bool) value) && value !== "f" && value !== "F";
-
-			} elseif (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
-				if ((int) value !== 0 || substr((string) value, 0, 3) === "00:") { // "", null, false, "0000-00-00", ...
-					value = new DibiDateTime(value);
-					row[key] = empty(this->formats[type]) ? value : value->format(this->formats[type]);
+				let tmp =  value * 1;
+				if is_float(tmp) {
+					let row[key] = value;
+				} else {
+					let row[key] = tmp;
 				}
 
-			} elseif (type === Query::TYPE_BINARY) {
-				row[key] = this->getResultDriver()->unescape(value, type);
-			}
+			} else { if (type === Query::TYPE_FLOAT) {
+				let tmp = (float) value;
+				let left = ltrim((string) tmp, "0");
+				let right = ltrim(rtrim(rtrim(value, "0"), "."), "0");
+
+				if left === right {
+					let row[key] = tmp;
+				} else {
+					let row[key] = value;
+				}
+
+			} else { if (type === Query::TYPE_BOOL) {
+				let row[key] = ((bool) value) && value !== "f" && value !== "F";
+
+			} else { if (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
+				if ((int) value !== 0 || substr((string) value, 0, 3) === "00:") { // "", null, false, "0000-00-00", ...
+					let value = new \DateTime(value);
+					if empty this->formats[type] {
+						let row[key] = value;
+					} else {
+						let row[key] = value->format(this->formats[type]);
+					}
+				}
+
+			} else { if (type === Query::TYPE_BINARY) {
+				let row[key] = this->getResultDriver()->unescape(value, type);
+			}}}}}
 		}
 		return row;
 	}
@@ -284,7 +324,7 @@ class Result {
 	 */
 	public function setType(col, type)
 	{
-		this->types[col] = type;
+		let this->types[col] = type;
 		return this;
 	}
 
@@ -307,7 +347,7 @@ class Result {
 	 */
 	public function setFormat(type, format)
 	{
-		this->formats[type] = format;
+		let this->formats[type] = format;
 		return this;
 	}
 
@@ -322,8 +362,7 @@ class Result {
 	}
 
 
-	/********************* meta info ****************d*g**/
-
+	
 
 	/**
 	 * Returns a meta information about the current result set.
@@ -332,90 +371,9 @@ class Result {
 	public function getInfo()
 	{
 		if (this->meta === null) {
-			this->meta = new DibiResultInfo(this->getResultDriver());
+			//let this->meta = new DibiResultInfo(this->getResultDriver());
 		}
 		return this->meta;
-	}
-
-
-	/**
-	 * @deprecated
-	 */
-	public function getColumns()
-	{
-		return this->getInfo()->getColumns();
-	}
-
-
-	/********************* misc tools ****************d*g**/
-
-
-	/**
-	 * Displays complete result set as HTML or text table for debug purposes.
-	 * @return void
-	 */
-	public function dump()
-	{
-		i = 0;
-		this->seek(0);
-		if (PHP_SAPI === "cli") {
-			hasColors = (substr(getenv("TERM"), 0, 5) === "xterm");
-			maxLen = 0;
-			while (row = this->fetch()) {
-				if (i === 0) {
-					foreach (row as col => foo) {
-						len = mb_strlen(col);
-						maxLen = max(len, maxLen);
-					}
-				}
-
-				if (hasColors) {
-					echo "\033[1;37m#row: i\033[0m\n";
-				} else {
-					echo "#row: i\n";
-				}
-
-				foreach (row as col => val) {
-					spaces = maxLen - mb_strlen(col) + 2;
-					echo "col" . str_repeat(" ", spaces) .  "val\n";
-				}
-
-				echo "\n";
-				i++;
-			}
-
-			if (i === 0) {
-				echo "empty result set\n";
-			}
-			echo "\n";
-
-		} else {
-			while (row = this->fetch()) {
-				if (i === 0) {
-					echo "\n<table class=\"dump\">\n<thead>\n\t<tr>\n\t\t<th>#row</th>\n";
-
-					foreach (row as col => foo) {
-						echo "\t\t<th>" . htmlSpecialChars(col) . "</th>\n";
-					}
-
-					echo "\t</tr>\n</thead>\n<tbody>\n";
-				}
-
-				echo "\t<tr>\n\t\t<th>", i, "</th>\n";
-				foreach (row as col) {
-					//if (is_object(col)) col = col->__toString();
-					echo "\t\t<td>", htmlSpecialChars(col), "</td>\n";
-				}
-				echo "\t</tr>\n";
-				i++;
-			}
-
-			if (i === 0) {
-				echo "<p><em>empty result set</em></p>";
-			} else {
-				echo "</tbody>\n</table>\n";
-			}
-		}
 	}
 	
 }

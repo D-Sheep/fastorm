@@ -109,9 +109,9 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	ZEPHIR_MM_GROW();
 
 	ZEPHIR_INIT_VAR(_0);
-	array_init_size(_0, 7);
+	array_init_size(_0, 6);
 	ZEPHIR_INIT_VAR(_1);
-	array_init_size(_1, 13);
+	array_init_size(_1, 12);
 	ZEPHIR_INIT_VAR(_2);
 	ZVAL_STRING(_2, "SELECT", 1);
 	zephir_array_fast_append(_1, _2);
@@ -159,7 +159,7 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	zephir_array_fast_append(_1, _2);
 	zephir_array_update_string(&_0, SL("UPDATE"), &_1, PH_COPY | PH_SEPARATE);
 	ZEPHIR_INIT_BNVAR(_1);
-	array_init_size(_1, 7);
+	array_init_size(_1, 6);
 	ZEPHIR_INIT_BNVAR(_2);
 	ZVAL_STRING(_2, "INSERT", 1);
 	zephir_array_fast_append(_1, _2);
@@ -174,7 +174,7 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	zephir_array_fast_append(_1, _2);
 	zephir_array_update_string(&_0, SL("INSERT"), &_1, PH_COPY | PH_SEPARATE);
 	ZEPHIR_INIT_BNVAR(_1);
-	array_init_size(_1, 11);
+	array_init_size(_1, 8);
 	ZEPHIR_INIT_BNVAR(_2);
 	ZVAL_STRING(_2, "DELETE", 1);
 	zephir_array_fast_append(_1, _2);
@@ -196,7 +196,7 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	zephir_array_update_string(&_0, SL("DELETE"), &_1, PH_COPY | PH_SEPARATE);
 	zephir_update_static_property_ce(fastorm_db_query_ce, SL("masks"), _0 TSRMLS_CC);
 	ZEPHIR_INIT_BNVAR(_0);
-	array_init_size(_0, 13);
+	array_init_size(_0, 12);
 	add_assoc_stringl_ex(_0, SS("SELECT"), SL("%n"), 1);
 	add_assoc_stringl_ex(_0, SS("FROM"), SL("%n"), 1);
 	add_assoc_stringl_ex(_0, SS("IN"), SL("%in"), 1);
@@ -208,7 +208,7 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	add_assoc_stringl_ex(_0, SS("GROUP BY"), SL("%by"), 1);
 	zephir_update_static_property_ce(fastorm_db_query_ce, SL("modifiers"), _0 TSRMLS_CC);
 	ZEPHIR_INIT_BNVAR(_0);
-	array_init_size(_0, 17);
+	array_init_size(_0, 14);
 	add_assoc_stringl_ex(_0, SS("SELECT"), SL(","), 1);
 	add_assoc_stringl_ex(_0, SS("FROM"), SL(","), 1);
 	add_assoc_stringl_ex(_0, SS("WHERE"), SL("AND"), 1);
@@ -222,7 +222,7 @@ PHP_METHOD(Fastorm_Db_Query, staticInitialize) {
 	zephir_array_update_string(&_0, SL("INTO"), &ZEPHIR_GLOBAL(global_false), PH_COPY | PH_SEPARATE);
 	zephir_update_static_property_ce(fastorm_db_query_ce, SL("separators"), _0 TSRMLS_CC);
 	ZEPHIR_INIT_BNVAR(_0);
-	array_init_size(_0, 7);
+	array_init_size(_0, 6);
 	add_assoc_stringl_ex(_0, SS("JOIN"), SL("FROM"), 1);
 	add_assoc_stringl_ex(_0, SS("INNER JOIN"), SL("FROM"), 1);
 	add_assoc_stringl_ex(_0, SS("LEFT JOIN"), SL("FROM"), 1);
@@ -673,7 +673,7 @@ PHP_METHOD(Fastorm_Db_Query, getIterator) {
 
 
 	ZEPHIR_INIT_VAR(_2);
-	array_init_size(_2, 5);
+	array_init_size(_2, 4);
 	ZEPHIR_INIT_VAR(_3);
 	ZVAL_STRING(_3, "%ofs %lmt", 1);
 	zephir_array_fast_append(_2, _3);
@@ -699,7 +699,7 @@ PHP_METHOD(Fastorm_Db_Query, count) {
 	ZEPHIR_MM_GROW();
 
 	ZEPHIR_INIT_VAR(_1);
-	array_init_size(_1, 5);
+	array_init_size(_1, 4);
 	ZEPHIR_INIT_VAR(_2);
 	ZVAL_STRING(_2, "SELECT COUNT(*) FROM (%ex", 1);
 	zephir_array_fast_append(_1, _2);
