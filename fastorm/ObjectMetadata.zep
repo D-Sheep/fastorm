@@ -202,5 +202,17 @@ class ObjectMetadata
 		return "r_" . preg_replace("_id$", "", sourceProperty) . "_" . targetProperty;
 	}
 
+	public function getAutoincrementKey() {
+		var found, key, flag;
+		let found = null;
+		for key, flag in this->fields {
+			if flag & self::AUTOINCREMENT {
+				found = key;
+				break;
+			}
+		}
+		return found;
+	}
+
 
 }

@@ -6,6 +6,8 @@ abstract class DbObject extends DataObject
 {
 	protected _joinCache;
 
+	private _affectedRows;
+
 	public static function getDbContext() -> <Db\Connection>
 	{
 		return self::getDbContextWithMetadata(self::getMetadata());
@@ -105,12 +107,56 @@ abstract class DbObject extends DataObject
 
 	public function create(boolean insertIgnore = false) -> <DbObject>
 	{
+		var db, metadata, autoincrement;
+		let metadata = self::getMetadata();
+		let db = self::getDbContextWithMetadata(metadata);
 
+		db->insert(metadata->getTable(), this->getDbFormatedData(true));
+		if insertIgnore {
+			db->setFlag("IGNORE");
+		}
+
+		let this->_affectedRows = db->execute();
+
+		let autoincrement = metadata->getAutoincrementKey();
+		if this->_affectedRows && autoincrement !== null {
+			let this->{autoincrement} = db->getInsertId();
+		}
+		return this;
 	}
 
 	public function save() -> <DbObject>
 	{
+		var db, metadata, autoincrement, data, lastInsert;
+		let metadata = self::getMetadata();
+		let db = self::getDbContextWithMetadata(metadata);
+		let data = [];
+		let lastInsert = "";
+		let autoincrement = null;
 
+		var propName, propFlag;
+
+        for propName, propFlag in metadata->getFields() {
+    		if !(propFlag & ObjectMetadata::AUTOINCREMENT) {
+				let insertData[propName] = this->{propName};
+    		} else {
+    			let lastInsert = "`".propName."` = LAST_INSERT_ID(`".propName."`)";
+    			let autoincrement = propName;
+    		}
+
+        }
+
+		db->query("INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data);
+		if insertIgnore {
+			db->setFlag("IGNORE");
+		}
+
+		let this->_affectedRows = db->execute();
+
+		if this->_affectedRows && autoincrement !== null {
+			let this->{autoincrement} = db->getInsertId();
+		}
+		return this;
 	}
 
 	public function update(array onlyColumns = null) -> <DbObject>
@@ -121,6 +167,14 @@ abstract class DbObject extends DataObject
 	protected static function hasMany() 
 	{
 
+	}
+
+	public function getAffectedRows() {
+		if this->_affectedRows === null {
+			throw new Exception("You can use getAffectedRows() method only after insert, update or remove");
+		} else {
+			return this->_affectedRows;
+		}
 	}
 
 

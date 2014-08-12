@@ -20,6 +20,8 @@ PHP_METHOD(Fastorm_Db_Query, getIterator);
 PHP_METHOD(Fastorm_Db_Query, count);
 PHP_METHOD(Fastorm_Db_Query, query);
 PHP_METHOD(Fastorm_Db_Query, __toString);
+PHP_METHOD(Fastorm_Db_Query, setFlag);
+PHP_METHOD(Fastorm_Db_Query, getFlag);
 PHP_METHOD(Fastorm_Db_Query, _export);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query___construct, 0, 0, 1)
@@ -65,6 +67,15 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_query, 0, 0, 1)
 	ZEND_ARG_INFO(0, args)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_setflag, 0, 0, 1)
+	ZEND_ARG_INFO(0, flag)
+	ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_getflag, 0, 0, 1)
+	ZEND_ARG_INFO(0, flag)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query__export, 0, 0, 0)
 	ZEND_ARG_INFO(0, clause)
 	ZEND_ARG_INFO(0, args)
@@ -88,6 +99,8 @@ ZEPHIR_INIT_FUNCS(fastorm_db_query_method_entry) {
 	PHP_ME(Fastorm_Db_Query, count, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, query, arginfo_fastorm_db_query_query, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_Db_Query, __toString, NULL, ZEND_ACC_FINAL|ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Query, setFlag, arginfo_fastorm_db_query_setflag, ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Query, getFlag, arginfo_fastorm_db_query_getflag, ZEND_ACC_FINAL|ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, _export, arginfo_fastorm_db_query__export, ZEND_ACC_PROTECTED)
   PHP_FE_END
 };

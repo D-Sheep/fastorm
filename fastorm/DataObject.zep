@@ -185,7 +185,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     	let className = get_class(this);
         let data = [];
 
-        for propName, propFlag in self::_propCache {
+        for propName, propFlag in self::_propCache[className] {
     		if !withoutAutoincrementKeys || !(propFlag & ObjectMetadata::AUTOINCREMENT) {
 				let data[propName] = this->{propName};
     		}

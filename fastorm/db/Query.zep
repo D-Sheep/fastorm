@@ -39,17 +39,21 @@ class Query
 
 	private _command;
 
-	protected setups = [];
+	protected setups;
 
 	private _cursor;
 
 	private _clauses;
+
+	private _flags;
 
 	public function __construct(<Connection> connection) {
 		let this->connection = connection;
 		if empty self::masks {
 			this->staticInitialize();
 		}
+		let this->_flags = [];
+		let this->setups = [];
 	}
 
 	private function staticInitialize() {
@@ -323,6 +327,34 @@ class Query
 		return this->connection->translate(this->_export());
 	}
 
+	/**
+	 * Change a SQL flag.
+	 * @param  string  flag name
+	 * @param  bool  value
+	 * @return DibiFluent  provides a fluent interface
+	 */
+	public function setFlag(flag, value = true)
+	{
+		let flag = strtoupper(flag);
+		if value {
+			let this->_flags[flag] = true;
+		} else {
+			unset(this->_flags[flag]);
+		}
+		return this;
+	}
+
+
+
+	/**
+	 * Is a flag set?
+	 * @param  string  flag name
+	 * @return bool
+	 */
+	final public function getFlag(flag)
+	{
+		return isset(this->_flags[strtoupper(flag)]);
+	}
 
 
 	protected function _export(clause = null, args = null)
@@ -347,9 +379,9 @@ class Query
 		for cls, statement in data {
 			if statement !== null {
 				let args[] = cls;
-				/*if clause === this->_command && $this->flags) {
-					$args[] = implode(" ", array_keys($this->flags));
-				}*/
+				if cls === this->_command && count(this->_flags) > 0 {
+					let args[] = implode(" ", array_keys(this->_flags));
+				}
 				for arg in statement {
 					let args[] = arg;
 				}

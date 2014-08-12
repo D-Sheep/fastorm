@@ -304,7 +304,7 @@ class Connection {
 	 * @return int
 	 * @throws DibiException
 	 */
-	public function getInsertId(sequence = null) -> int
+	public function getInsertId(sequence = null)
 	{
 		int id;
 		if this->connected === false {
