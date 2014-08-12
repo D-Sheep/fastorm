@@ -25,19 +25,21 @@
 #include "kernel/memory.h"
 
 zend_class_entry *fastorm_db_iresultdriver_ce;
+zend_class_entry *fastorm_iconnectionmanager_ce;
 zend_class_entry *fastorm_dataobject_ce;
+zend_class_entry *fastorm_db_query_ce;
 zend_class_entry *fastorm_dbobject_ce;
 zend_class_entry *fastorm_exception_ce;
 zend_class_entry *fastorm_db_columninfo_ce;
 zend_class_entry *fastorm_db_connection_ce;
 zend_class_entry *fastorm_db_dbexception_ce;
 zend_class_entry *fastorm_db_drivers_mysqlidriver_ce;
-zend_class_entry *fastorm_db_query_ce;
 zend_class_entry *fastorm_db_result_ce;
 zend_class_entry *fastorm_db_resultiterator_ce;
 zend_class_entry *fastorm_db_translator_ce;
 zend_class_entry *fastorm_modelmanager_ce;
 zend_class_entry *fastorm_objectmetadata_ce;
+zend_class_entry *fastorm_objectquery_ce;
 
 ZEND_DECLARE_MODULE_GLOBALS(fastorm)
 
@@ -204,19 +206,21 @@ static PHP_MINIT_FUNCTION(fastorm)
 #endif
 
 	ZEPHIR_INIT(Fastorm_Db_IResultDriver);
+	ZEPHIR_INIT(Fastorm_IConnectionManager);
 	ZEPHIR_INIT(Fastorm_DataObject);
 	ZEPHIR_INIT(Fastorm_DbObject);
+	ZEPHIR_INIT(Fastorm_Db_Query);
 	ZEPHIR_INIT(Fastorm_Exception);
 	ZEPHIR_INIT(Fastorm_Db_ColumnInfo);
 	ZEPHIR_INIT(Fastorm_Db_Connection);
 	ZEPHIR_INIT(Fastorm_Db_DbException);
 	ZEPHIR_INIT(Fastorm_Db_Drivers_MysqliDriver);
-	ZEPHIR_INIT(Fastorm_Db_Query);
 	ZEPHIR_INIT(Fastorm_Db_Result);
 	ZEPHIR_INIT(Fastorm_Db_ResultIterator);
 	ZEPHIR_INIT(Fastorm_Db_Translator);
 	ZEPHIR_INIT(Fastorm_ModelManager);
 	ZEPHIR_INIT(Fastorm_ObjectMetadata);
+	ZEPHIR_INIT(Fastorm_ObjectQuery);
 
 #if PHP_VERSION_ID < 50500
 	setlocale(LC_ALL, old_lc_all);

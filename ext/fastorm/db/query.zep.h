@@ -12,7 +12,7 @@ PHP_METHOD(Fastorm_Db_Query, getCommand);
 PHP_METHOD(Fastorm_Db_Query, getConnection);
 PHP_METHOD(Fastorm_Db_Query, setupResult);
 PHP_METHOD(Fastorm_Db_Query, execute);
-PHP_METHOD(Fastorm_Db_Query, fetchRow);
+PHP_METHOD(Fastorm_Db_Query, fetchFirst);
 PHP_METHOD(Fastorm_Db_Query, fetchSingle);
 PHP_METHOD(Fastorm_Db_Query, fetchAssoc);
 PHP_METHOD(Fastorm_Db_Query, fetchPairs);
@@ -80,13 +80,13 @@ ZEPHIR_INIT_FUNCS(fastorm_db_query_method_entry) {
 	PHP_ME(Fastorm_Db_Query, getConnection, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, setupResult, arginfo_fastorm_db_query_setupresult, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, execute, arginfo_fastorm_db_query_execute, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Query, fetchRow, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Query, fetchFirst, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, fetchSingle, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, fetchAssoc, arginfo_fastorm_db_query_fetchassoc, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, fetchPairs, arginfo_fastorm_db_query_fetchpairs, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, getIterator, arginfo_fastorm_db_query_getiterator, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, count, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Query, query, arginfo_fastorm_db_query_query, ZEND_ACC_PRIVATE)
+	PHP_ME(Fastorm_Db_Query, query, arginfo_fastorm_db_query_query, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_Db_Query, __toString, NULL, ZEND_ACC_FINAL|ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, _export, arginfo_fastorm_db_query__export, ZEND_ACC_PROTECTED)
   PHP_FE_END

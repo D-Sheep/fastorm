@@ -7,6 +7,7 @@ class ObjectMetadata
 	const PROPERTY = 1;
 	const KEY = 2;
 	const AUTOINCREMENT = 4;
+	const JOINED = 8;
 
 	private static _metadataCache;
 
@@ -18,15 +19,24 @@ class ObjectMetadata
 
 	private reflection;
 
-	private fields = [];
+	private className;
 
-	protected function __construct(<\ReflectionClass> reflection, array fields, string idField = null, string table = null, string storage = null)
+	private fields;
+
+	private joins;
+
+	private aliases;
+
+	protected function __construct(<\ReflectionClass> reflection, string className, array fields, array joins, string idField = null, string table = null, string storage = null)
 	{
 		let this->reflection = reflection;
 		let this->idField = idField;
 		let this->table = table;
 		let this->storage = storage;
 		let this->fields = fields;
+		let this->joins = joins;
+		let this->className = className;
+		let this->aliases = [];
 	}
 
 	public function getTable() -> string|null
@@ -49,6 +59,18 @@ class ObjectMetadata
 		return this->fields;
 	}
 
+	public function getClassName()
+	{
+		return this->className;
+	}
+
+	public function newInstance(array data = null)
+	{
+		var className;
+		let className = this->className;
+		return new {className}(data);
+	}
+
 	public function getReflection() -> <\ReflectionClass>
 	{
 		return this->reflection;
@@ -58,35 +80,35 @@ class ObjectMetadata
 	{
 		if !isset self::_metadataCache[className]
 		{
-			let self::_metadataCache = self::createMetadata(className);
+			let self::_metadataCache[className] = self::createMetadata(className);
 		}
-		return self::_metadataCache;
+		return self::_metadataCache[className];
 	}
 
 	private static function createMetadata(string className) -> <ObjectMetadata>
 	{
 		var reflection, properties, docs, matches, property, propName, idField, table, storage;
 		int prop;
-		array propertiesArray;
+		array propertiesArray, joins;
 
 		let matches = null;
 		let reflection = new \ReflectionClass(className);
 		let properties = reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
 		let docs = reflection->getDocComment();
 
-		if preg_match("/@id ([a-z_]+)/i", docs, matches) {
+		if preg_match("/@id ([A-Za-z0-9_]+)/i", docs, matches) {
 			let idField = matches[1];
 		} else {
 			let idField = null;
 		}
 
-		if preg_match("/@table ([a-z_]+)/i", docs, matches) {
+		if preg_match("/@table (A-Za-z0-9_]+)/i", docs, matches) {
 			let table = matches[1];
 		} else {
 			let table = null;
 		}
 
-		if preg_match("/@storage ([a-z_]+)/i", docs, matches) {
+		if preg_match("/@storage ([A-Za-z0-9_]+)/i", docs, matches) {
 			let storage = matches[1];
 		} else {
 			if table !== null {
@@ -97,6 +119,7 @@ class ObjectMetadata
 		}
 
 		let propertiesArray = [];
+		let joins = [];
 
 		for property in properties {
             if !property->isStatic() {
@@ -112,11 +135,72 @@ class ObjectMetadata
         			let prop = prop | self::KEY;
         		}
 
-                let propertiesArray[propName] = prop;
+            	if preg_match("/@join ([A-Za-z0-9_\\\\]+)/i", docs, matches) {
+					let joins[propName] = matches[1];
+					let prop = prop | self::JOINED;
+				}
+				let propertiesArray[propName] = prop;
             }
         }
 
-        return new ObjectMetadata(reflection, propertiesArray, idField, table, storage);
+        return new ObjectMetadata(reflection, className, propertiesArray, joins, idField, table, storage);
 	}
+
+	public function getJoin(string propName) -> <ObjectMetadata>|null {
+		if isset this->joins[propName] {
+			return self::getMetadata(this->joins[propName]);
+		} else {
+			return null;
+		}
+	}
+
+	public function hasJoin(string propName) -> boolean {
+		return isset this->joins[propName];
+	}
+
+	public function getJoins() -> array {
+		return this->joins;
+	}
+
+	public function getAliases(string propName, <ObjectMetadata> joinedTable = null) -> array
+	{
+		if !isset this->aliases[propName] {
+			array aliasTable;
+			var key, value, aliasName;
+			if joinedTable === null {
+				let joinedTable = this->getJoin(propName);
+			}
+			let aliasTable = [];
+			for key, value in joinedTable->getFields() {
+				let aliasName = self::makeAlias(propName, key);
+				let aliasTable[aliasName] = key;
+			}
+			let this->aliases[propName] = aliasTable;
+		}
+		return this->aliases[propName];
+	}
+
+	public static function toPropertyName(string camelcase) -> string {
+		var matches, ret, match, zeroMatches;
+		let matches = null;
+		preg_match_all("!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!", camelcase, matches);
+		let zeroMatches = matches[0];
+		let ret = [];
+
+		for match in zeroMatches {
+			if match === strtoupper(match) {
+				let ret[] = strtolower(match);
+			} else {
+				let ret[] = lcfirst(match);
+			}
+		}
+
+		return implode("_", ret);
+	}
+
+	public static function makeAlias(string sourceProperty, string targetProperty) -> string {
+		return "r_" . preg_replace("_id$", "", sourceProperty) . "_" . targetProperty;
+	}
+
 
 }

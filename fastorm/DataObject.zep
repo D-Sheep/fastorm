@@ -2,20 +2,25 @@
 namespace Fastorm;
 
 
-class DataObject implements \ArrayAccess, \Serializable
+abstract class DataObject implements \ArrayAccess, \Serializable
 
 {
-	protected _data = [];
+	protected _data;
 
 	protected static _idFieldCache;
 	protected static _metadataCache;
 	protected static _propCache;
 
 	public function __construct(id = null) {
-		this->_initialize();
-        if id !== null {
-        	this->setId(id);
-       	}
+        let this->_data = [];
+        self::_initialize();
+        if typeof id === "array" {
+            this->setData(id);
+        } else {
+            if id !== null {
+                this->setId(id);
+            }
+        }
     }
 
     public function getId() {
@@ -104,15 +109,22 @@ class DataObject implements \ArrayAccess, \Serializable
     	var className;
     	let className = get_called_class();
     	if !isset self::_propCache[className] {
-			self::_processInitialization(className);
+            var metadata;
+			let metadata = self::_processInitialization(className);
+            self::initialize(metadata);
     	}
     }
 
-    protected static function _processInitialization(string className) {
+    protected static function initialize(<ObjectMetadata> metadata) {
+
+    }
+
+    protected static function _processInitialization(string className) -> <ObjectMetadata> {
 		var metadata;
 		let metadata = self::getMetadata(className);
 		let self::_propCache[className] = metadata->getFields();
 		let self::_idFieldCache[className] = metadata->getIdField();
+        return metadata;
     }
 
     public static function getMetadata(string className = null) -> <ObjectMetadata>
@@ -164,7 +176,7 @@ class DataObject implements \ArrayAccess, \Serializable
                 let data[key] = value;
             }
         }
-        return $data;
+        return data;
     }
 
     public function getDbFormatedData(bool withoutAutoincrementKeys = false) -> array {

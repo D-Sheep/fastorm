@@ -205,10 +205,10 @@ class Connection {
 	 * @return DibiResult|int   result set object (if any)
 	 * @throws DibiException
 	 */
-	public function query(args)
+	public function query(args, <\Fastorm\ObjectMetadata> metadata = null)
 	{
 		let args = func_get_args();
-		return this->nativeQuery(this->translateArgs(args));
+		return this->nativeQuery(this->translateArgs(args), metadata);
 	}
 
 
@@ -248,7 +248,7 @@ class Connection {
 	 * @return DibiResult|int   result set object (if any)
 	 * @throws DibiException
 	 */
-	public function nativeQuery(sql)
+	public function nativeQuery(sql, <\Fastorm\ObjectMetadata> metadata = null)
 	{
 		var res, e;
 
@@ -263,7 +263,7 @@ class Connection {
 			let res = this->driver->query(sql);
 
 			if res {
-				let res = this->createResultSet(res);
+				let res = this->createResultSet(res, metadata);
 			} else {
 				let res = this->driver->getAffectedRows();
 			}
@@ -396,12 +396,9 @@ class Connection {
 	 * @param  IDibiResultDriver
 	 * @return DibiResult
 	 */
-	public function createResultSet(<IResultDriver> resultDriver)  -> <Result>
+	public function createResultSet(<IResultDriver> resultDriver, <\Fastorm\ObjectMetadata> metadata = null)  -> <Result>
 	{
-		var res;
-		let res = new Result(resultDriver);
-		return res->setFormat(Query::TYPE_DATE, this->getConfig("formatDate", "Y-m-d") )
-			      ->setFormat(Query::TYPE_DATETIME, this->getConfig("formatDate", "Y-m-d H:i:s") );
+		return new Result(resultDriver, metadata);
 	}
 
 

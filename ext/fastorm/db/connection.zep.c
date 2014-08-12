@@ -324,20 +324,32 @@ PHP_METHOD(Fastorm_Db_Connection, getDriver) {
 PHP_METHOD(Fastorm_Db_Connection, query) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL, *_2 = NULL;
-	zval *args = NULL, *_1 = NULL;
+	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL, *_3 = NULL;
+	zend_bool _0;
+	zval *args = NULL, *metadata = NULL, *_2 = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &args);
+	zephir_fetch_params(1, 1, 1, &args, &metadata);
 
 	ZEPHIR_SEPARATE_PARAM(args);
+	if (!metadata) {
+		metadata = ZEPHIR_GLOBAL(global_null);
+	}
 
 
-	ZEPHIR_CALL_FUNCTION(&args, "func_get_args", &_0);
+	_0 = Z_TYPE_P(metadata) != IS_NULL;
+	if (_0) {
+		_0 = !zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC);
+	}
+	if (_0) {
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'metadata' must be an instance of 'Fastorm\\ObjectMetadata'", "", 0);
+		return;
+	}
+	ZEPHIR_CALL_FUNCTION(&args, "func_get_args", &_1);
 	zephir_check_call_status();
-	ZEPHIR_CALL_METHOD(&_1, this_ptr, "translateargs", &_2, args);
+	ZEPHIR_CALL_METHOD(&_2, this_ptr, "translateargs", &_3, args);
 	zephir_check_call_status();
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "nativequery", NULL, _1);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "nativequery", NULL, _2, metadata);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -405,15 +417,27 @@ PHP_METHOD(Fastorm_Db_Connection, translateArgs) {
 PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *sql, *res = NULL, *e = NULL, *_0, *_1, *_2 = NULL, *_3;
+	zend_bool _0;
+	zval *sql, *metadata = NULL, *res = NULL, *e = NULL, *_1, *_2, *_3 = NULL, *_4;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &sql);
+	zephir_fetch_params(1, 1, 1, &sql, &metadata);
+
+	if (!metadata) {
+		metadata = ZEPHIR_GLOBAL(global_null);
+	}
 
 
-
-	_0 = zephir_fetch_nproperty_this(this_ptr, SL("connected"), PH_NOISY_CC);
-	if (ZEPHIR_IS_FALSE_IDENTICAL(_0)) {
+	_0 = Z_TYPE_P(metadata) != IS_NULL;
+	if (_0) {
+		_0 = !zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC);
+	}
+	if (_0) {
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'metadata' must be an instance of 'Fastorm\\ObjectMetadata'", "", 0);
+		return;
+	}
+	_1 = zephir_fetch_nproperty_this(this_ptr, SL("connected"), PH_NOISY_CC);
+	if (ZEPHIR_IS_FALSE_IDENTICAL(_1)) {
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "connect", NULL);
 		zephir_check_call_status();
 	}
@@ -422,16 +446,16 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 
 	/* try_start_1: */
 
-		_1 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
-		ZEPHIR_CALL_METHOD(&res, _1, "query", NULL, sql);
+		_2 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
+		ZEPHIR_CALL_METHOD(&res, _2, "query", NULL, sql);
 		zephir_check_call_status_or_jump(try_end_1);
 		if (zephir_is_true(res)) {
-			ZEPHIR_CALL_METHOD(&_2, this_ptr, "createresultset", NULL, res);
+			ZEPHIR_CALL_METHOD(&_3, this_ptr, "createresultset", NULL, res, metadata);
 			zephir_check_call_status_or_jump(try_end_1);
-			ZEPHIR_CPY_WRT(res, _2);
+			ZEPHIR_CPY_WRT(res, _3);
 		} else {
-			_3 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
-			ZEPHIR_CALL_METHOD(&res, _3, "getaffectedrows",  NULL);
+			_4 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
+			ZEPHIR_CALL_METHOD(&res, _4, "getaffectedrows",  NULL);
 			zephir_check_call_status_or_jump(try_end_1);
 		}
 		RETURN_CCTOR(res);
@@ -666,46 +690,31 @@ PHP_METHOD(Fastorm_Db_Connection, rollback) {
 PHP_METHOD(Fastorm_Db_Connection, createResultSet) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *resultDriver, *res, *_0 = NULL, *_1 = NULL, *_2, *_3, *_4 = NULL;
+	zend_bool _0;
+	zval *resultDriver, *metadata = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &resultDriver);
+	zephir_fetch_params(1, 1, 1, &resultDriver, &metadata);
 
+	if (!metadata) {
+		metadata = ZEPHIR_GLOBAL(global_null);
+	}
 
 
 	if (!(zephir_instance_of_ev(resultDriver, fastorm_db_iresultdriver_ce TSRMLS_CC))) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'resultDriver' must be an instance of 'Fastorm\\Db\\IResultDriver'", "", 0);
 		return;
 	}
-	ZEPHIR_INIT_VAR(res);
-	object_init_ex(res, fastorm_db_result_ce);
-	ZEPHIR_CALL_METHOD(NULL, res, "__construct", NULL, resultDriver);
-	zephir_check_call_status();
-	ZEPHIR_INIT_VAR(_2);
-	ZVAL_STRING(_2, "formatDate", 0);
-	ZEPHIR_INIT_VAR(_3);
-	ZVAL_STRING(_3, "Y-m-d", 0);
-	ZEPHIR_CALL_METHOD(&_1, this_ptr, "getconfig", NULL, _2, _3);
-	zephir_check_temp_parameter(_2);
-	zephir_check_temp_parameter(_3);
-	zephir_check_call_status();
-	ZEPHIR_INIT_BNVAR(_2);
-	ZVAL_STRING(_2, "d", 0);
-	ZEPHIR_CALL_METHOD(&_0, res, "setformat", NULL, _2, _1);
-	zephir_check_temp_parameter(_2);
-	zephir_check_call_status();
-	ZEPHIR_INIT_BNVAR(_2);
-	ZVAL_STRING(_2, "formatDate", 0);
-	ZEPHIR_INIT_BNVAR(_3);
-	ZVAL_STRING(_3, "Y-m-d H:i:s", 0);
-	ZEPHIR_CALL_METHOD(&_4, this_ptr, "getconfig", NULL, _2, _3);
-	zephir_check_temp_parameter(_2);
-	zephir_check_temp_parameter(_3);
-	zephir_check_call_status();
-	ZEPHIR_INIT_BNVAR(_2);
-	ZVAL_STRING(_2, "t", 0);
-	ZEPHIR_RETURN_CALL_METHOD(_0, "setformat", NULL, _2, _4);
-	zephir_check_temp_parameter(_2);
+	_0 = Z_TYPE_P(metadata) != IS_NULL;
+	if (_0) {
+		_0 = !zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC);
+	}
+	if (_0) {
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'metadata' must be an instance of 'Fastorm\\ObjectMetadata'", "", 0);
+		return;
+	}
+	object_init_ex(return_value, fastorm_db_result_ce);
+	ZEPHIR_CALL_METHOD(NULL, return_value, "__construct", NULL, resultDriver, metadata);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -778,7 +787,7 @@ PHP_METHOD(Fastorm_Db_Connection, update) {
 		_0 = (zephir_is_instance_of(args, SL("Traversable") TSRMLS_CC));
 	}
 	if (!(_0)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 441);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 438);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&_1, this_ptr, "command",  NULL);
@@ -826,7 +835,7 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
 		ZEPHIR_CPY_WRT(args, _0);
 	} else {
 		if (Z_TYPE_P(args) == IS_ARRAY == 0) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 459);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 456);
 			return;
 		}
 	}

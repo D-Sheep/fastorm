@@ -18,12 +18,10 @@ PHP_METHOD(Fastorm_Db_Result, detectTypes);
 PHP_METHOD(Fastorm_Db_Result, normalize);
 PHP_METHOD(Fastorm_Db_Result, setType);
 PHP_METHOD(Fastorm_Db_Result, getType);
-PHP_METHOD(Fastorm_Db_Result, setFormat);
-PHP_METHOD(Fastorm_Db_Result, getFormat);
-PHP_METHOD(Fastorm_Db_Result, getInfo);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result___construct, 0, 0, 1)
 	ZEND_ARG_INFO(0, driver)
+	ZEND_ARG_INFO(0, metadata)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_seek, 0, 0, 1)
@@ -48,15 +46,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_gettype, 0, 0, 1)
 	ZEND_ARG_INFO(0, col)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_setformat, 0, 0, 2)
-	ZEND_ARG_INFO(0, type)
-	ZEND_ARG_INFO(0, format)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_result_getformat, 0, 0, 1)
-	ZEND_ARG_INFO(0, type)
-ZEND_END_ARG_INFO()
-
 ZEPHIR_INIT_FUNCS(fastorm_db_result_method_entry) {
 	PHP_ME(Fastorm_Db_Result, __construct, arginfo_fastorm_db_result___construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(Fastorm_Db_Result, getResource, NULL, ZEND_ACC_PUBLIC)
@@ -73,8 +62,5 @@ ZEPHIR_INIT_FUNCS(fastorm_db_result_method_entry) {
 	PHP_ME(Fastorm_Db_Result, normalize, arginfo_fastorm_db_result_normalize, ZEND_ACC_PRIVATE)
 	PHP_ME(Fastorm_Db_Result, setType, arginfo_fastorm_db_result_settype, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Result, getType, arginfo_fastorm_db_result_gettype, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Result, setFormat, arginfo_fastorm_db_result_setformat, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Result, getFormat, arginfo_fastorm_db_result_getformat, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Result, getInfo, NULL, ZEND_ACC_PUBLIC)
   PHP_FE_END
 };

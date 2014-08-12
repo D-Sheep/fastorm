@@ -5,8 +5,10 @@ if test "$PHP_FASTORM" = "yes"; then
 	fastorm_sources="fastorm.c kernel/main.c kernel/memory.c kernel/exception.c kernel/hash.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/extended/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/exit.c fastorm/dataobject.zep.c
 	fastorm/dbobject.zep.c
 	fastorm/exception.zep.c
+	fastorm/iconnectionmanager.zep.c
 	fastorm/modelmanager.zep.c
 	fastorm/objectmetadata.zep.c
+	fastorm/objectquery.zep.c
 	fastorm/db/columninfo.zep.c
 	fastorm/db/connection.zep.c
 	fastorm/db/dbexception.zep.c
