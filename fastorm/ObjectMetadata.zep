@@ -102,7 +102,7 @@ class ObjectMetadata
 			let idField = null;
 		}
 
-		if preg_match("/@table (A-Za-z0-9_]+)/i", docs, matches) {
+		if preg_match("/@table ([A-Za-z0-9_]+)/i", docs, matches) {
 			let table = matches[1];
 		} else {
 			let table = null;
@@ -199,7 +199,7 @@ class ObjectMetadata
 	}
 
 	public static function makeAlias(string sourceProperty, string targetProperty) -> string {
-		return "r_" . preg_replace("_id$", "", sourceProperty) . "_" . targetProperty;
+		return "r_" . preg_replace("/_id$/", "", sourceProperty) . "_" . targetProperty;
 	}
 
 	public function getAutoincrementKey() {
@@ -207,7 +207,7 @@ class ObjectMetadata
 		let found = null;
 		for key, flag in this->fields {
 			if flag & self::AUTOINCREMENT {
-				found = key;
+				let found = key;
 				break;
 			}
 		}

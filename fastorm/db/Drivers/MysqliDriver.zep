@@ -148,7 +148,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 			let res = mysqli_query(this->connection, sql,   MYSQLI_USE_RESULT); // intentionally @
 		}
 		if mysqli_errno(this->connection) {
-			throw new \Fastorm\Db\DbException("Db not supported exception:".mysqli_error(this->connection), mysqli_errno(this->connection), null, sql);
+			throw new \Fastorm\Db\DbException("Db not supported exception:".mysqli_error(this->connection), mysqli_errno(this->connection), null, null, sql);
 
 		} else { if is_object(res) {
 			return this->createResultDriver(res);

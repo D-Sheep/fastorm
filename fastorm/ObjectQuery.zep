@@ -6,7 +6,7 @@ class ObjectQuery extends Db\Query
 	
 	protected metadata;
 
-	public function __construct(<Connection> connection, <ObjectMetadata> metadata) {
+	public function __construct(<Db\Connection> connection, <ObjectMetadata> metadata) {
 		let this->metadata = metadata;
 		parent::__construct(connection);
 		this->initiate();

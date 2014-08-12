@@ -11,7 +11,7 @@
 #define PHP_FASTORM_NAME        "Fastorm"
 #define PHP_FASTORM_VERSION     "0.1"
 #define PHP_FASTORM_EXTNAME     "fastorm"
-#define PHP_FASTORM_AUTHOR      "David Menger"
+#define PHP_FASTORM_AUTHOR      "David Menger, Katerina Haslarova"
 #define PHP_FASTORM_ZEPVERSION  "0.4.4a"
 #define PHP_FASTORM_DESCRIPTION ""
 

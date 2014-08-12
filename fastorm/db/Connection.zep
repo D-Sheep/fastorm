@@ -3,7 +3,7 @@ namespace Fastorm\Db;
 
 class Connection {
 
-	public onEvent = [];
+	public static onEvent;
 
 	private config = [];
 
@@ -122,15 +122,15 @@ class Connection {
 	 */
 	public function connect()
 	{
-		var e;
-		/*event = this->onEvent ? new DibiEvent(this, DibiEvent::CONNECT) : NULL;*/
+		var e, event;
+		let event = this->event(Event::CONNECT);
 		try {
 			this->driver->connect(this->config);
 			let this->connected = true;
-			/*event && this->onEvent(event->done());*/
+			this->onEvent(event->done());
 
 		} catch DbException, e {
-			/*event && this->onEvent(event->done(e));*/
+			this->onEvent(event->done(e));
 			throw e;
 		}
 	}
@@ -205,9 +205,12 @@ class Connection {
 	 * @return DibiResult|int   result set object (if any)
 	 * @throws DibiException
 	 */
-	public function query(args, <\Fastorm\ObjectMetadata> metadata = null)
+	public function query(args, metadata = null)
 	{
-		let args = func_get_args();
+		if  !(typeof metadata === "object" && (metadata instanceof \Fastorm\ObjectMetadata)) {
+			let args = func_get_args();
+			let metadata = null;
+		} 
 		return this->nativeQuery(this->translateArgs(args), metadata);
 	}
 
@@ -250,7 +253,7 @@ class Connection {
 	 */
 	public function nativeQuery(sql, <\Fastorm\ObjectMetadata> metadata = null)
 	{
-		var res, e;
+		var res, e, event;
 
 		if this->connected === false {
 			this->connect();
@@ -258,7 +261,7 @@ class Connection {
 
 
 		let res = null;
-		/*event = this->onEvent ? new DibiEvent(this, DibiEvent::QUERY, sql) : NULL;*/
+		let event = this->event(Event::QUERY, sql);
 		try {
 			let res = this->driver->query(sql);
 
@@ -268,10 +271,10 @@ class Connection {
 				let res = this->driver->getAffectedRows();
 			}
 
-			/*event && this->onEvent(event->done(res));*/
+			this->onEvent(event->done(res));
 			return res;
 		} catch DbException, e {
-			/*event && this->onEvent(event->done(e));*/
+			this->onEvent(event->done(e));
 			throw e;
 		}
 	}
@@ -326,17 +329,18 @@ class Connection {
 	 */
 	public function begin(savepoint = null)
 	{
-		var e;
+		var e, event;
 		if this->connected === false {
 			this->connect();
 		}
+		let event = this->event(Event::BEGIN, savepoint);
 		/*event = this->onEvent ? new DibiEvent(this, DibiEvent::BEGIN, savepoint) : NULL;*/
 		try {
 			this->driver->begin(savepoint);
-			/*event && this->onEvent(event->done());*/
+			this->onEvent(event->done());
 
 		} catch DbException, e {
-			/*event && this->onEvent(event->done(e));*/
+			this->onEvent(event->done(e));
 			throw e;
 		}
 	}
@@ -350,17 +354,18 @@ class Connection {
 	 */
 	public function commit(savepoint = null)
 	{
-		var e;
+		var e, event;
 		if this->connected === false {
 			this->connect();
 		}
+		let event = this->event(Event::COMMIT, savepoint);
 		/*event = this->onEvent ? new DibiEvent(this, DibiEvent::COMMIT, savepoint) : NULL;*/
 		try {
 			this->driver->commit(savepoint);
-			/*event && this->onEvent(event->done());*/
+			this->onEvent(event->done());
 
 		} catch DbException, e {
-			/*event && this->onEvent(event->done(e));*/
+			this->onEvent(event->done(e));
 			throw e;
 		}
 	}
@@ -374,17 +379,18 @@ class Connection {
 	 */
 	public function rollback(savepoint = NULL)
 	{
-		var e;
+		var e, event;
 		if this->connected === false {
 			this->connect();
 		}
+		let event = this->event(Event::ROLLBACK, savepoint);
 		/*event = this->onEvent ? new DibiEvent(this, DibiEvent::ROLLBACK, savepoint) : NULL;*/
 		try {
 			this->driver->rollback(savepoint);
-			/*event && this->onEvent(event->done());*/
+			this->onEvent(event->done());
 
 		} catch DbException, e {
-			/*event && this->onEvent(event->done(e));*/
+			this->onEvent(event->done(e));
 			throw e;
 		}
 	}
@@ -419,7 +425,7 @@ class Connection {
 	 * @param  string    column name
 	 * @return DibiFluent
 	 */
-	public function select(args) -> <Query>
+	public function select(args) -> <\Fastorm\Db\Query>
 	{
 		let args = func_get_args();
 		return this->command()->__call("select", args);
@@ -432,7 +438,7 @@ class Connection {
 	 * @param  array
 	 * @return DibiFluent
 	 */
-	public function update(table, args) -> <Query>
+	public function update(table, args) -> <\Fastorm\Db\Query>
 	{
 		if !(is_array(args) || (args instanceof \Traversable)) {
 			throw new \InvalidArgumentException("Arguments must be array or Traversable.");
@@ -447,7 +453,7 @@ class Connection {
 	 * @param  array
 	 * @return DibiFluent
 	 */
-	public function insert(table, args) -> <Query>
+	public function insert(table, args) -> <\Fastorm\Db\Query>
 	{
 		if (args instanceof \Traversable) {
 			let args = iterator_to_array(args);
@@ -466,14 +472,30 @@ class Connection {
 	 * @param  string   table
 	 * @return DibiFluent
 	 */
-	public function delete(table)  -> <Query>
+	public function delete(table) -> <\Fastorm\Db\Query>
 	{
 		return this->command()->__call("delete", ["%n", table]);
 	}
 
+	public static function addEvent(var callback) {
+		if self::onEvent === null {
+			let self::onEvent = [];
+		}
+		let self::onEvent[] = callback;
+	}
 
+	protected function onEvent(<Event> event = null) {
+		if self::onEvent !== null && event !== null {
+			var callback;
+			for callback in self::onEvent {
+				{callback}(event);
+			}	
+		}
+	}
 
-
+	protected function event(var type, var sql = null) {
+		return new Event(this, type, sql);
+	}
 	
 
 }

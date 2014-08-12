@@ -30,6 +30,4 @@ class ModelManager
 		return this->connectionManager->getConnection(metadata->getStorage());
 	}
 
-
-
 }

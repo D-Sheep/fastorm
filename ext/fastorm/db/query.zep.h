@@ -30,7 +30,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query___call, 0, 0, 2)
 	ZEND_ARG_INFO(0, clause)
-	ZEND_ARG_INFO(0, args)
+	ZEND_ARG_INFO(0, clauseArgs)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_initialize, 0, 0, 1)
@@ -64,7 +64,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_getiterator, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_query, 0, 0, 1)
-	ZEND_ARG_INFO(0, args)
+	ZEND_ARG_INFO(0, queryArgs)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query_setflag, 0, 0, 1)
@@ -78,7 +78,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_query__export, 0, 0, 0)
 	ZEND_ARG_INFO(0, clause)
-	ZEND_ARG_INFO(0, args)
+	ZEND_ARG_INFO(0, additionalArgs)
 ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(fastorm_db_query_method_entry) {

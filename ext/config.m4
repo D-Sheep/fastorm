@@ -2,7 +2,8 @@ PHP_ARG_ENABLE(fastorm, whether to enable fastorm, [ --enable-fastorm   Enable F
 
 if test "$PHP_FASTORM" = "yes"; then
 	AC_DEFINE(HAVE_FASTORM, 1, [Whether you have Fastorm])
-	fastorm_sources="fastorm.c kernel/main.c kernel/memory.c kernel/exception.c kernel/hash.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/extended/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/exit.c fastorm/dataobject.zep.c
+	fastorm_sources="fastorm.c kernel/main.c kernel/memory.c kernel/exception.c kernel/hash.c kernel/debug.c kernel/backtrace.c kernel/object.c kernel/array.c kernel/extended/array.c kernel/string.c kernel/fcall.c kernel/require.c kernel/file.c kernel/operators.c kernel/concat.c kernel/variables.c kernel/filter.c kernel/iterator.c kernel/exit.c fastorm/connectionmanager.zep.c
+	fastorm/dataobject.zep.c
 	fastorm/dbobject.zep.c
 	fastorm/exception.zep.c
 	fastorm/iconnectionmanager.zep.c
@@ -13,6 +14,7 @@ if test "$PHP_FASTORM" = "yes"; then
 	fastorm/db/connection.zep.c
 	fastorm/db/dbexception.zep.c
 	fastorm/db/drivers/mysqlidriver.zep.c
+	fastorm/db/event.zep.c
 	fastorm/db/iresultdriver.zep.c
 	fastorm/db/query.zep.c
 	fastorm/db/result.zep.c

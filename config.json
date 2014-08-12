@@ -9,7 +9,7 @@
     "namespace": "fastorm",
     "name": "Fastorm",
     "description": "",
-    "author": "David Menger, Kateřina Hašlarová",
+    "author": "David Menger, Katerina Haslarova",
     "version": "0.1",
     "verbose": false,
     "optimizer-dirs": [

@@ -4,6 +4,7 @@
 #ifndef ZEPHIR_CLASS_ENTRIES_H
 #define ZEPHIR_CLASS_ENTRIES_H
 
+#include "fastorm/connectionmanager.zep.h"
 #include "fastorm/dataobject.zep.h"
 #include "fastorm/dbobject.zep.h"
 #include "fastorm/exception.zep.h"
@@ -15,6 +16,7 @@
 #include "fastorm/db/connection.zep.h"
 #include "fastorm/db/dbexception.zep.h"
 #include "fastorm/db/drivers/mysqlidriver.zep.h"
+#include "fastorm/db/event.zep.h"
 #include "fastorm/db/iresultdriver.zep.h"
 #include "fastorm/db/query.zep.h"
 #include "fastorm/db/result.zep.h"

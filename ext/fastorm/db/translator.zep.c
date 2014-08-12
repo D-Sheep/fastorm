@@ -21,7 +21,6 @@
 #include "kernel/string.h"
 #include "kernel/concat.h"
 #include "kernel/hash.h"
-#include "kernel/variables.h"
 
 
 ZEPHIR_INIT_CLASS(Fastorm_Db_Translator) {
@@ -305,7 +304,7 @@ PHP_METHOD(Fastorm_Db_Translator, translate) {
 		ZVAL_STRING(_32, "SQL translate error", 0);
 		ZEPHIR_INIT_VAR(_35);
 		ZVAL_LONG(_35, 0);
-		ZEPHIR_CALL_METHOD(NULL, _20, "__construct", &_36, _32, _35, sql);
+		ZEPHIR_CALL_METHOD(NULL, _20, "__construct", &_36, _32, _35, ZEPHIR_GLOBAL(global_null), ret, args);
 		zephir_check_temp_parameter(_32);
 		zephir_check_call_status();
 		zephir_throw_exception_debug(_20, "fastorm/db/Translator.zep", 164 TSRMLS_CC);
@@ -1050,7 +1049,7 @@ PHP_METHOD(Fastorm_Db_Translator, fomattedPairValue) {
 
 
 	if (zephir_array_isset_long(pairArray, 1)) {
-		zephir_array_fetch_long(&_0, pairArray, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 506 TSRMLS_CC);
+		zephir_array_fetch_long(&_0, pairArray, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 507 TSRMLS_CC);
 		ZEPHIR_RETURN_CALL_METHOD(this_ptr, "formatvalue", NULL, value, _0);
 		zephir_check_call_status();
 		RETURN_MM();
@@ -1105,7 +1104,7 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 	zephir_nts_static zephir_fcall_cache_entry *_16 = NULL, *_31 = NULL;
 	zend_bool _5, _6, _7;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *matches, *_0, *_1, *_2, *_3, *_4, *mod, *_8, *_9, *_10, *_11, *_12, *_13, *_14 = NULL, *_15 = NULL, *_17 = NULL, *_18 = NULL, *_19, *_20, *_21, *_22, *_23, *_24, *_25, _26 = zval_used_for_init, _27 = zval_used_for_init, *_28 = NULL, *_29, *_30, *m = NULL, *_32 = NULL;
+	zval *matches, *_0, *_1, *_2, *_3, *_4, *mod, *_8, *_9, *_10, *_11, *_12, *_13, *_14 = NULL, *_15 = NULL, *_17 = NULL, *_18 = NULL, *_19, *_20, *_21, *_22, *_23, *_24, *_25, _26 = zval_used_for_init, _27 = zval_used_for_init, *_28 = NULL, *_29, *_30, *m = NULL;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 0, &matches);
@@ -1122,14 +1121,14 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 		RETURN_ON_FAILURE(zephir_property_incr(this_ptr, SL("cursor") TSRMLS_CC));
 		_2 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 		_4 = zephir_fetch_nproperty_this(this_ptr, SL("cursor"), PH_NOISY_CC);
-		zephir_array_fetch_long(&_3, _2, (zephir_get_numberval(_4) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 553 TSRMLS_CC);
+		zephir_array_fetch_long(&_3, _2, (zephir_get_numberval(_4) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 554 TSRMLS_CC);
 		ZEPHIR_RETURN_CALL_METHOD(this_ptr, "formatvalue", NULL, _3, ZEPHIR_GLOBAL(global_false));
 		zephir_check_call_status();
 		RETURN_MM();
 	}
 	if (zephir_array_isset_long(matches, 10)) {
 		ZEPHIR_OBS_VAR(mod);
-		zephir_array_fetch_long(&mod, matches, 10, PH_NOISY, "fastorm/db/Translator.zep", 559 TSRMLS_CC);
+		zephir_array_fetch_long(&mod, matches, 10, PH_NOISY, "fastorm/db/Translator.zep", 560 TSRMLS_CC);
 		_0 = zephir_fetch_nproperty_this(this_ptr, SL("cursor"), PH_NOISY_CC);
 		_1 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 		_5 = ZEPHIR_GE_LONG(_0, zephir_fast_count_int(_1 TSRMLS_CC));
@@ -1152,7 +1151,7 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 			if (_7) {
 				_4 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 				_8 = zephir_fetch_nproperty_this(this_ptr, SL("cursor"), PH_NOISY_CC);
-				zephir_array_fetch_long(&_3, _4, (zephir_get_numberval(_8) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 570 TSRMLS_CC);
+				zephir_array_fetch_long(&_3, _4, (zephir_get_numberval(_8) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 571 TSRMLS_CC);
 				_7 = !zephir_is_true(_3);
 			}
 			if (_7) {
@@ -1201,7 +1200,7 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 						_12 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 						ZEPHIR_OBS_VAR(_14);
 						zephir_read_property_this(&_14, this_ptr, SL("cursor"), PH_NOISY_CC);
-						zephir_array_fetch(&_13, _12, _14, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 600 TSRMLS_CC);
+						zephir_array_fetch(&_13, _12, _14, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 601 TSRMLS_CC);
 						ZEPHIR_INIT_VAR(_15);
 						ZVAL_LONG(_15, 1);
 						Z_SET_ISREF_P(_10);
@@ -1214,13 +1213,13 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 							_11 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 							ZEPHIR_OBS_NVAR(_14);
 							zephir_read_property_this(&_14, this_ptr, SL("cursor"), PH_NOISY_CC);
-							zephir_array_fetch(&_13, _11, _14, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 604 TSRMLS_CC);
+							zephir_array_fetch(&_13, _11, _14, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 605 TSRMLS_CC);
 							if (Z_TYPE_P(_13) != IS_NULL) {
 								_12 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 								ZEPHIR_OBS_VAR(_17);
 								ZEPHIR_OBS_VAR(_18);
 								zephir_read_property_this(&_18, this_ptr, SL("cursor"), PH_NOISY_CC);
-								zephir_array_fetch(&_17, _12, _18, PH_NOISY, "fastorm/db/Translator.zep", 605 TSRMLS_CC);
+								zephir_array_fetch(&_17, _12, _18, PH_NOISY, "fastorm/db/Translator.zep", 606 TSRMLS_CC);
 								ZEPHIR_INIT_ZVAL_NREF(_19);
 								ZVAL_LONG(_19, zephir_get_intval(_17));
 								zephir_update_property_this(this_ptr, SL("limit"), _19 TSRMLS_CC);
@@ -1232,13 +1231,13 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 								_19 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 								ZEPHIR_OBS_NVAR(_17);
 								zephir_read_property_this(&_17, this_ptr, SL("cursor"), PH_NOISY_CC);
-								zephir_array_fetch(&_20, _19, _17, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 611 TSRMLS_CC);
+								zephir_array_fetch(&_20, _19, _17, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 612 TSRMLS_CC);
 								if (Z_TYPE_P(_20) != IS_NULL) {
 									_21 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 									ZEPHIR_OBS_NVAR(_18);
 									ZEPHIR_OBS_VAR(_22);
 									zephir_read_property_this(&_22, this_ptr, SL("cursor"), PH_NOISY_CC);
-									zephir_array_fetch(&_18, _21, _22, PH_NOISY, "fastorm/db/Translator.zep", 612 TSRMLS_CC);
+									zephir_array_fetch(&_18, _21, _22, PH_NOISY, "fastorm/db/Translator.zep", 613 TSRMLS_CC);
 									ZEPHIR_INIT_ZVAL_NREF(_23);
 									ZVAL_LONG(_23, zephir_get_intval(_18));
 									zephir_update_property_this(this_ptr, SL("offset"), _23 TSRMLS_CC);
@@ -1249,7 +1248,7 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 								RETURN_ON_FAILURE(zephir_property_incr(this_ptr, SL("cursor") TSRMLS_CC));
 								_19 = zephir_fetch_nproperty_this(this_ptr, SL("args"), PH_NOISY_CC);
 								_21 = zephir_fetch_nproperty_this(this_ptr, SL("cursor"), PH_NOISY_CC);
-								zephir_array_fetch_long(&_20, _19, (zephir_get_numberval(_21) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 619 TSRMLS_CC);
+								zephir_array_fetch_long(&_20, _19, (zephir_get_numberval(_21) - 1), PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 620 TSRMLS_CC);
 								ZEPHIR_RETURN_CALL_METHOD(this_ptr, "formatvalue", NULL, _20, mod);
 								zephir_check_call_status();
 								RETURN_MM();
@@ -1264,25 +1263,25 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 	if (zephir_is_true(_0)) {
 		RETURN_MM_STRING("...", 1);
 	}
-	zephir_array_fetch_long(&_3, matches, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 627 TSRMLS_CC);
+	zephir_array_fetch_long(&_3, matches, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 628 TSRMLS_CC);
 	if (zephir_is_true(_3)) {
-		zephir_array_fetch_long(&_13, matches, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 628 TSRMLS_CC);
+		zephir_array_fetch_long(&_13, matches, 1, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 629 TSRMLS_CC);
 		ZEPHIR_RETURN_CALL_METHOD(this_ptr, "delimite", NULL, _13);
 		zephir_check_call_status();
 		RETURN_MM();
 	} else {
-		zephir_array_fetch_long(&_3, matches, 2, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 630 TSRMLS_CC);
+		zephir_array_fetch_long(&_3, matches, 2, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 631 TSRMLS_CC);
 		if (zephir_is_true(_3)) {
-			zephir_array_fetch_long(&_20, matches, 2, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 631 TSRMLS_CC);
+			zephir_array_fetch_long(&_20, matches, 2, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 632 TSRMLS_CC);
 			ZEPHIR_RETURN_CALL_METHOD(this_ptr, "delimite", NULL, _20);
 			zephir_check_call_status();
 			RETURN_MM();
 		} else {
-			zephir_array_fetch_long(&_24, matches, 3, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 633 TSRMLS_CC);
+			zephir_array_fetch_long(&_24, matches, 3, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 634 TSRMLS_CC);
 			if (zephir_is_true(_24)) {
 				_0 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
 				ZEPHIR_INIT_NVAR(_15);
-				zephir_array_fetch_long(&_25, matches, 4, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 634 TSRMLS_CC);
+				zephir_array_fetch_long(&_25, matches, 4, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 635 TSRMLS_CC);
 				ZEPHIR_SINIT_VAR(_26);
 				ZVAL_STRING(&_26, "''", 0);
 				ZEPHIR_SINIT_VAR(_27);
@@ -1295,11 +1294,11 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 				zephir_check_call_status();
 				RETURN_MM();
 			} else {
-				zephir_array_fetch_long(&_25, matches, 5, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 636 TSRMLS_CC);
+				zephir_array_fetch_long(&_25, matches, 5, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 637 TSRMLS_CC);
 				if (zephir_is_true(_25)) {
 					_1 = zephir_fetch_nproperty_this(this_ptr, SL("driver"), PH_NOISY_CC);
 					ZEPHIR_INIT_NVAR(_28);
-					zephir_array_fetch_long(&_29, matches, 6, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 637 TSRMLS_CC);
+					zephir_array_fetch_long(&_29, matches, 6, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 638 TSRMLS_CC);
 					ZEPHIR_SINIT_NVAR(_26);
 					ZVAL_STRING(&_26, "\"\"", 0);
 					ZEPHIR_SINIT_NVAR(_27);
@@ -1312,7 +1311,7 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 					zephir_check_call_status();
 					RETURN_MM();
 				} else {
-					zephir_array_fetch_long(&_29, matches, 7, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 639 TSRMLS_CC);
+					zephir_array_fetch_long(&_29, matches, 7, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 640 TSRMLS_CC);
 					if (zephir_is_true(_29)) {
 						zephir_update_property_this(this_ptr, SL("hasError"), (1) ? ZEPHIR_GLOBAL(global_true) : ZEPHIR_GLOBAL(global_false) TSRMLS_CC);
 						RETURN_MM_STRING("**Alone quote**", 1);
@@ -1321,29 +1320,26 @@ PHP_METHOD(Fastorm_Db_Translator, cb) {
 			}
 		}
 	}
-	zephir_array_fetch_long(&_3, matches, 8, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 644 TSRMLS_CC);
+	zephir_array_fetch_long(&_3, matches, 8, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 645 TSRMLS_CC);
 	if (zephir_is_true(_3)) {
-		zephir_array_fetch_long(&_13, matches, 8, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 646 TSRMLS_CC);
+		zephir_array_fetch_long(&_13, matches, 8, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 647 TSRMLS_CC);
 		ZEPHIR_SINIT_NVAR(_26);
 		ZVAL_LONG(&_26, 0);
 		ZEPHIR_SINIT_NVAR(_27);
 		ZVAL_LONG(&_27, -1);
 		ZEPHIR_CALL_FUNCTION(&m, "substr", &_31, _13, &_26, &_27);
 		zephir_check_call_status();
-		zephir_array_fetch_long(&_24, matches, 9, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 647 TSRMLS_CC);
+		zephir_array_fetch_long(&_24, matches, 9, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 648 TSRMLS_CC);
 		if (ZEPHIR_IS_STRING(_24, "")) {
 			ZEPHIR_RETURN_CALL_METHOD(this_ptr, "formatvalue", NULL, m);
 			zephir_check_call_status();
 			RETURN_MM();
 		} else {
-			zephir_array_fetch_long(&_24, matches, 9, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 650 TSRMLS_CC);
+			zephir_array_fetch_long(&_24, matches, 9, PH_NOISY | PH_READONLY, "fastorm/db/Translator.zep", 651 TSRMLS_CC);
 			ZEPHIR_CONCAT_VV(return_value, m, _24);
 			RETURN_MM();
 		}
 	}
-	php_printf("\n\n");
-	ZEPHIR_CPY_WRT(_32, matches);
-	zephir_var_dump(&_32 TSRMLS_CC);
 	RETURN_MM_STRING("this should be never executed", 1);
 
 }
@@ -1368,7 +1364,7 @@ PHP_METHOD(Fastorm_Db_Translator, delimite) {
 
 	ZEPHIR_INIT_VAR(parts);
 	zephir_fast_explode_str(parts, SL("."), value, LONG_MAX TSRMLS_CC);
-	zephir_is_iterable(parts, &_1, &_0, 0, 0, "fastorm/db/Translator.zep", 676);
+	zephir_is_iterable(parts, &_1, &_0, 0, 0, "fastorm/db/Translator.zep", 675);
 	for (
 	  ; zephir_hash_get_current_data_ex(_1, (void**) &_2, &_0) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_1, &_0)
