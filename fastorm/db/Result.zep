@@ -9,21 +9,18 @@ class Result {
 	
 	private _types;
 
-	/** @var DibiResultInfo */
-	private meta;
-
 	/** @var bool  Already fetched? Used for allowance for first seek(0) */
 	private fetched = false;
 
-	/** @var array  format */
-	private formats = [];
-
 	private rowClass;
 
+	private metadata;
 
-	public function __construct(<IResultDriver> driver)
+
+	public function __construct(<IResultDriver> driver, <\Fastorm\ObjectMetadata> metadata = null)
 	{
 		let this->driver = driver;
+		let this->metadata = metadata;
 		this->detectTypes();
 	}
 
@@ -43,7 +40,7 @@ class Result {
 		if this->driver !== null {
 			this->driver->free();
 			let this->driver = null;
-			let this->meta = null;
+			let this->metadata = null;
 		}
 	}
 
@@ -109,8 +106,6 @@ class Result {
 	{
 		return new ResultIterator(this);
 	}
-
-
 	
 
 
@@ -129,12 +124,17 @@ class Result {
 		let this->fetched = true;
 		let row = this->normalize(row);
 
-		if this->rowClass !== null {
-			var className;
-			let className = this->rowClass;
-			let row = new {className}(row);
+		if this->metadata !== null {
+			return this->metadata->newInstance(row);
+		} else {
+			if this->rowClass !== null {
+				var className;
+				let className = this->rowClass;
+				return new {className}(row);
+			} else {
+				return row;
+			}
 		}
-		return row;
 	}
 
 
@@ -305,21 +305,13 @@ class Result {
 
 			} else { if (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
 				if ((int) value !== 0 || substr((string) value, 0, 3) === "00:") { // "", null, false, "0000-00-00", ...
-					let value = new \DateTime(value);
-					if empty this->formats[type] {
-						let row[key] = value;
-					} else {
-						let row[key] = value->format(this->formats[type]);
-					}
+					let row[key] = new \DateTime(value);
 				}
 
 			} else { if (type === Query::TYPE_BINARY) {
 				let row[key] = this->getResultDriver()->unescape(value, type);
 			}}}}}
 		}
-
-
-
 
 		return row;
 	}
@@ -350,43 +342,6 @@ class Result {
 			return null;
 		}
 	}
-
-
-	/**
-	 * Sets data format.
-	 * @param  string  type (use constant Dibi::*)
-	 * @param  string  format
-	 * @return self
-	 */
-	public function setFormat(type, format)
-	{
-		let this->formats[type] = format;
-		return this;
-	}
-
-
-	/**
-	 * Returns data format.
-	 * @return string
-	 */
-	public function getFormat(type)
-	{
-		return isset(this->formats[type]) ? this->formats[type] : null;
-	}
-
-
 	
-
-	/**
-	 * Returns a meta information about the current result set.
-	 * @return DibiResultInfo
-	 */
-	public function getInfo()
-	{
-		if (this->meta === null) {
-			//let this->meta = new DibiResultInfo(this->getResultDriver());
-		}
-		return this->meta;
-	}
 	
 }

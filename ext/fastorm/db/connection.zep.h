@@ -38,6 +38,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_query, 0, 0, 1)
 	ZEND_ARG_INFO(0, args)
+	ZEND_ARG_INFO(0, metadata)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_translate, 0, 0, 1)
@@ -50,6 +51,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_nativequery, 0, 0, 1)
 	ZEND_ARG_INFO(0, sql)
+	ZEND_ARG_INFO(0, metadata)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_getinsertid, 0, 0, 0)
@@ -70,6 +72,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_createresultset, 0, 0, 1)
 	ZEND_ARG_INFO(0, resultDriver)
+	ZEND_ARG_INFO(0, metadata)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_select, 0, 0, 1)

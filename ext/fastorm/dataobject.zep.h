@@ -13,6 +13,7 @@ PHP_METHOD(Fastorm_DataObject, offsetGet);
 PHP_METHOD(Fastorm_DataObject, offsetSet);
 PHP_METHOD(Fastorm_DataObject, offsetUnset);
 PHP_METHOD(Fastorm_DataObject, _initialize);
+PHP_METHOD(Fastorm_DataObject, initialize);
 PHP_METHOD(Fastorm_DataObject, _processInitialization);
 PHP_METHOD(Fastorm_DataObject, getMetadata);
 PHP_METHOD(Fastorm_DataObject, serialize);
@@ -49,6 +50,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_dataobject_offsetunset, 0, 0, 1)
 	ZEND_ARG_INFO(0, offset)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_dataobject_initialize, 0, 0, 1)
+	ZEND_ARG_INFO(0, metadata)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_dataobject__processinitialization, 0, 0, 1)
 	ZEND_ARG_INFO(0, className)
 ZEND_END_ARG_INFO()
@@ -80,6 +85,7 @@ ZEPHIR_INIT_FUNCS(fastorm_dataobject_method_entry) {
 	PHP_ME(Fastorm_DataObject, offsetSet, arginfo_fastorm_dataobject_offsetset, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_DataObject, offsetUnset, arginfo_fastorm_dataobject_offsetunset, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_DataObject, _initialize, NULL, ZEND_ACC_PROTECTED|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_DataObject, initialize, arginfo_fastorm_dataobject_initialize, ZEND_ACC_PROTECTED|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DataObject, _processInitialization, arginfo_fastorm_dataobject__processinitialization, ZEND_ACC_PROTECTED|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DataObject, getMetadata, arginfo_fastorm_dataobject_getmetadata, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DataObject, serialize, NULL, ZEND_ACC_PUBLIC)

@@ -39,7 +39,7 @@ class Query
 
 	private _command;
 
-	private setups = [];
+	protected setups = [];
 
 	private _cursor;
 
@@ -253,7 +253,7 @@ class Query
 
 
 	
-	public function fetchRow()
+	public function fetchFirst()
 	{
 		if this->_command === "SELECT" {
 			return this->query(this->_export(null, ["%lmt", 1]))->fetchRow();
@@ -308,7 +308,7 @@ class Query
 
 
 
-	private function query(args)
+	protected function query(args)
 	{
 		var res, setup;
 		let res = this->connection->query(args);
@@ -317,10 +317,6 @@ class Query
 		}
 		return res;
 	}
-
-
-
-
 
 	final public function __toString()
 	{
@@ -359,7 +355,6 @@ class Query
 				}
 			}
 		}
-
 
 		return args;
 	}

@@ -12,16 +12,18 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
-#include "kernel/fcall.h"
-#include "kernel/operators.h"
 #include "kernel/memory.h"
 #include "kernel/object.h"
+#include "kernel/fcall.h"
+#include "kernel/operators.h"
 #include "kernel/array.h"
 #include "kernel/hash.h"
+#include "kernel/exception.h"
+
 
 ZEPHIR_INIT_CLASS(Fastorm_DataObject) {
 
-	ZEPHIR_REGISTER_CLASS(Fastorm, DataObject, fastorm, dataobject, fastorm_dataobject_method_entry, 0);
+	ZEPHIR_REGISTER_CLASS(Fastorm, DataObject, fastorm, dataobject, fastorm_dataobject_method_entry, ZEND_ACC_EXPLICIT_ABSTRACT_CLASS);
 
 	zend_declare_property_null(fastorm_dataobject_ce, SL("_data"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
@@ -50,15 +52,20 @@ PHP_METHOD(Fastorm_DataObject, __construct) {
 	}
 
 
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "_initialize", NULL);
-	zephir_check_call_status();
-	if (Z_TYPE_P(id) != IS_NULL) {
-		ZEPHIR_CALL_METHOD(NULL, this_ptr, "setid", NULL, id);
-		zephir_check_call_status();
-	}
 	ZEPHIR_INIT_VAR(_0);
 	array_init(_0);
 	zephir_update_property_this(this_ptr, SL("_data"), _0 TSRMLS_CC);
+	ZEPHIR_CALL_SELF(NULL, "_initialize", NULL);
+	zephir_check_call_status();
+	if (Z_TYPE_P(id) == IS_ARRAY) {
+		ZEPHIR_CALL_METHOD(NULL, this_ptr, "setdata", NULL, id);
+		zephir_check_call_status();
+	} else {
+		if (Z_TYPE_P(id) != IS_NULL) {
+			ZEPHIR_CALL_METHOD(NULL, this_ptr, "setid", NULL, id);
+			zephir_check_call_status();
+		}
+	}
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -72,7 +79,7 @@ PHP_METHOD(Fastorm_DataObject, getId) {
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_idFieldCache") TSRMLS_CC);
-	zephir_array_fetch(&key, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 24 TSRMLS_CC);
+	zephir_array_fetch(&key, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 29 TSRMLS_CC);
 	if (Z_TYPE_P(key) == IS_NULL) {
 		RETURN_MM_NULL();
 	} else {
@@ -95,7 +102,7 @@ PHP_METHOD(Fastorm_DataObject, setId) {
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_idFieldCache") TSRMLS_CC);
-	zephir_array_fetch(&key, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 35 TSRMLS_CC);
+	zephir_array_fetch(&key, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 40 TSRMLS_CC);
 	if (Z_TYPE_P(key) != IS_NULL) {
 		zephir_update_property_zval_zval(this_ptr, key, id TSRMLS_CC);
 	}
@@ -118,7 +125,7 @@ PHP_METHOD(Fastorm_DataObject, setData) {
 
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
-	zephir_is_iterable(data, &_1, &_0, 0, 0, "fastorm/DataObject.zep", 52);
+	zephir_is_iterable(data, &_1, &_0, 0, 0, "fastorm/DataObject.zep", 57);
 	for (
 	  ; zephir_hash_get_current_data_ex(_1, (void**) &_2, &_0) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_1, &_0)
@@ -126,7 +133,7 @@ PHP_METHOD(Fastorm_DataObject, setData) {
 		ZEPHIR_GET_HMKEY(key, _1, _0);
 		ZEPHIR_GET_HVALUE(value, _2);
 		_3 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-		zephir_array_fetch(&_4, _3, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 46 TSRMLS_CC);
+		zephir_array_fetch(&_4, _3, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 51 TSRMLS_CC);
 		if (zephir_array_isset(_4, key)) {
 			zephir_update_property_zval_zval(this_ptr, key, value TSRMLS_CC);
 		} else {
@@ -150,8 +157,8 @@ PHP_METHOD(Fastorm_DataObject, getData) {
 	ZEPHIR_OBS_VAR(data);
 	zephir_read_property_this(&data, this_ptr, SL("_data"), PH_NOISY_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 58 TSRMLS_CC);
-	zephir_is_iterable(_1, &_3, &_2, 0, 0, "fastorm/DataObject.zep", 61);
+	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 63 TSRMLS_CC);
+	zephir_is_iterable(_1, &_3, &_2, 0, 0, "fastorm/DataObject.zep", 66);
 	for (
 	  ; zephir_hash_get_current_data_ex(_3, (void**) &_4, &_2) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_3, &_2)
@@ -196,7 +203,7 @@ PHP_METHOD(Fastorm_DataObject, offsetGet) {
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 71 TSRMLS_CC);
+	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 76 TSRMLS_CC);
 	if (zephir_array_isset(_1, offset)) {
 		ZEPHIR_OBS_VAR(_2);
 		zephir_read_property_zval(&_2, this_ptr, offset, PH_NOISY_CC);
@@ -205,7 +212,7 @@ PHP_METHOD(Fastorm_DataObject, offsetGet) {
 		_3 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
 		if (zephir_array_isset(_3, offset)) {
 			_4 = zephir_fetch_nproperty_this(this_ptr, SL("_data"), PH_NOISY_CC);
-			zephir_array_fetch(&_5, _4, offset, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 75 TSRMLS_CC);
+			zephir_array_fetch(&_5, _4, offset, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 80 TSRMLS_CC);
 			RETURN_CTOR(_5);
 		} else {
 			RETURN_MM_NULL();
@@ -226,7 +233,7 @@ PHP_METHOD(Fastorm_DataObject, offsetSet) {
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 85 TSRMLS_CC);
+	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 90 TSRMLS_CC);
 	if (zephir_array_isset(_1, offset)) {
 		zephir_update_property_zval_zval(this_ptr, offset, value TSRMLS_CC);
 	} else {
@@ -248,7 +255,7 @@ PHP_METHOD(Fastorm_DataObject, offsetUnset) {
 	ZEPHIR_INIT_VAR(className);
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 95 TSRMLS_CC);
+	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 100 TSRMLS_CC);
 	if (zephir_array_isset(_1, offset)) {
 		zephir_update_property_this(this_ptr, Z_STRVAL_P(offset), Z_STRLEN_P(offset), ZEPHIR_GLOBAL(global_null) TSRMLS_CC);
 	} else {
@@ -262,7 +269,7 @@ PHP_METHOD(Fastorm_DataObject, offsetUnset) {
 PHP_METHOD(Fastorm_DataObject, _initialize) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *className, *_0;
+	zval *className, *_0, *metadata = NULL;
 
 	ZEPHIR_MM_GROW();
 
@@ -270,10 +277,27 @@ PHP_METHOD(Fastorm_DataObject, _initialize) {
 	zephir_get_called_class(className TSRMLS_CC);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
 	if (!(zephir_array_isset(_0, className))) {
-		ZEPHIR_CALL_SELF(NULL, "_processinitialization", NULL, className);
+		ZEPHIR_CALL_SELF(&metadata, "_processinitialization", NULL, className);
+		zephir_check_call_status();
+		ZEPHIR_CALL_SELF(NULL, "initialize", NULL, metadata);
 		zephir_check_call_status();
 	}
 	ZEPHIR_MM_RESTORE();
+
+}
+
+PHP_METHOD(Fastorm_DataObject, initialize) {
+
+	zval *metadata;
+
+	zephir_fetch_params(0, 1, 0, &metadata);
+
+
+
+	if (!(zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC))) {
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STRW(spl_ce_InvalidArgumentException, "Parameter 'metadata' must be an instance of 'Fastorm\\ObjectMetadata'", "", 0);
+		return;
+	}
 
 }
 
@@ -297,7 +321,7 @@ PHP_METHOD(Fastorm_DataObject, _processInitialization) {
 	ZEPHIR_CALL_METHOD(&_0, metadata, "getidfield",  NULL);
 	zephir_check_call_status();
 	zephir_update_static_property_array_multi_ce(fastorm_dataobject_ce, SL("_idFieldCache"), &_0 TSRMLS_CC, SL("z"), 1, className);
-	ZEPHIR_MM_RESTORE();
+	RETURN_CCTOR(metadata);
 
 }
 
@@ -364,7 +388,7 @@ PHP_METHOD(Fastorm_DataObject, unserialize) {
 	zephir_get_class(className, this_ptr, 0 TSRMLS_CC);
 	ZEPHIR_CALL_FUNCTION(&unserialized, "unserialize", &_0, serialized);
 	zephir_check_call_status();
-	zephir_is_iterable(unserialized, &_2, &_1, 0, 0, "fastorm/DataObject.zep", 148);
+	zephir_is_iterable(unserialized, &_2, &_1, 0, 0, "fastorm/DataObject.zep", 160);
 	for (
 	  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_2, &_1)
@@ -383,7 +407,7 @@ PHP_METHOD(Fastorm_DataObject, unserialize) {
 			zephir_check_call_status();
 		}
 		_9 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-		zephir_array_fetch(&_10, _9, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 140 TSRMLS_CC);
+		zephir_array_fetch(&_10, _9, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 152 TSRMLS_CC);
 		if (zephir_array_isset(_10, key)) {
 			zephir_update_property_zval_zval(this_ptr, key, value TSRMLS_CC);
 		} else {
@@ -422,7 +446,7 @@ PHP_METHOD(Fastorm_DataObject, getDataForSerialization) {
 		ZEPHIR_CALL_METHOD(&iterate, this_ptr, "getdata",  NULL);
 		zephir_check_call_status();
 	}
-	zephir_is_iterable(iterate, &_1, &_0, 0, 0, "fastorm/DataObject.zep", 167);
+	zephir_is_iterable(iterate, &_1, &_0, 0, 0, "fastorm/DataObject.zep", 179);
 	for (
 	  ; zephir_hash_get_current_data_ex(_1, (void**) &_2, &_0) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_1, &_0)
@@ -467,7 +491,7 @@ PHP_METHOD(Fastorm_DataObject, getDbFormatedData) {
 	ZEPHIR_INIT_VAR(data);
 	array_init(data);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_is_iterable(_0, &_2, &_1, 0, 0, "fastorm/DataObject.zep", 182);
+	zephir_is_iterable(_0, &_2, &_1, 0, 0, "fastorm/DataObject.zep", 194);
 	for (
 	  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_2, &_1)
