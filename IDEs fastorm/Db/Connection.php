@@ -4,15 +4,15 @@ namespace Fastorm\Db;
 
 class Connection {
 
-	public onEvent = [];
+	public $onEvent = [];
 
-	private config = [];
+	private $config = [];
 
-	private driver;
+	private $driver;
 
-	private translator;
+	private $translator;
 
-	private connected;
+	private $connected;
 
 
 	/**
@@ -28,7 +28,7 @@ class Connection {
 	 * @param  string name connection name
 	 * @throws DibiException
 	 */
-	public function __construct(config, name = null);
+	public function __construct($config, $name = null){}
 
 
 
@@ -36,7 +36,7 @@ class Connection {
 	 * Automatically frees the resources allocated for this result set.
 	 * @return void
 	 */
-	public function __destruct();
+	public function __destruct(){}
 
 
 
@@ -44,7 +44,7 @@ class Connection {
 	 * Connects to a database.
 	 * @return void
 	 */
-	public function connect();
+	public function connect(){}
 
 
 
@@ -52,7 +52,7 @@ class Connection {
 	 * Disconnects from a database.
 	 * @return void
 	 */
-	public function disconnect();
+	public function disconnect(){}
 
 
 
@@ -60,7 +60,7 @@ class Connection {
 	 * Returns TRUE when connection was established.
 	 * @return bool
 	 */
-	public function isConnected();
+	public function isConnected(){}
 
 
 
@@ -71,7 +71,7 @@ class Connection {
 	 * @param  mixed defaultValue default value to use if key not found
 	 * @return mixed
 	 */
-	public function getConfig(key = null, defaultValue = null);
+	public function getConfig($key = null, $defaultValue = null){}
 
 
 
@@ -81,7 +81,7 @@ class Connection {
 	 * Returns the driver and connects to a database in lazy mode.
 	 * @return Fastorm\Db\Drivers\MysqliDriver
 	 */
-	public function getDriver();
+	public function getDriver(){}
 
 
 
@@ -92,7 +92,7 @@ class Connection {
 	 * @return Result|int   result set object (if any)
 	 * @throws Exception
 	 */
-	public function query(args, <\Fastorm\ObjectMetadata> metadata = null);
+	public function query($args, \Fastorm\ObjectMetadata $metadata = null){}
 
 
 
@@ -101,7 +101,7 @@ class Connection {
 	 * @param  array|mixed      one or more arguments
 	 * @throws DibiException
 	 */
-	public function translate(args);
+	public function translate($args){}
 
 
 
@@ -110,7 +110,7 @@ class Connection {
 	 * @param  array
 	 * @return string
 	 */
-	private function translateArgs(args);
+	private function translateArgs($args){}
 
 
 
@@ -121,7 +121,7 @@ class Connection {
 	 * @return Result|int    result set object (if any)
 	 * @throws Exception
 	 */
-	public function nativeQuery(sql, \Fastorm\ObjectMetadata metadata = null);
+	public function nativeQuery($sql, \Fastorm\ObjectMetadata $metadata = null){}
 
 
 
@@ -130,7 +130,7 @@ class Connection {
 	 * @return int  number of rows
 	 * @throws Exception
 	 */
-	public function getAffectedRows();
+	public function getAffectedRows(){}
 
 
 
@@ -140,7 +140,7 @@ class Connection {
 	 * @return int
 	 * @throws Exception
 	 */
-	public function getInsertId(sequence = null);
+	public function getInsertId($sequence = null){}
 
 
 
@@ -149,7 +149,7 @@ class Connection {
 	 * @param  string savepoint optional savepoint name
 	 * @return void
 	 */
-	public function begin(savepoint = null);
+	public function begin($savepoint = null){}
 
 
 
@@ -158,7 +158,7 @@ class Connection {
 	 * @param  string savepoint optional savepoint name
 	 * @return void
 	 */
-	public function commit(savepoint = null);
+	public function commit($savepoint = null){}
 
 
 
@@ -167,7 +167,7 @@ class Connection {
 	 * @param  string savepoint optional savepoint name
 	 * @return void
 	 */
-	public function rollback(savepoint = NULL);
+	public function rollback($savepoint = NULL){}
 
 
 
@@ -177,7 +177,7 @@ class Connection {
 	 * @param \Fastorm\ObjectMetadata metadata
 	 * @return Result
 	 */
-	public function createResultSet(IResultDriver resultDriver, \Fastorm\ObjectMetadata> metadata = null);
+	public function createResultSet(IResultDriver $resultDriver, \Fastorm\ObjectMetadata $metadata = null){}
 
 
 
@@ -186,7 +186,7 @@ class Connection {
 	/**
 	 * @return Query
 	 */
-	public function command();
+	public function command(){}
 
 
 
@@ -194,7 +194,7 @@ class Connection {
 	 * @param  string args   column name
 	 * @return Query
 	 */
-	public function select(args);
+	public function select($args){}
 
 
 
@@ -203,7 +203,7 @@ class Connection {
 	 * @param  array args
 	 * @return Query
 	 */
-	public function update(table, args);
+	public function update($table, $args){}
 
 
 
@@ -212,7 +212,7 @@ class Connection {
 	 * @param  array args
 	 * @return Query
 	 */
-	public function insert(table, args);
+	public function insert($table, $args){}
 
 
 
@@ -220,7 +220,7 @@ class Connection {
 	 * @param  string   table
 	 * @return Query
 	 */
-	public function delete(table);
+	public function delete($table){}
 
 
 

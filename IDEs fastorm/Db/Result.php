@@ -10,20 +10,20 @@ class Result {
 	 * @param \Fastorm\ObjectMetadata metadata
 	 * @return void
 	 */
-	public function __construct(<IResultDriver> driver, <\Fastorm\ObjectMetadata> metadata = null);
+	public function __construct(IResultDriver $driver, \Fastorm\ObjectMetadata $metadata = null){}
 
 	/**
 	 * Returns the result set resource.
 	 * @return mixed
 	 */
-	public function getResource();
+	public function getResource(){}
 
 
 	/**
 	 * Frees the resources allocated for this result set.
 	 * @return void
 	 */
-	public function free();
+	public function free(){}
 
 
 	/**
@@ -31,7 +31,7 @@ class Result {
 	 * @return IResultDriver
 	 * @throws Exception
 	 */
-	public function getResultDriver();
+	public function getResultDriver(){}
 
 
 	
@@ -42,28 +42,28 @@ class Result {
 	 * @return boolean  true on success, false if unable to seek to specified record
 	 * @throws DbException
 	 */
-	public function seek(row);
+	public function seek($row){}
 
 
 	/**
 	 * Required by the Countable interface.
 	 * @return int
 	 */
-	public function count();
+	public function count(){}
 
 
 	/**
 	 * Returns the number of rows in a result set.
 	 * @return int
 	 */
-	public function getRowCount();
+	public function getRowCount(){}
 
 
 	/**
 	 * Required by the IteratorAggregate interface.
 	 * @return ResultIterator
 	 */
-	public function getIterator();
+	public function getIterator(){}
 	
 
 
@@ -72,14 +72,14 @@ class Result {
 	 * and moves the internal cursor to the next position
 	 * @return array    array on success, nonarray if no next record
 	 */
-	public function fetchRow();
+	public function fetchRow(){}
 
 
 	/**
 	 * Like fetchRow(), but returns only first field.
 	 * @return mixed  value on success, false if no next record
 	 */
-	public function fetchSingle();
+	public function fetchSingle(){}
 
 
 	
@@ -90,7 +90,7 @@ class Result {
 	 * @return array
 	 * @throws Exception
 	 */
-	public function fetchPairs(key = null, value = null);
+	public function fetchPairs($key = null, $value = null){}
 
 
 	/**
@@ -99,14 +99,14 @@ class Result {
 	 * @param  string type type (use constant Dibi::*)
 	 * @return self
 	 */
-	public function setType(col, type);
+	public function setType($col, $type){}
 
 
 	/**
 	 * Returns column type.
 	 * @return string|null
 	 */
-	public function getType(col);
+	public function getType($col){}
 	
 	
 }

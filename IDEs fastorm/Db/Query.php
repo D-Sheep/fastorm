@@ -27,24 +27,24 @@ class Query
 	const ASC = "ASC";
 	const DESC = "DESC";
 
-	public static masks;
+	public static $masks;
 
-	public static modifiers;
+	public static $modifiers;
 
-	public static separators;
+	public static $separators;
 
-	public static swithes;
+	public static $swithes;
 
-	protected connection;
+	protected $connection;
 
-	protected setups;
+	protected $setups;
 
 	/**
 	 * Constructor.
 	 * @param \Fastorm\Connection connection Connection to database.
 	 * @return void
 	 */
-	public function __construct(<Connection> connection);
+	public function __construct(Connection $connection){}
 
 	/**
 	 * Appends new argument to the clause.
@@ -52,7 +52,7 @@ class Query
 	 * @param array args 
 	 * @return Query
 	 */
-	public function __call(clause, args);
+	public function __call($clause, $args){}
 
 
 	/**
@@ -60,20 +60,20 @@ class Query
 	 * @param string s
 	 * @return string
 	 */
-	public static function _formatClause( s);
+	public static function _formatClause( $s){}
 
 	/**
 	 * Returns SQL command.
 	 * @return string
 	 */
-	public function getCommand();
+	public function getCommand(){}
 
 
 	/**
 	 * Returns connection.
 	 * @return Connection
 	 */
-	public function getConnection();
+	public function getConnection(){}
 
 
 
@@ -82,7 +82,7 @@ class Query
 	 * @param method
 	 * @return Query
 	 */
-	public function setupResult(method);
+	public function setupResult($method){}
 
 
 
@@ -91,7 +91,7 @@ class Query
 	 * @param ret TODO
 	 * @return Result|int   result set object (if any)
 	 */
-	public function execute(ret = null);
+	public function execute($ret = null){}
 
 
 
@@ -99,21 +99,14 @@ class Query
 	 * Returns first row fo result
 	 * @return Result|int   result set object (if any)
 	 */
-	public function fetchFirst()
-	{
-		if this->_command === "SELECT" {
-			return this->query(this->_export(null, ["%lmt", 1]))->fetchRow();
-		} else {
-			return this->query(this->_export())->fetchRow();
-		}
-	}
+	public function fetchFirst(){}
 
 
 	/**
 	 * Executes query any returns first field of result
 	 * @return Result|int   result set object (if any)
 	 */
-	public function fetchSingle();
+	public function fetchSingle(){}
 
 
 
@@ -122,7 +115,7 @@ class Query
 	 * @param string assoc Associative descriptod
  	 * @return Result|int   result set object (if any)
 	 */
-	public function fetchAssoc(assoc);
+	public function fetchAssoc($assoc){}
 
 
 	/**
@@ -131,7 +124,7 @@ class Query
 	 * @param string value 
 	 * @return array
 	 */
-	public function fetchPairs(string key = null, string value = null);
+	public function fetchPairs(string $key = null, string $value = null){}
 
 
 	/**
@@ -140,7 +133,7 @@ class Query
 	 * @param int limit
 	 * @return Fastorm\Db\ResultIterator
 	 */
-	public function getIterator(offset = null, limit = null);
+	public function getIterator(offset = null, limit = null){}
 
 
 
@@ -148,18 +141,13 @@ class Query
 	 * Returns cout of results
 	 * @return integer
 	 */
-	public function count()
-	{
-		return (int) this->query([
-			"SELECT COUNT(*) FROM (%ex", $this->_export(), ") AS [data]"
-		])->fetchSingle();
-	}
+	public function count(){}
 
 	/**
 	 * Returns SQL query.
 	 * @return string
 	 */
-	final public function __toString();
+	final public function __toString(){}
 
 	/**
 	 * Change a SQL flag.
@@ -167,7 +155,7 @@ class Query
 	 * @param  bool  value
 	 * @return Query  provides a fluent interface
 	 */
-	public function setFlag(flag, value = true);
+	public function setFlag($flag, $value = true){}
 
 
 
@@ -176,7 +164,7 @@ class Query
 	 * @param  string  flag name
 	 * @return boolean
 	 */
-	final public function getFlag(flag);
+	final public function getFlag($flag){}
 
 	/**
 	 * Generates parameters for Translator.
@@ -184,7 +172,7 @@ class Query
 	 * @param args
 	 * @return array
 	 */
-	protected function _export(clause = null, args = null);
+	protected function _export($clause = null, $args = null){}
 
 
 }
