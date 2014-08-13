@@ -119,7 +119,7 @@ class Result {
 		var row;
 		let row = this->getResultDriver()->fetchRow(true);
 		if !is_array(row) {
-			return null;
+			return false;
 		}
 		let this->fetched = true;
 		let row = this->normalize(row);
@@ -147,7 +147,7 @@ class Result {
 		var row;
 		let row = this->getResultDriver()->fetchRow(true);
 		if !is_array(row) {
-			return null;
+			return false;
 		}
 		let this->fetched = true;
 		let row = this->normalize(row);
@@ -277,7 +277,7 @@ class Result {
 
 			let value = row[key];
 
-			if (value === null || value === false || type === Query::TYPE_TEXT) {
+			if (value === false || type === Query::TYPE_TEXT) {
 				continue;
 			} 
 
