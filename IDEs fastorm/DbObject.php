@@ -3,7 +3,7 @@
 
 namespace Fastorm;
 
-class DbObject
+class DbObject extends DataObject
 {
 	/**
 	 * 
