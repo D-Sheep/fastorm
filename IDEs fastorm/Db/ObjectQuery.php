@@ -24,13 +24,13 @@ class ObjectQuery extends Db\Query
      * TODO
      * @param String onProperty
      * @param array  justColumns
-     * @return ObjectQuery
+     * @return $this
      */
 	public function joinObject($onProperty, $justColumns = null){}
 
 	/**
      * Joins all related models in relation belongs to.
-     * @return ObjectQuery
+     * @return $this
      */
 	public function joinAll(){}
 

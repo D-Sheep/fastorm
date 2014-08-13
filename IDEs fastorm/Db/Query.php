@@ -7,6 +7,15 @@ namespace Fastorm\Db;
  *
  *
  * Inspired by David Grudl"s dibi - DibiFLuent
+ *
+ * @method \Fastorm\Db\Query where($args = null)
+ * @method \Fastorm\Db\Query join($args = null)
+ * @method \Fastorm\Db\Query leftJoin($args = null)
+ * @method \Fastorm\Db\Query select($args = null)
+ * @method \Fastorm\Db\Query groupBy($args = null)
+ * @method \Fastorm\Db\Query orderBy($args = null)
+ * @method \Fastorm\Db\Query innerJoin($args = null)
+ * @method \Fastorm\Db\Query rightJoin($args = null)
  */
 class Query
 {

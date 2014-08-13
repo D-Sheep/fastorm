@@ -13,7 +13,7 @@ class DbObject
 	
 	/**
 	 * 
-	 * @return ObjectQuery
+	 * @return \Fastorm\ObjectQuery
 	 */
 	public static function getSelect(){}
 
