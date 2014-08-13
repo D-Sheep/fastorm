@@ -66,7 +66,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         return data;
     }
 
-    public function offsetExists(offset) -> bool {
+    public function offsetExists(offset) -> boolean {
         return isset this->{offset} || isset this->_data[offset];
     }
 
@@ -159,7 +159,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     }
 
-    public function getDataForSerialization(bool justClass = false) -> array
+    public function getDataForSerialization(boolean justClass = false) -> array
     {
     	var key, value, iterate;
     	array data;
@@ -179,7 +179,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         return data;
     }
 
-    public function getDbFormatedData(bool withoutAutoincrementKeys = false) -> array {
+    public function getDbFormatedData(boolean withoutAutoincrementKeys = false) -> array {
     	var propName, propFlag, className;
     	array data;
     	let className = get_class(this);
