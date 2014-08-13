@@ -259,10 +259,16 @@ class Query
 	
 	public function fetchFirst()
 	{
+		var ret;
 		if this->command === "SELECT" {
-			return this->query(this->_export(null, ["%lmt", 1]))->fetchRow();
+			let ret = this->query(this->_export(null, ["%lmt", 1]))->fetchRow();
 		} else {
-			return this->query(this->_export())->fetchRow();
+			let ret = this->query(this->_export())->fetchRow();
+		}
+		if ret === false {
+			return null;
+		} else {
+			return ret;
 		}
 	}
 

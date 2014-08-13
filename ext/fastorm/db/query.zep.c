@@ -539,7 +539,7 @@ PHP_METHOD(Fastorm_Db_Query, fetchFirst) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
 	zval *_3;
-	zval *_0, *_1 = NULL, *_2 = NULL, *_4 = NULL;
+	zval *ret = NULL, *_0, *_1 = NULL, *_2 = NULL, *_4 = NULL;
 
 	ZEPHIR_MM_GROW();
 
@@ -557,17 +557,20 @@ PHP_METHOD(Fastorm_Db_Query, fetchFirst) {
 		zephir_check_call_status();
 		ZEPHIR_CALL_METHOD(&_1, this_ptr, "query", NULL, _2);
 		zephir_check_call_status();
-		ZEPHIR_RETURN_CALL_METHOD(_1, "fetchrow", NULL);
+		ZEPHIR_CALL_METHOD(&ret, _1, "fetchrow",  NULL);
 		zephir_check_call_status();
-		RETURN_MM();
 	} else {
 		ZEPHIR_CALL_METHOD(&_2, this_ptr, "_export",  NULL);
 		zephir_check_call_status();
 		ZEPHIR_CALL_METHOD(&_1, this_ptr, "query", NULL, _2);
 		zephir_check_call_status();
-		ZEPHIR_RETURN_CALL_METHOD(_1, "fetchrow", NULL);
+		ZEPHIR_CALL_METHOD(&ret, _1, "fetchrow",  NULL);
 		zephir_check_call_status();
-		RETURN_MM();
+	}
+	if (ZEPHIR_IS_FALSE_IDENTICAL(ret)) {
+		RETURN_MM_NULL();
+	} else {
+		RETURN_CCTOR(ret);
 	}
 
 }
@@ -741,7 +744,7 @@ PHP_METHOD(Fastorm_Db_Query, query) {
 	ZEPHIR_CALL_METHOD(&res, _0, "query", NULL, queryArgs);
 	zephir_check_call_status();
 	_1 = zephir_fetch_nproperty_this(this_ptr, SL("setups"), PH_NOISY_CC);
-	zephir_is_iterable(_1, &_3, &_2, 0, 0, "fastorm/db/Query.zep", 322);
+	zephir_is_iterable(_1, &_3, &_2, 0, 0, "fastorm/db/Query.zep", 328);
 	for (
 	  ; zephir_hash_get_current_data_ex(_3, (void**) &_4, &_2) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_3, &_2)
@@ -868,14 +871,14 @@ PHP_METHOD(Fastorm_Db_Query, _export) {
 			array_init_size(data, 2);
 			_2 = zephir_fetch_nproperty_this(this_ptr, SL("clauses"), PH_NOISY_CC);
 			ZEPHIR_OBS_VAR(_3);
-			zephir_array_fetch(&_3, _2, clause, PH_NOISY, "fastorm/db/Query.zep", 373 TSRMLS_CC);
+			zephir_array_fetch(&_3, _2, clause, PH_NOISY, "fastorm/db/Query.zep", 379 TSRMLS_CC);
 			zephir_array_update_string(&data, SL("clause"), &_3, PH_COPY | PH_SEPARATE);
 		} else {
 			array_init(return_value);
 			RETURN_MM();
 		}
 	}
-	zephir_is_iterable(data, &_5, &_4, 0, 0, "fastorm/db/Query.zep", 391);
+	zephir_is_iterable(data, &_5, &_4, 0, 0, "fastorm/db/Query.zep", 397);
 	for (
 	  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
 	  ; zephir_hash_move_forward_ex(_5, &_4)
@@ -883,7 +886,7 @@ PHP_METHOD(Fastorm_Db_Query, _export) {
 		ZEPHIR_GET_HMKEY(cls, _5, _4);
 		ZEPHIR_GET_HVALUE(statement, _6);
 		if (Z_TYPE_P(statement) != IS_NULL) {
-			zephir_array_append(&ret, cls, PH_SEPARATE, "fastorm/db/Query.zep", 381);
+			zephir_array_append(&ret, cls, PH_SEPARATE, "fastorm/db/Query.zep", 387);
 			_1 = zephir_fetch_nproperty_this(this_ptr, SL("command"), PH_NOISY_CC);
 			_7 = ZEPHIR_IS_IDENTICAL(cls, _1);
 			if (_7) {
@@ -896,26 +899,26 @@ PHP_METHOD(Fastorm_Db_Query, _export) {
 				_10 = zephir_fetch_nproperty_this(this_ptr, SL("flags"), PH_NOISY_CC);
 				zephir_array_keys(_9, _10 TSRMLS_CC);
 				zephir_fast_join_str(_8, SL(" "), _9 TSRMLS_CC);
-				zephir_array_append(&ret, _8, PH_SEPARATE, "fastorm/db/Query.zep", 383);
+				zephir_array_append(&ret, _8, PH_SEPARATE, "fastorm/db/Query.zep", 389);
 			}
-			zephir_is_iterable(statement, &_12, &_11, 0, 0, "fastorm/db/Query.zep", 388);
+			zephir_is_iterable(statement, &_12, &_11, 0, 0, "fastorm/db/Query.zep", 394);
 			for (
 			  ; zephir_hash_get_current_data_ex(_12, (void**) &_13, &_11) == SUCCESS
 			  ; zephir_hash_move_forward_ex(_12, &_11)
 			) {
 				ZEPHIR_GET_HVALUE(arg, _13);
-				zephir_array_append(&ret, arg, PH_SEPARATE, "fastorm/db/Query.zep", 386);
+				zephir_array_append(&ret, arg, PH_SEPARATE, "fastorm/db/Query.zep", 392);
 			}
 		}
 	}
 	if (Z_TYPE_P(additionalArgs) != IS_NULL) {
-		zephir_is_iterable(additionalArgs, &_15, &_14, 0, 0, "fastorm/db/Query.zep", 395);
+		zephir_is_iterable(additionalArgs, &_15, &_14, 0, 0, "fastorm/db/Query.zep", 401);
 		for (
 		  ; zephir_hash_get_current_data_ex(_15, (void**) &_16, &_14) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_15, &_14)
 		) {
 			ZEPHIR_GET_HVALUE(statement, _16);
-			zephir_array_append(&ret, statement, PH_SEPARATE, "fastorm/db/Query.zep", 393);
+			zephir_array_append(&ret, statement, PH_SEPARATE, "fastorm/db/Query.zep", 399);
 		}
 	}
 	RETURN_CCTOR(ret);

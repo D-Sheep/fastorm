@@ -112,7 +112,7 @@ class Result {
 	/**
 	 * Fetches the row at current position, process optional type conversion.
 	 * and moves the internal cursor to the next position
-	 * @return DibiRow|false  array on success, false if no next record
+	 * @return DibiRow|null  array on success, false if no next record
 	 */
 	public function fetchRow()
 	{
