@@ -53,7 +53,7 @@ PHP_METHOD(Fastorm_Db_ColumnInfo, detectType) {
 	_0 = zephir_fetch_static_property_ce(fastorm_db_columninfo_ce, SL("patterns") TSRMLS_CC);
 	if (ZEPHIR_IS_EMPTY(_0)) {
 		ZEPHIR_INIT_VAR(_1);
-		array_init_size(_1, 13);
+		array_init_size(_1, 12);
 		add_assoc_stringl_ex(_1, SS("^_"), SL("s"), 1);
 		add_assoc_stringl_ex(_1, SS("BYTEA|BLOB|BIN"), SL("bin"), 1);
 		add_assoc_stringl_ex(_1, SS("TEXT|CHAR|POINT|INTERVAL"), SL("s"), 1);

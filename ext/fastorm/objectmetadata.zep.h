@@ -19,6 +19,7 @@ PHP_METHOD(Fastorm_ObjectMetadata, getJoins);
 PHP_METHOD(Fastorm_ObjectMetadata, getAliases);
 PHP_METHOD(Fastorm_ObjectMetadata, toPropertyName);
 PHP_METHOD(Fastorm_ObjectMetadata, makeAlias);
+PHP_METHOD(Fastorm_ObjectMetadata, getAutoincrementKey);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_objectmetadata___construct, 0, 0, 4)
 	ZEND_ARG_INFO(0, reflection)
@@ -81,5 +82,6 @@ ZEPHIR_INIT_FUNCS(fastorm_objectmetadata_method_entry) {
 	PHP_ME(Fastorm_ObjectMetadata, getAliases, arginfo_fastorm_objectmetadata_getaliases, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_ObjectMetadata, toPropertyName, arginfo_fastorm_objectmetadata_topropertyname, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_ObjectMetadata, makeAlias, arginfo_fastorm_objectmetadata_makealias, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_ObjectMetadata, getAutoincrementKey, NULL, ZEND_ACC_PUBLIC)
   PHP_FE_END
 };

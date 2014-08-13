@@ -28,7 +28,7 @@ abstract class DbObject extends DataObject
 	/**
 	 *	@metadata only for powerup (private)
 	 */
-	public static function getById(id, boolean joinAll = true, <ObjectMetadata> metadata = null) {
+	public static function getById(id, boolean joinAll = false, <ObjectMetadata> metadata = null) {
 		var select;
 		if metadata === null {
 			let metadata = self::getMetadata();
@@ -40,7 +40,7 @@ abstract class DbObject extends DataObject
 			select->__call("where", [metadata->getTable().".".metadata->getIdField()." = %i", id]);
 		}
 		return select->fetchFirst();
-	} 
+	}
 
 	public function __call(method, args)
 	{
@@ -56,7 +56,12 @@ abstract class DbObject extends DataObject
 
 		let metadata = self::getMetadata();
 		let propertyName = ObjectMetadata::toPropertyName(m[1]);
+		if metadata->hasJoin(propertyName."_id") {
+			let propertyName = propertyName . "_id";
+		} 
 		let joinedMetadata = metadata->getJoin(propertyName);
+
+		//var_dump("META", joinedMetadata, propertyName);
 
 		if joinedMetadata === null {
 			throw new Exception("Method '".method."' not implemented or target object not defined");
@@ -71,7 +76,7 @@ abstract class DbObject extends DataObject
 				if isset this->_data[alias] {
 					var key, value;
 					let ret = joinedMetadata->newInstance();
-					for key, value in joinedMetadata {
+					for key, value in joinedMetadata->getFields() {
 						let alias = ObjectMetadata::makeAlias(propertyName, key);
 						if isset this->_data[alias] {
 							let ret->{key} = this->_data[alias];
@@ -104,19 +109,31 @@ abstract class DbObject extends DataObject
 
 	}
 
+	protected function onBeforeCreate(calledFromSave = false) {
+
+	}
+
+	protected function onBeforeUpdate(remove = false) {
+
+	}
+
+	protected function onAfterUpdate(removed = false) {
+
+	}
 
 	public function create(boolean insertIgnore = false) -> <DbObject>
 	{
-		var db, metadata, autoincrement;
+		var db, metadata, autoincrement, query;
+		this->onBeforeCreate();
 		let metadata = self::getMetadata();
 		let db = self::getDbContextWithMetadata(metadata);
 
-		db->insert(metadata->getTable(), this->getDbFormatedData(true));
+		let query = db->insert(metadata->getTable(), this->getDbFormatedData(true));
 		if insertIgnore {
-			db->setFlag("IGNORE");
+			query->setFlag("IGNORE");
 		}
 
-		let this->_affectedRows = db->execute();
+		let this->_affectedRows = query->execute();
 
 		let autoincrement = metadata->getAutoincrementKey();
 		if this->_affectedRows && autoincrement !== null {
@@ -127,42 +144,113 @@ abstract class DbObject extends DataObject
 
 	public function save() -> <DbObject>
 	{
-		var db, metadata, autoincrement, data, lastInsert;
+		var db, metadata, autoincrement, data, lastInsert, query;
+		this->onBeforeCreate(true);
+		this->onBeforeUpdate();
 		let metadata = self::getMetadata();
 		let db = self::getDbContextWithMetadata(metadata);
 		let data = [];
 		let lastInsert = "";
 		let autoincrement = null;
 
-		var propName, propFlag;
+		var propName, propFlag, e;
 
         for propName, propFlag in metadata->getFields() {
     		if !(propFlag & ObjectMetadata::AUTOINCREMENT) {
-				let insertData[propName] = this->{propName};
+				let data[propName] = this->{propName};
     		} else {
     			let lastInsert = "`".propName."` = LAST_INSERT_ID(`".propName."`)";
     			let autoincrement = propName;
     		}
-
         }
 
-		db->query("INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data);
-		if insertIgnore {
-			db->setFlag("IGNORE");
-		}
+		let query = db->query("INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data);
+		
 
-		let this->_affectedRows = db->execute();
+		let this->_affectedRows = query->execute();
 
 		if this->_affectedRows && autoincrement !== null {
-			let this->{autoincrement} = db->getInsertId();
+			try {
+				let this->{autoincrement} = db->getInsertId();
+			} catch Db\DbException, e {
+				e->getMessage();
+			}
 		}
+
+		if this->_affectedRows {
+			this->onAfterUpdate();
+		}
+
 		return this;
 	}
 
-	public function update(array onlyColumns = null) -> <DbObject>
+	public function update(onlyColumnsArray = null) -> <DbObject>
 	{
+		var db, metadata, autoincrement, data, query;
+		this->onBeforeUpdate();
+		let metadata = self::getMetadata();
+		let db = self::getDbContextWithMetadata(metadata);
+		let data = [];
+		let autoincrement = null;
 
+		var propName, propFlag, keys;
+
+		let keys = [];
+
+        for propName, propFlag in metadata->getFields() {
+    		
+    		if propFlag & ObjectMetadata::KEY {
+    			let keys[propName] = this->{propName};
+    		} else {
+    			if onlyColumnsArray === null || in_array(propName, onlyColumnsArray) {
+	    			let data[propName] = this->{propName};
+	    		} 
+    		}
+        }
+
+        if count(data) === 0 {
+        	let this->_affectedRows = 0;
+        } else {
+        	let query = db->update(metadata->getTable(), data);
+        	query->__call("where", ["%and", keys]);
+			let this->_affectedRows = query->execute();
+        }
+
+        if this->_affectedRows {
+			this->onAfterUpdate();
+		}
+
+		return this;
 	}
+
+	public function delete() -> <DbObject>
+	{
+		var db, metadata, autoincrement, query;
+		this->onBeforeUpdate();
+		let metadata = self::getMetadata();
+		let db = self::getDbContextWithMetadata(metadata);
+		let autoincrement = null;
+
+		var propName, propFlag, keys;
+
+		let keys = [];
+
+        for propName, propFlag in metadata->getFields() {
+    		if propFlag & ObjectMetadata::KEY {
+    			let keys[propName] = this->{propName};
+    		}
+        }
+
+        let query = db->delete(metadata->getTable());
+    	query->__call("where", ["%and", keys]);
+		let this->_affectedRows = query->execute();
+
+        if this->_affectedRows {
+			this->onAfterUpdate();
+		}
+
+		return this;
+	} 
 
 	protected static function hasMany() 
 	{

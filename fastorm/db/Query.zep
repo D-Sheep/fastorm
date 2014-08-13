@@ -37,22 +37,22 @@ class Query
 
 	protected connection;
 
-	private _command;
+	protected command;
 
 	protected setups;
 
-	private _cursor;
+	protected cursor;
 
-	private _clauses;
+	protected clauses;
 
-	private _flags;
+	protected flags;
 
 	public function __construct(<Connection> connection) {
 		let this->connection = connection;
 		if empty self::masks {
 			this->staticInitialize();
 		}
-		let this->_flags = [];
+		let this->flags = [];
 		let this->setups = [];
 	}
 
@@ -98,30 +98,30 @@ class Query
 		];
 	}
 
-	public function __call(clause, args)  
+	public function __call(clause, clauseArgs)  
 	{
 		var sep, argument, removeArray, cursor;
 
 
 
-		let removeArray = count(args) === 1 && args[0] === false;
+		let removeArray = count(clauseArgs) === 1 && clauseArgs[0] === false;
 
 		let clause = self::_formatClause(clause);
 
-		if empty this->_command {
+		if empty this->command {
 			this->initialize(clause);
 		}
 
 		// auto-switch to a clause
 		if isset self::swithes[clause] {
-			let this->_cursor = self::swithes[clause];
-			let cursor = this->_cursor;
+			let this->cursor = self::swithes[clause];
+			let cursor = this->cursor;
 		} 
 
-		if array_key_exists(clause, this->_clauses) {
+		if array_key_exists(clause, this->clauses) {
 			// append to clause
-			let this->_cursor = clause;
-			let cursor = this->_cursor;
+			let this->cursor = clause;
+			let cursor = this->cursor;
 
 			if removeArray{
 				let this->clauses[cursor] = null;
@@ -131,10 +131,10 @@ class Query
 			if isset(self::$separators[clause]) {
 				let sep = self::$separators[clause];
 				if sep === false { // means: replace
-					let this->_clauses[clause] = [];
+					let this->clauses[clause] = [];
 				} else {
-					if !empty this->_clauses[clause] {
-						let this->_clauses[clause][] = sep;
+					if !empty this->clauses[clause] {
+						let this->clauses[clause][] = sep;
 					}
 				}
 			}
@@ -144,24 +144,24 @@ class Query
 			if removeArray {
 				return this;
 			}
-			let cursor = this->_cursor;
+			let cursor = this->cursor;
 
-			let this->_clauses[cursor][] = clause;
+			let this->clauses[cursor][] = clause;
 		}
 
-		if this->_cursor === null {
-			let this->_cursor = clause;
-			let cursor = this->_cursor;
+		if this->cursor === null {
+			let this->cursor = clause;
+			let cursor = this->cursor;
 		}
 
-		if !isset this->_clauses[cursor] {
-			let this->_clauses[cursor] = [];
+		if !isset this->clauses[cursor] {
+			let this->clauses[cursor] = [];
 		}
 
 		
 		// special types or argument
-		if count(args) === 1 {
-			let argument = args[0];
+		if count(clauseArgs) === 1 {
+			let argument = clauseArgs[0];
 			
 			// TODO: really ignore TRUE?
 			if argument === true { // flag
@@ -169,26 +169,26 @@ class Query
 			}
 
 			if is_string(argument) && preg_match("#^[a-z:_][a-z0-9_.:]*$#i", argument) { // identifier
-				let args = ["%n", argument];
+				let clauseArgs = ["%n", argument];
 
 			} else {
 				if is_array(argument) || ((argument instanceof \Traversable) && !(argument instanceof self)) { // any array
 					if isset(self::$modifiers[clause]) {
-						let args = [ self::$modifiers[clause], argument ];
+						let clauseArgs = [ self::$modifiers[clause], argument ];
 					} else {
 						if is_string(key(argument)) { // associative array
-							let args = [ "%a", argument ];
+							let clauseArgs = [ "%a", argument ];
 						}
 					}
 				}
 			} // case $arg === FALSE is handled above
 		}
 
-		for argument in args {
+		for argument in clauseArgs {
 			if (argument instanceof self) {
 				let argument = "(" . argument->__toString() . ")";
 			}
-			let this->_clauses[this->_cursor][] = argument;
+			let this->clauses[this->cursor][] = argument;
 		}
 
 
@@ -197,12 +197,12 @@ class Query
 
 	private function initialize(string clause) {
 		if isset self::masks[clause] {
-			let this->_clauses = array_fill_keys(self::masks[clause], null);
+			let this->clauses = array_fill_keys(self::masks[clause], null);
 		} else {
-			let this->_clauses = [];
+			let this->clauses = [];
 		}
-		let this->_cursor = clause;
-		let this->_command = clause;
+		let this->cursor = clause;
+		let this->command = clause;
 	}
 
 
@@ -220,7 +220,7 @@ class Query
 	 */
 	public function getCommand()
 	{
-		return this->_command;
+		return this->command;
 	}
 
 
@@ -259,7 +259,7 @@ class Query
 	
 	public function fetchFirst()
 	{
-		if this->_command === "SELECT" {
+		if this->command === "SELECT" {
 			return this->query(this->_export(null, ["%lmt", 1]))->fetchRow();
 		} else {
 			return this->query(this->_export())->fetchRow();
@@ -270,7 +270,7 @@ class Query
 
 	public function fetchSingle()
 	{
-		if this->_command === "SELECT" {
+		if this->command === "SELECT" {
 			return this->query(this->_export(null, ["%lmt", 1]))->fetchSingle();
 		} else {
 			return this->query(this->_export())->fetchSingle();
@@ -312,10 +312,10 @@ class Query
 
 
 
-	protected function query(args)
+	protected function query(queryArgs)
 	{
 		var res, setup;
-		let res = this->connection->query(args);
+		let res = this->connection->query(queryArgs);
 		for setup in this->setups {
 			call_user_func_array([ res, array_shift(setup) ], setup);
 		}
@@ -337,9 +337,9 @@ class Query
 	{
 		let flag = strtoupper(flag);
 		if value {
-			let this->_flags[flag] = true;
+			let this->flags[flag] = true;
 		} else {
-			unset(this->_flags[flag]);
+			unset(this->flags[flag]);
 		}
 		return this;
 	}
@@ -353,24 +353,24 @@ class Query
 	 */
 	final public function getFlag(flag)
 	{
-		return isset(this->_flags[strtoupper(flag)]);
+		return isset(this->flags[strtoupper(flag)]);
 	}
 
 
-	protected function _export(clause = null, args = null)
+	protected function _export(var clause = null, var additionalArgs = null)
 	{
-		var data, cls, statement, arg;
-		if args === null {
-			let args = [];
-		}
-		if clause === null {
-			let data = this->_clauses;
+		var data, cls, statement, arg, ret;
 
+		let ret = [];
+
+		
+		if clause === null {
+			let data = this->clauses;
 		} else {
 			let clause = self::_formatClause(clause);
 
-			if array_key_exists(clause, this->_clauses) {
-				let data = [ clause: this->_clauses[clause] ];
+			if array_key_exists(clause, this->clauses) {
+				let data = [ "clause": this->clauses[clause] ];
 			} else {
 				return [];
 			}
@@ -378,17 +378,24 @@ class Query
 
 		for cls, statement in data {
 			if statement !== null {
-				let args[] = cls;
-				if cls === this->_command && count(this->_flags) > 0 {
-					let args[] = implode(" ", array_keys(this->_flags));
+				let ret[] = cls;
+				if cls === this->command && count(this->flags) > 0 {
+					let ret[] = implode(" ", array_keys(this->flags));
 				}
 				for arg in statement {
-					let args[] = arg;
+					let ret[] = arg;
 				}
 			}
 		}
 
-		return args;
+		if additionalArgs !== null {
+			for statement in additionalArgs {
+				let ret[] = statement;
+			}
+		}
+
+
+		return ret;
 	}
 
 

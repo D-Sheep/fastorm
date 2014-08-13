@@ -25,6 +25,9 @@ PHP_METHOD(Fastorm_Db_Connection, select);
 PHP_METHOD(Fastorm_Db_Connection, update);
 PHP_METHOD(Fastorm_Db_Connection, insert);
 PHP_METHOD(Fastorm_Db_Connection, delete);
+PHP_METHOD(Fastorm_Db_Connection, addEvent);
+PHP_METHOD(Fastorm_Db_Connection, onEvent);
+PHP_METHOD(Fastorm_Db_Connection, event);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection___construct, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
@@ -93,6 +96,19 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_delete, 0, 0, 1)
 	ZEND_ARG_INFO(0, table)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_addevent, 0, 0, 1)
+	ZEND_ARG_INFO(0, callback)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_onevent, 0, 0, 0)
+	ZEND_ARG_INFO(0, event)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_event, 0, 0, 1)
+	ZEND_ARG_INFO(0, type)
+	ZEND_ARG_INFO(0, sql)
+ZEND_END_ARG_INFO()
+
 ZEPHIR_INIT_FUNCS(fastorm_db_connection_method_entry) {
 	PHP_ME(Fastorm_Db_Connection, __construct, arginfo_fastorm_db_connection___construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(Fastorm_Db_Connection, __destruct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
@@ -116,5 +132,8 @@ ZEPHIR_INIT_FUNCS(fastorm_db_connection_method_entry) {
 	PHP_ME(Fastorm_Db_Connection, update, arginfo_fastorm_db_connection_update, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, insert, arginfo_fastorm_db_connection_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, delete, arginfo_fastorm_db_connection_delete, ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Connection, addEvent, arginfo_fastorm_db_connection_addevent, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_Db_Connection, onEvent, arginfo_fastorm_db_connection_onevent, ZEND_ACC_PROTECTED)
+	PHP_ME(Fastorm_Db_Connection, event, arginfo_fastorm_db_connection_event, ZEND_ACC_PROTECTED)
   PHP_FE_END
 };

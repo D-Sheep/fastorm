@@ -250,7 +250,7 @@ PHP_METHOD(Fastorm_ObjectMetadata, createMetadata) {
 		ZVAL_NULL(idField);
 	}
 	ZEPHIR_INIT_BNVAR(_1);
-	ZVAL_STRING(_1, "/@table (A-Za-z0-9_]+)/i", 0);
+	ZVAL_STRING(_1, "/@table ([A-Za-z0-9_]+)/i", 0);
 	Z_SET_ISREF_P(matches);
 	ZEPHIR_CALL_FUNCTION(&_4, "preg_match", &_3, _1, docs, matches);
 	zephir_check_temp_parameter(_1);
@@ -518,13 +518,40 @@ PHP_METHOD(Fastorm_ObjectMetadata, makeAlias) {
 
 
 	ZEPHIR_SINIT_VAR(_0);
-	ZVAL_STRING(&_0, "_id$", 0);
+	ZVAL_STRING(&_0, "/_id$/", 0);
 	ZEPHIR_SINIT_VAR(_1);
 	ZVAL_STRING(&_1, "", 0);
 	ZEPHIR_CALL_FUNCTION(&_2, "preg_replace", &_3, &_0, &_1, sourceProperty);
 	zephir_check_call_status();
 	ZEPHIR_CONCAT_SVSV(return_value, "r_", _2, "_", targetProperty);
 	RETURN_MM();
+
+}
+
+PHP_METHOD(Fastorm_ObjectMetadata, getAutoincrementKey) {
+
+	HashTable *_2;
+	HashPosition _1;
+	zval *found = NULL, *key = NULL, *flag = NULL, *_0, **_3;
+
+	ZEPHIR_MM_GROW();
+
+	ZEPHIR_INIT_VAR(found);
+	ZVAL_NULL(found);
+	_0 = zephir_fetch_nproperty_this(this_ptr, SL("fields"), PH_NOISY_CC);
+	zephir_is_iterable(_0, &_2, &_1, 0, 0, "fastorm/ObjectMetadata.zep", 214);
+	for (
+	  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
+	  ; zephir_hash_move_forward_ex(_2, &_1)
+	) {
+		ZEPHIR_GET_HMKEY(key, _2, _1);
+		ZEPHIR_GET_HVALUE(flag, _3);
+		if (((int) (zephir_get_numberval(flag)) & 4)) {
+			ZEPHIR_CPY_WRT(found, key);
+			break;
+		}
+	}
+	RETURN_CCTOR(found);
 
 }
 

@@ -23,6 +23,8 @@ ZEPHIR_INIT_CLASS(Fastorm_Db_DbException) {
 
 	zend_declare_property_null(fastorm_db_dbexception_ce, SL("sql"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
+	zend_declare_property_null(fastorm_db_dbexception_ce, SL("args"), ZEND_ACC_PROTECTED TSRMLS_CC);
+
 	return SUCCESS;
 
 }
@@ -30,10 +32,10 @@ ZEPHIR_INIT_CLASS(Fastorm_Db_DbException) {
 PHP_METHOD(Fastorm_Db_DbException, __construct) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *exception, *code = NULL, *previous = NULL, *sql = NULL;
+	zval *exception, *code = NULL, *previous = NULL, *sql = NULL, *args = NULL;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 3, &exception, &code, &previous, &sql);
+	zephir_fetch_params(1, 1, 4, &exception, &code, &previous, &sql, &args);
 
 	if (!code) {
 		code = ZEPHIR_GLOBAL(global_null);
@@ -44,11 +46,15 @@ PHP_METHOD(Fastorm_Db_DbException, __construct) {
 	if (!sql) {
 		sql = ZEPHIR_GLOBAL(global_null);
 	}
+	if (!args) {
+		args = ZEPHIR_GLOBAL(global_null);
+	}
 
 
 	ZEPHIR_CALL_PARENT(NULL, fastorm_db_dbexception_ce, this_ptr, "__construct", NULL, exception, code, previous);
 	zephir_check_call_status();
 	zephir_update_property_this(this_ptr, SL("sql"), sql TSRMLS_CC);
+	zephir_update_property_this(this_ptr, SL("args"), args TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -57,6 +63,13 @@ PHP_METHOD(Fastorm_Db_DbException, getSql) {
 
 
 	RETURN_MEMBER(this_ptr, "sql");
+
+}
+
+PHP_METHOD(Fastorm_Db_DbException, getArgs) {
+
+
+	RETURN_MEMBER(this_ptr, "args");
 
 }
 

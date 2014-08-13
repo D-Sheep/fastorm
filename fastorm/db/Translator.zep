@@ -161,7 +161,7 @@ class Translator {
 		let ret = (string) implode(" ", sql);
 
 		if (this->hasError) {
-			throw new DbException("SQL translate error", 0, sql);
+			throw new DbException("SQL translate error", 0, null, ret, args);
 		}
 
 		// apply limit
@@ -497,6 +497,7 @@ class Translator {
 		}}}}}}
 
 		let this->hasError = true;
+
 		return "**Unexpected " . gettype(value) . "**";
 	}
 
@@ -651,8 +652,6 @@ class Translator {
 			}
 		}
 
-		echo "\n\n";
-		var_dump(matches);
 		return "this should be never executed";
 	}
 

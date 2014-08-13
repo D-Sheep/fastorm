@@ -105,7 +105,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, connect) {
 		zephir_update_property_this(this_ptr, SL("connection"), _1 TSRMLS_CC);
 	} else {
 		ZEPHIR_INIT_VAR(defaults);
-		array_init_size(defaults, 11);
+		array_init_size(defaults, 9);
 		add_assoc_stringl_ex(defaults, SS("charset"), SL("utf8"), 1);
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "P", 0);
@@ -320,7 +320,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, query) {
 		_10 = zephir_fetch_nproperty_this(this_ptr, SL("connection"), PH_NOISY_CC);
 		ZEPHIR_CALL_FUNCTION(&_11, "mysqli_errno", &_5, _10);
 		zephir_check_call_status();
-		ZEPHIR_CALL_METHOD(NULL, _6, "__construct", NULL, _9, _11, ZEPHIR_GLOBAL(global_null), sql);
+		ZEPHIR_CALL_METHOD(NULL, _6, "__construct", NULL, _9, _11, ZEPHIR_GLOBAL(global_null), ZEPHIR_GLOBAL(global_null), sql);
 		zephir_check_call_status();
 		zephir_throw_exception_debug(_6, "fastorm/db/Drivers/MysqliDriver.zep", 151 TSRMLS_CC);
 		ZEPHIR_MM_RESTORE();

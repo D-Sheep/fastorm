@@ -470,11 +470,11 @@ PHP_METHOD(Fastorm_DataObject, getDataForSerialization) {
 
 PHP_METHOD(Fastorm_DataObject, getDbFormatedData) {
 
-	HashTable *_2;
-	HashPosition _1;
+	HashTable *_3;
+	HashPosition _2;
 	zval *data;
-	zval *withoutAutoincrementKeys_param = NULL, *propName = NULL, *propFlag = NULL, *className, *_0, **_3, *_5 = NULL;
-	zend_bool withoutAutoincrementKeys, _4;
+	zval *withoutAutoincrementKeys_param = NULL, *propName = NULL, *propFlag = NULL, *className, *_0, *_1, **_4, *_6 = NULL;
+	zend_bool withoutAutoincrementKeys, _5;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 0, 1, &withoutAutoincrementKeys_param);
@@ -491,21 +491,22 @@ PHP_METHOD(Fastorm_DataObject, getDbFormatedData) {
 	ZEPHIR_INIT_VAR(data);
 	array_init(data);
 	_0 = zephir_fetch_static_property_ce(fastorm_dataobject_ce, SL("_propCache") TSRMLS_CC);
-	zephir_is_iterable(_0, &_2, &_1, 0, 0, "fastorm/DataObject.zep", 194);
+	zephir_array_fetch(&_1, _0, className, PH_NOISY | PH_READONLY, "fastorm/DataObject.zep", 188 TSRMLS_CC);
+	zephir_is_iterable(_1, &_3, &_2, 0, 0, "fastorm/DataObject.zep", 194);
 	for (
-	  ; zephir_hash_get_current_data_ex(_2, (void**) &_3, &_1) == SUCCESS
-	  ; zephir_hash_move_forward_ex(_2, &_1)
+	  ; zephir_hash_get_current_data_ex(_3, (void**) &_4, &_2) == SUCCESS
+	  ; zephir_hash_move_forward_ex(_3, &_2)
 	) {
-		ZEPHIR_GET_HMKEY(propName, _2, _1);
-		ZEPHIR_GET_HVALUE(propFlag, _3);
-		_4 = !withoutAutoincrementKeys;
-		if (!(_4)) {
-			_4 = !(((int) (zephir_get_numberval(propFlag)) & 4));
+		ZEPHIR_GET_HMKEY(propName, _3, _2);
+		ZEPHIR_GET_HVALUE(propFlag, _4);
+		_5 = !withoutAutoincrementKeys;
+		if (!(_5)) {
+			_5 = !(((int) (zephir_get_numberval(propFlag)) & 4));
 		}
-		if (_4) {
-			ZEPHIR_OBS_NVAR(_5);
-			zephir_read_property_zval(&_5, this_ptr, propName, PH_NOISY_CC);
-			zephir_array_update_zval(&data, propName, &_5, PH_COPY | PH_SEPARATE);
+		if (_5) {
+			ZEPHIR_OBS_NVAR(_6);
+			zephir_read_property_zval(&_6, this_ptr, propName, PH_NOISY_CC);
+			zephir_array_update_zval(&data, propName, &_6, PH_COPY | PH_SEPARATE);
 		}
 	}
 	RETURN_CTOR(data);
