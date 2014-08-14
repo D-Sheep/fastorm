@@ -185,7 +185,7 @@ ZEND_END_ARG_INFO()
 ZEPHIR_INIT_FUNCS(fastorm_dbobject_method_entry) {
 	PHP_ME(Fastorm_DbObject, getDbContext, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, getSelect, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Fastorm_DbObject, getDbContextWithMetadata, arginfo_fastorm_dbobject_getdbcontextwithmetadata, ZEND_ACC_PRIVATE|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_DbObject, getDbContextWithMetadata, arginfo_fastorm_dbobject_getdbcontextwithmetadata, ZEND_ACC_PROTECTED|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, getById, arginfo_fastorm_dbobject_getbyid, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, __call, arginfo_fastorm_dbobject___call, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_DbObject, onBeforeCreate, arginfo_fastorm_dbobject_onbeforecreate, ZEND_ACC_PROTECTED)
@@ -398,7 +398,8 @@ static PHP_METHOD(Fastorm_Db_Connection, disconnect);
 static PHP_METHOD(Fastorm_Db_Connection, isConnected);
 static PHP_METHOD(Fastorm_Db_Connection, getConfig);
 static PHP_METHOD(Fastorm_Db_Connection, getDriver);
-static PHP_METHOD(Fastorm_Db_Connection, query);
+static PHP_METHOD(Fastorm_Db_Connection, queryArray);
+static PHP_METHOD(Fastorm_Db_Connection, __call);
 static PHP_METHOD(Fastorm_Db_Connection, translate);
 static PHP_METHOD(Fastorm_Db_Connection, translateArgs);
 static PHP_METHOD(Fastorm_Db_Connection, nativeQuery);
@@ -427,9 +428,14 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_getconfig, 0, 0, 0)
 	ZEND_ARG_INFO(0, defaultValue)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_query, 0, 0, 1)
-	ZEND_ARG_INFO(0, args)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_queryarray, 0, 0, 1)
+	ZEND_ARG_INFO(0, funcArgs)
 	ZEND_ARG_INFO(0, metadata)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection___call, 0, 0, 2)
+	ZEND_ARG_INFO(0, funcName)
+	ZEND_ARG_INFO(0, arguments)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_translate, 0, 0, 1)
@@ -505,7 +511,8 @@ ZEPHIR_INIT_FUNCS(fastorm_db_connection_method_entry) {
 	PHP_ME(Fastorm_Db_Connection, isConnected, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, getConfig, arginfo_fastorm_db_connection_getconfig, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, getDriver, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Connection, query, arginfo_fastorm_db_connection_query, ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Connection, queryArray, arginfo_fastorm_db_connection_queryarray, ZEND_ACC_PUBLIC)
+	PHP_ME(Fastorm_Db_Connection, __call, arginfo_fastorm_db_connection___call, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, translate, arginfo_fastorm_db_connection_translate, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, translateArgs, arginfo_fastorm_db_connection_translateargs, ZEND_ACC_PRIVATE)
 	PHP_ME(Fastorm_Db_Connection, nativeQuery, arginfo_fastorm_db_connection_nativequery, ZEND_ACC_PUBLIC)

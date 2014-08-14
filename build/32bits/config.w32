@@ -1,0 +1,5 @@
+ARG_ENABLE("fastorm", "enable fastorm", "no", "-Iext/fastorm");
+
+if (PHP_FASTORM != "no") {
+  EXTENSION("fastorm", "fastorm.c");
+}
