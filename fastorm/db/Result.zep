@@ -277,7 +277,7 @@ class Result {
 
 			let value = row[key];
 
-			if (value === false || type === Query::TYPE_TEXT) {
+			if (value === false || value === null || type === Query::TYPE_TEXT) {
 				continue;
 			} 
 

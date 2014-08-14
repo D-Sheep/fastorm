@@ -36,7 +36,7 @@ ZEPHIR_INIT_CLASS(Fastorm_ObjectQuery) {
 PHP_METHOD(Fastorm_ObjectQuery, __construct) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL, *_1 = NULL;
+	zephir_nts_static zephir_fcall_cache_entry *_0 = NULL;
 	zval *connection, *metadata;
 
 	ZEPHIR_MM_GROW();
@@ -55,13 +55,13 @@ PHP_METHOD(Fastorm_ObjectQuery, __construct) {
 	zephir_update_property_this(this_ptr, SL("metadata"), metadata TSRMLS_CC);
 	ZEPHIR_CALL_PARENT(NULL, fastorm_objectquery_ce, this_ptr, "__construct", &_0, connection);
 	zephir_check_call_status();
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "initiate", &_1);
+	ZEPHIR_CALL_METHOD(NULL, this_ptr, "initiateselect", NULL);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 
 }
 
-PHP_METHOD(Fastorm_ObjectQuery, initiate) {
+PHP_METHOD(Fastorm_ObjectQuery, initiateSelect) {
 
 	zval *_7, *_9;
 	HashTable *_4;
@@ -223,12 +223,12 @@ PHP_METHOD(Fastorm_ObjectQuery, joinAll) {
 
 PHP_METHOD(Fastorm_ObjectQuery, joinObjectWith) {
 
-	zval *_6, *_8, *_10;
-	zend_bool _4;
+	zval *_8, *_10, *_11;
+	zend_bool _4, _5;
 	HashTable *_2;
 	HashPosition _1;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *property, *joinMetadata, *joinAlias, *justColumns = NULL, *alias = NULL, *realName = NULL, *aliases = NULL, *select, *_0, **_3, *_5 = NULL, *_7, *_9 = NULL, *_11 = NULL, *_12, *_13 = NULL;
+	zval *property, *joinMetadata, *joinAlias, *justColumns = NULL, *alias = NULL, *realName = NULL, *aliases = NULL, *select, *_0, **_3, *_6 = NULL, *_7 = NULL, *_9, *_12 = NULL, *_13, *_14 = NULL;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 3, 1, &property, &joinMetadata, &joinAlias, &justColumns);
@@ -254,48 +254,54 @@ PHP_METHOD(Fastorm_ObjectQuery, joinObjectWith) {
 		if (!(_4)) {
 			_4 = zephir_fast_in_array(realName, justColumns TSRMLS_CC);
 		}
-		if (_4) {
-			ZEPHIR_INIT_LNVAR(_5);
-			ZEPHIR_CONCAT_VSVSV(_5, joinAlias, ".", realName, " AS ", alias);
-			zephir_array_append(&select, _5, PH_SEPARATE, "fastorm/ObjectQuery.zep", 77);
+		_5 = _4;
+		if (!(_5)) {
+			ZEPHIR_CALL_METHOD(&_6, joinMetadata, "getidfield",  NULL);
+			zephir_check_call_status();
+			_5 = ZEPHIR_IS_IDENTICAL(realName, _6);
+		}
+		if (_5) {
+			ZEPHIR_INIT_LNVAR(_7);
+			ZEPHIR_CONCAT_VSVSV(_7, joinAlias, ".", realName, " AS ", alias);
+			zephir_array_append(&select, _7, PH_SEPARATE, "fastorm/ObjectQuery.zep", 77);
 		}
 	}
-	ZEPHIR_INIT_VAR(_6);
-	array_init_size(_6, 2);
-	ZEPHIR_INIT_VAR(_7);
-	zephir_fast_join_str(_7, SL(", "), select TSRMLS_CC);
-	zephir_array_fast_append(_6, _7);
-	ZEPHIR_INIT_BNVAR(_7);
-	ZVAL_STRING(_7, "select", 0);
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _7, _6);
-	zephir_check_temp_parameter(_7);
-	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_8);
 	array_init_size(_8, 2);
-	ZEPHIR_CALL_METHOD(&_9, joinMetadata, "gettable",  NULL);
-	zephir_check_call_status();
-	ZEPHIR_INIT_LNVAR(_5);
-	ZEPHIR_CONCAT_VSV(_5, _9, " ", joinAlias);
-	zephir_array_fast_append(_8, _5);
-	ZEPHIR_INIT_BNVAR(_7);
-	ZVAL_STRING(_7, "leftJoin", 0);
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _7, _8);
-	zephir_check_temp_parameter(_7);
+	ZEPHIR_INIT_VAR(_9);
+	zephir_fast_join_str(_9, SL(", "), select TSRMLS_CC);
+	zephir_array_fast_append(_8, _9);
+	ZEPHIR_INIT_BNVAR(_9);
+	ZVAL_STRING(_9, "select", 0);
+	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _9, _8);
+	zephir_check_temp_parameter(_9);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_10);
 	array_init_size(_10, 2);
-	ZEPHIR_CALL_METHOD(&_11, joinMetadata, "getidfield",  NULL);
+	ZEPHIR_CALL_METHOD(&_6, joinMetadata, "gettable",  NULL);
 	zephir_check_call_status();
-	_12 = zephir_fetch_nproperty_this(this_ptr, SL("metadata"), PH_NOISY_CC);
-	ZEPHIR_CALL_METHOD(&_13, _12, "gettable",  NULL);
+	ZEPHIR_INIT_LNVAR(_7);
+	ZEPHIR_CONCAT_VSV(_7, _6, " ", joinAlias);
+	zephir_array_fast_append(_10, _7);
+	ZEPHIR_INIT_BNVAR(_9);
+	ZVAL_STRING(_9, "leftJoin", 0);
+	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _9, _10);
+	zephir_check_temp_parameter(_9);
 	zephir_check_call_status();
-	ZEPHIR_INIT_LNVAR(_5);
-	ZEPHIR_CONCAT_VSVSVSV(_5, joinAlias, ".", _11, " = ", _13, ".", property);
-	zephir_array_fast_append(_10, _5);
-	ZEPHIR_INIT_BNVAR(_7);
-	ZVAL_STRING(_7, "on", 0);
-	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _7, _10);
-	zephir_check_temp_parameter(_7);
+	ZEPHIR_INIT_VAR(_11);
+	array_init_size(_11, 2);
+	ZEPHIR_CALL_METHOD(&_12, joinMetadata, "getidfield",  NULL);
+	zephir_check_call_status();
+	_13 = zephir_fetch_nproperty_this(this_ptr, SL("metadata"), PH_NOISY_CC);
+	ZEPHIR_CALL_METHOD(&_14, _13, "gettable",  NULL);
+	zephir_check_call_status();
+	ZEPHIR_INIT_LNVAR(_7);
+	ZEPHIR_CONCAT_VSVSVSV(_7, joinAlias, ".", _12, " = ", _14, ".", property);
+	zephir_array_fast_append(_11, _7);
+	ZEPHIR_INIT_BNVAR(_9);
+	ZVAL_STRING(_9, "on", 0);
+	ZEPHIR_CALL_METHOD(NULL, this_ptr, "__call", NULL, _9, _11);
+	zephir_check_temp_parameter(_9);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
 

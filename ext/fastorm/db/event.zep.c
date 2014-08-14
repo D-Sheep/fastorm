@@ -112,7 +112,7 @@ PHP_METHOD(Fastorm_Db_Event, __construct) {
 	_3 = zephir_fetch_static_property_ce(fastorm_db_event_ce, SL("types") TSRMLS_CC);
 	if (ZEPHIR_IS_EMPTY(_3)) {
 		ZEPHIR_INIT_VAR(_4);
-		array_init_size(_4, 7);
+		array_init_size(_4, 6);
 		add_assoc_long_ex(_4, SS("SELECT"), 4);
 		add_assoc_long_ex(_4, SS("UPDATE"), 32);
 		add_assoc_long_ex(_4, SS("INSERT"), 8);

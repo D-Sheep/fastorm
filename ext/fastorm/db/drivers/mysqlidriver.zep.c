@@ -105,7 +105,7 @@ PHP_METHOD(Fastorm_Db_Drivers_MysqliDriver, connect) {
 		zephir_update_property_this(this_ptr, SL("connection"), _1 TSRMLS_CC);
 	} else {
 		ZEPHIR_INIT_VAR(defaults);
-		array_init_size(defaults, 11);
+		array_init_size(defaults, 9);
 		add_assoc_stringl_ex(defaults, SS("charset"), SL("utf8"), 1);
 		ZEPHIR_SINIT_NVAR(_0);
 		ZVAL_STRING(&_0, "P", 0);

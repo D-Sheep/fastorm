@@ -83,9 +83,9 @@ ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(fastorm_db_query_method_entry) {
 	PHP_ME(Fastorm_Db_Query, __construct, arginfo_fastorm_db_query___construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(Fastorm_Db_Query, staticInitialize, NULL, ZEND_ACC_PRIVATE)
+	PHP_ME(Fastorm_Db_Query, staticInitialize, NULL, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_Db_Query, __call, arginfo_fastorm_db_query___call, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Query, initialize, arginfo_fastorm_db_query_initialize, ZEND_ACC_PRIVATE)
+	PHP_ME(Fastorm_Db_Query, initialize, arginfo_fastorm_db_query_initialize, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_Db_Query, _formatClause, arginfo_fastorm_db_query__formatclause, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_Db_Query, getCommand, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Query, getConnection, NULL, ZEND_ACC_PUBLIC)

@@ -4,7 +4,7 @@ extern zend_class_entry *fastorm_objectquery_ce;
 ZEPHIR_INIT_CLASS(Fastorm_ObjectQuery);
 
 PHP_METHOD(Fastorm_ObjectQuery, __construct);
-PHP_METHOD(Fastorm_ObjectQuery, initiate);
+PHP_METHOD(Fastorm_ObjectQuery, initiateSelect);
 PHP_METHOD(Fastorm_ObjectQuery, getMetadata);
 PHP_METHOD(Fastorm_ObjectQuery, joinObject);
 PHP_METHOD(Fastorm_ObjectQuery, joinAll);
@@ -34,7 +34,7 @@ ZEND_END_ARG_INFO()
 
 ZEPHIR_INIT_FUNCS(fastorm_objectquery_method_entry) {
 	PHP_ME(Fastorm_ObjectQuery, __construct, arginfo_fastorm_objectquery___construct, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(Fastorm_ObjectQuery, initiate, NULL, ZEND_ACC_PRIVATE)
+	PHP_ME(Fastorm_ObjectQuery, initiateSelect, NULL, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_ObjectQuery, getMetadata, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_ObjectQuery, joinObject, arginfo_fastorm_objectquery_joinobject, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_ObjectQuery, joinAll, NULL, ZEND_ACC_PUBLIC)

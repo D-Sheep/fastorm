@@ -97,7 +97,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_delete, 0, 0, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_addevent, 0, 0, 1)
-	ZEND_ARG_INFO(0, callback)
+	ZEND_ARG_INFO(0, eventHandler)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_fastorm_db_connection_onevent, 0, 0, 0)
@@ -132,7 +132,7 @@ ZEPHIR_INIT_FUNCS(fastorm_db_connection_method_entry) {
 	PHP_ME(Fastorm_Db_Connection, update, arginfo_fastorm_db_connection_update, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, insert, arginfo_fastorm_db_connection_insert, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, delete, arginfo_fastorm_db_connection_delete, ZEND_ACC_PUBLIC)
-	PHP_ME(Fastorm_Db_Connection, addEvent, arginfo_fastorm_db_connection_addevent, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_Db_Connection, addEvent, arginfo_fastorm_db_connection_addevent, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_Db_Connection, onEvent, arginfo_fastorm_db_connection_onevent, ZEND_ACC_PROTECTED)
 	PHP_ME(Fastorm_Db_Connection, event, arginfo_fastorm_db_connection_event, ZEND_ACC_PROTECTED)
   PHP_FE_END

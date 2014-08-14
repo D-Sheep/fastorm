@@ -3,15 +3,15 @@ namespace Fastorm\Db;
 
 class Connection {
 
-	public static onEvent;
+	public static events;
 
-	private config = [];
+	protected config;
 
-	private driver;
+	protected driver;
 
-	private translator;
+	protected translator;
 
-	private connected;
+	protected connected;
 
 
 	/**
@@ -477,17 +477,21 @@ class Connection {
 		return this->command()->__call("delete", ["%n", table]);
 	}
 
-	public static function addEvent(var callback) {
-		if self::onEvent === null {
-			let self::onEvent = [];
+	public function addEvent(eventHandler) {
+		var evArray;
+		if self::events === null {
+			let evArray = [];
+		} else {
+			let evArray = self::events;
 		}
-		let self::onEvent[] = callback;
+		let evArray[] = eventHandler;
+		let self::events = evArray;
 	}
 
 	protected function onEvent(<Event> event = null) {
-		if self::onEvent !== null && event !== null {
+		if self::events !== null && event !== null {
 			var callback;
-			for callback in self::onEvent {
+			for callback in self::events {
 				{callback}(event);
 			}	
 		}

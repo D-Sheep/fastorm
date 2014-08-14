@@ -9,10 +9,10 @@ class ObjectQuery extends Db\Query
 	public function __construct(<Db\Connection> connection, <ObjectMetadata> metadata) {
 		let this->metadata = metadata;
 		parent::__construct(connection);
-		this->initiate();
+		this->initiateSelect();
 	}
 
-	private function initiate() {
+	protected function initiateSelect() {
 		var key, flags, select, table;
 
 		let select = [];
@@ -73,7 +73,7 @@ class ObjectQuery extends Db\Query
 		let select = [];
 		let aliases = this->metadata->getAliases(property, joinMetadata);
 		for alias, realName in aliases {
-			if justColumns === null || in_array(realName, justColumns) {
+			if justColumns === null || in_array(realName, justColumns) || realName === joinMetadata->getIdField() {
 				let select[] = joinAlias.".".realName." AS ".alias;
 			}
 		}

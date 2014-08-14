@@ -22,19 +22,20 @@
 #include "kernel/operators.h"
 #include "kernel/concat.h"
 
+
 ZEPHIR_INIT_CLASS(Fastorm_Db_Connection) {
 
 	ZEPHIR_REGISTER_CLASS(Fastorm\\Db, Connection, fastorm, db_connection, fastorm_db_connection_method_entry, 0);
 
-	zend_declare_property_null(fastorm_db_connection_ce, SL("onEvent"), ZEND_ACC_PUBLIC|ZEND_ACC_STATIC TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("events"), ZEND_ACC_PUBLIC|ZEND_ACC_STATIC TSRMLS_CC);
 
-	zend_declare_property_null(fastorm_db_connection_ce, SL("config"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("config"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
-	zend_declare_property_null(fastorm_db_connection_ce, SL("driver"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("driver"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
-	zend_declare_property_null(fastorm_db_connection_ce, SL("translator"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("translator"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
-	zend_declare_property_null(fastorm_db_connection_ce, SL("connected"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(fastorm_db_connection_ce, SL("connected"), ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	return SUCCESS;
 
@@ -152,9 +153,6 @@ PHP_METHOD(Fastorm_Db_Connection, __construct) {
 		ZEPHIR_CALL_METHOD(NULL, this_ptr, "connect", NULL);
 		zephir_check_call_status();
 	}
-	ZEPHIR_INIT_NVAR(_6);
-	array_init(_6);
-	zephir_update_property_this(this_ptr, SL("config"), _6 TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -901,7 +899,7 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "command",  NULL);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_2);
-	array_init_size(_2, 7);
+	array_init_size(_2, 6);
 	ZEPHIR_INIT_VAR(_3);
 	ZVAL_STRING(_3, "%n", 1);
 	zephir_array_fast_append(_2, _3);
@@ -966,19 +964,23 @@ PHP_METHOD(Fastorm_Db_Connection, delete) {
 
 PHP_METHOD(Fastorm_Db_Connection, addEvent) {
 
-	zval *callback, *_0, *_1;
+	zval *eventHandler, *evArray = NULL, *_0;
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 0, &callback);
+	zephir_fetch_params(1, 1, 0, &eventHandler);
 
 
 
-	_0 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("onEvent") TSRMLS_CC);
+	_0 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("events") TSRMLS_CC);
 	if (Z_TYPE_P(_0) == IS_NULL) {
-		ZEPHIR_INIT_VAR(_1);
-		array_init(_1);
-		zephir_update_static_property_ce(fastorm_db_connection_ce, SL("onEvent"), _1 TSRMLS_CC);
+		ZEPHIR_INIT_VAR(evArray);
+		array_init(evArray);
+	} else {
+		ZEPHIR_OBS_NVAR(evArray);
+		zephir_read_static_property_ce(&evArray, fastorm_db_connection_ce, SL("events") TSRMLS_CC);
 	}
+	zephir_array_append(&evArray, eventHandler, PH_SEPARATE, "fastorm/db/Connection.zep", 487);
+	zephir_update_static_property_ce(fastorm_db_connection_ce, SL("events"), evArray TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
 }
@@ -1007,14 +1009,14 @@ PHP_METHOD(Fastorm_Db_Connection, onEvent) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Parameter 'event' must be an instance of 'Fastorm\\Db\\Event'", "", 0);
 		return;
 	}
-	_1 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("onEvent") TSRMLS_CC);
+	_1 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("events") TSRMLS_CC);
 	_2 = Z_TYPE_P(_1) != IS_NULL;
 	if (_2) {
 		_2 = Z_TYPE_P(event) != IS_NULL;
 	}
 	if (_2) {
-		_3 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("onEvent") TSRMLS_CC);
-		zephir_is_iterable(_3, &_5, &_4, 0, 0, "fastorm/db/Connection.zep", 493);
+		_3 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("events") TSRMLS_CC);
+		zephir_is_iterable(_3, &_5, &_4, 0, 0, "fastorm/db/Connection.zep", 497);
 		for (
 		  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_5, &_4)

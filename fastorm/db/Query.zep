@@ -8,7 +8,7 @@ namespace Fastorm\Db;
  * @author (dg)
  * Inspired by David Grudl"s dibi - DibiFLuent
  */
-class Query
+class Query implements \IteratorAggregate
 {
 	const REMOVE = false;
 
@@ -56,7 +56,7 @@ class Query
 		let this->setups = [];
 	}
 
-	private function staticInitialize() {
+	protected function staticInitialize() {
 		let self::masks = [
 			"SELECT": ["SELECT", "DISTINCT", "FROM", "WHERE", "GROUP BY", "HAVING", "ORDER BY", "LIMIT", "OFFSET"],
 			"UPDATE": ["UPDATE", "SET", "WHERE", "ORDER BY", "LIMIT"],
@@ -195,7 +195,7 @@ class Query
 		return this;
 	}
 
-	private function initialize(string clause) {
+	protected function initialize(string clause) {
 		if isset self::masks[clause] {
 			let this->clauses = array_fill_keys(self::masks[clause], null);
 		} else {
