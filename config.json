@@ -10,7 +10,7 @@
     "name": "Fastorm",
     "description": "",
     "author": "David Menger, Katerina Haslarova",
-    "version": "0.1",
+    "version": "0.3",
     "verbose": false,
     "optimizer-dirs": [
         "optimizers"

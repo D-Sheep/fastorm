@@ -6,7 +6,7 @@ abstract class DbObject extends DataObject
 {
 	protected _joinCache;
 
-	private _affectedRows;
+	protected _affectedRows;
 
 	public static function getDbContext() -> <Db\Connection>
 	{
@@ -20,7 +20,7 @@ abstract class DbObject extends DataObject
 		return new ObjectQuery(self::getDbContextWithMetadata(metadata), metadata);
 	}
 
-	private static function getDbContextWithMetadata(<ObjectMetadata> metadata) -> <Db\Connection>
+	protected static function getDbContextWithMetadata(<ObjectMetadata> metadata) -> <Db\Connection>
 	{
 		return ModelManager::getShared()->getConnection(metadata);
 	}
@@ -166,7 +166,6 @@ abstract class DbObject extends DataObject
 
 		let query = db->query("INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data);
 		
-
 		let this->_affectedRows = query->execute();
 
 		if this->_affectedRows && autoincrement !== null {

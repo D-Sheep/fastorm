@@ -6,6 +6,8 @@ unit-tests/engines/*
 unit-tests/logs/*
 unit-tests/cache/*
 
+ext/*
+
 unit-tests/annotations/cache/*.php
 *.o
 *.lo

@@ -1,4 +1,3 @@
-
 <?php
 
 namespace Fastorm;
@@ -61,6 +60,12 @@ class DbObject extends DataObject
 	 * @return \Fastorm\DbObject
 	 */
 	public function update(array $onlyColumns = null){}
+
+    /**
+     * Updates a model instance.
+     * @return \Fastorm\DbObject
+     */
+    public function delete(){}
 
 	/**
 	 * Setup a relation 1-n between two models
