@@ -30,8 +30,8 @@ Kernel configured for up to 4 processors.
 Processor type: i486 (Intel 80486)
 Processors active: 0 1 2 3
 Primary memory available: 4.00 gigabytes
-Default processor set: 283 tasks, 1436 threads, 4 processors
-Load average: 3.02, Mach factor: 1.89
+Default processor set: 254 tasks, 1179 threads, 4 processors
+Load average: 2.22, Mach factor: 1.77
 /bin/machine           = unknown
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
@@ -42,6 +42,7 @@ PATH: /usr/sbin
 PATH: /sbin
 PATH: /usr/local/bin
 PATH: /Applications/Android\ Studio.app/sdk/platform-tools/
+PATH: /opt/ImageMagick/bin
 PATH: /Applications/Android Studio.app/sdk/platform-tools/
 PATH: /Users/davidmenger/phalcon-devtools
 
@@ -374,7 +375,7 @@ configure:6432: checking for -single_module linker flag
 configure:6453: result: yes
 configure:6455: checking for -exported_symbols_list linker flag
 configure:6471: gcc -o conftest -O2 -fvisibility=hidden -Wparentheses -flto   -Wl,-exported_symbols_list,conftest.sym conftest.c  >&5
-ld: warning: cannot export hidden symbol _main from /var/folders/vn/4g_b792x7g3f6f4v5ysh1fvw0000gn/T/conftest-056e33.o
+ld: warning: cannot export hidden symbol _main from /var/folders/vn/4g_b792x7g3f6f4v5ysh1fvw0000gn/T/conftest-01293c.o
 configure:6474: $? = 0
 configure:6488: result: yes
 configure:6606: checking if gcc supports -fno-rtti -fno-exceptions
