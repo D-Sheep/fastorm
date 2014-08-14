@@ -26,17 +26,6 @@ class Build_Generator
 	private $_exceptionHeaders = array();
 
 	private $_kernelHeaders = array(
-		'assets/filters/jsminifier.h',
-		'assets/filters/cssminifier.h',
-		'mvc/model/query/parser.h',
-		'mvc/model/query/scanner.h',
-		'mvc/model/query/phql.h',
-		'mvc/view/engine/volt/parser.h',
-		'mvc/view/engine/volt/scanner.h',
-		'mvc/view/engine/volt/volt.h',
-		'annotations/parser.h',
-		'annotations/scanner.h',
-		'annotations/annot.h',
 		'kernel/main.h',
 		'kernel/memory.h',
 		'kernel/backtrace.h',
@@ -53,11 +42,7 @@ class Build_Generator
 		'kernel/exception.h',
 		'kernel/require.h',
 		'kernel/variables.h',
-		'kernel/session.h',
-		'kernel/alternative/fcall.h',
-		'kernel/framework/orm.h',
-		'kernel/framework/router.h',
-		'kernel/framework/url.h'
+		'kernel/session.h'
 	);
 
 	private $_kernelSources = array(
@@ -77,11 +62,8 @@ class Build_Generator
 		'kernel/exception.c',
 		'kernel/require.c',
 		'kernel/variables.c',
-		'kernel/session.c',
-		'kernel/alternative/fcall.c',
-		'kernel/framework/orm.c',
-		'kernel/framework/router.c',
-		'kernel/framework/url.c'
+		'kernel/session.c'
+		//'kernel/alternative/fcall.c'
 	);
 
 	private $_exclusions = array(
@@ -109,7 +91,7 @@ class Build_Generator
 
 		$this->_hash = $hash;
 
-		$this->_fileHandler = fopen($destination.'phalcon.c', 'w');
+		$this->_fileHandler = fopen($destination.'fastorm.c', 'w');
 
 		fputs($this->_fileHandler, '/**'.PHP_EOL.PHP_EOL.file_get_contents('docs/LICENSE.txt').'*/'.PHP_EOL);
 
@@ -121,8 +103,8 @@ class Build_Generator
 #endif
 
 #include "php.h"
-#include "php_phalcon.h"
-#include "phalcon.h"
+#include "php_fastorm.h"
+#include "fastorm.h"
 
 #include "main/php_main.h"
 #include "main/php_streams.h"
@@ -195,11 +177,11 @@ class Build_Generator
 		/** Scan all c-files again and append it to phalcon.c */
 		$this->_recursiveAction($path, array($this, '_appendSource'));
 
-		$this->_appendSource($path . "phalcon.c");
+		$this->_appendSource($path . "fastorm.c");
 
 		$clines = '';
-		$types = array('phalcon', 'phannot', 'phvolt', 'phql');
-		foreach (file($this->_destination . 'phalcon.c') as $line) {
+		$types = array('fastorm', 'phannot', 'phvolt', 'phql');
+		foreach (file($this->_destination . 'fastorm.c') as $line) {
 
 			foreach ($types as $type) {
 
@@ -224,17 +206,17 @@ class Build_Generator
 			$clines .= $line;
 		}
 
-		file_put_contents($this->_destination . 'phalcon.c', $clines);
+		file_put_contents($this->_destination . 'fastorm.c', $clines);
 
 		$hlines = '';
-		foreach (file($this->_destination . 'phalcon.h') as $line) {
+		foreach (file($this->_destination . 'fastorm.h') as $line) {
 			if (preg_match('/PHP_METHOD\(([a-zA-Z0-9\_]+), ([a-zA-Z0-9\_]+)\)/', $line, $matches)) {
 				$line = str_replace($matches[0], 'static PHP_METHOD('.$matches[1].', '.$matches[2].')', $line);
 			}
 			$line = preg_replace('/^PHALCON_STATIC /', 'static ', $line);
 			$hlines .= $line;
 		}
-		file_put_contents($this->_destination . 'phalcon.h', $hlines);
+		file_put_contents($this->_destination . 'fastorm.h', $hlines);
 	}
 
 	/**
@@ -242,9 +224,9 @@ class Build_Generator
 	 */
 	private function _createHeader($path)
 	{
-		$fp = fopen($this->_destination . 'phalcon.h', 'w');
+		$fp = fopen($this->_destination . 'fastorm.h', 'w');
 		//echo $path.'phalcon.h', PHP_EOL;
-		foreach (file($path . 'phalcon.h') as $line) {
+		foreach (file($path . 'fastorm.h') as $line) {
 			if (preg_match('/^#include "(.*)"/', $line, $matches)) {
 				$openComment = false;
 				//echo $path.$matches[1], PHP_EOL;
@@ -292,7 +274,7 @@ class Build_Generator
 					//echo $itemPath, PHP_EOL;
 					continue;
 				}
-				if (strpos($itemPath, '/phalcon.c') !== false) {
+				if (strpos($itemPath, '/fastorm.c') !== false) {
 					//echo $itemPath, PHP_EOL;
 					continue;
 				}
@@ -318,8 +300,12 @@ class Build_Generator
 		//echo $path, PHP_EOL;
 		$openComment = false;
 		$fileHandler = $this->_fileHandler;
-		$exceptions = array('php.h', 'config.h', 'php_phalcon.h', 'phalcon.h');
-		foreach (file($path) as $line) {
+		$exceptions = array('php.h', 'config.h', 'php_fastorm.h', 'fastorm.h');
+		$file = @file($path);
+		if (!$file) {
+			$file = [];
+		}
+		foreach ($file as $line) {
 
 			$trimLine = trim($line);
 
@@ -469,7 +455,7 @@ class Build_Generator
 	 */
 	private function _checkHeaders($path)
 	{
-		$exceptions = array('php.h', 'config.h', 'php_phalcon.h', 'phalcon.h');
+		$exceptions = array('php.h', 'config.h', 'php_fastorm.h', 'fastorm.h');
 		//echo $path, PHP_EOL;
 		foreach (file($path) as $line) {
 			if (preg_match('/^#include "(.+)"/', $line, $matches)) {
