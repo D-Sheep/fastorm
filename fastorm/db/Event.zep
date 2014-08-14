@@ -84,7 +84,7 @@ class Event
 		let this->result = result;
 		if result !== null {
 			try {
-				if result instanceof \Fastorm\Db\Result {
+				if typeof result === "object" && (result instanceof \Fastorm\Db\Result) {
 					let this->count = count(result);
 				} else {
 					let this->count = null;
