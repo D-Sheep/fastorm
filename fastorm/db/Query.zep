@@ -202,6 +202,7 @@ class Query implements \IteratorAggregate
 			let this->clauses = [];
 		}
 		let this->cursor = clause;
+		let this->clauses[clause] = [];
 		let this->command = clause;
 	}
 
