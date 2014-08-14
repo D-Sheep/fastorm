@@ -215,7 +215,7 @@ class Connection {
 		if funcName === "query" {
 			this->nativeQuery(this->translateArgs(arguments));
 		} else {
-			throw new Exception("Method not exists");
+			throw new \Fastorm\Exception("Method not exists");
 		}
 	}
 
@@ -467,7 +467,7 @@ class Connection {
 				throw new \InvalidArgumentException("Arguments must be array or Traversable.");
 			}
 		}
-		return this->command()->__call("insert")
+		return this->command()->__call("insert", [])
 						      ->__call("into", ["%n", table, "(%n)", array_keys(args)])
 							  ->__call("values", ["%l", args]);
 	}
@@ -480,7 +480,7 @@ class Connection {
 	 */
 	public function delete(table) -> <\Fastorm\Db\Query>
 	{
-		return this->command()->__call("delete")
+		return this->command()->__call("delete", [])
 							  ->__call("from", ["%n", table]);
 	}
 

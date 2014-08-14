@@ -164,7 +164,7 @@ abstract class DbObject extends DataObject
     		}
         }
 
-		let query = db->query("INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data);
+		let query = db->queryArray(["INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data]);
 		
 		let this->_affectedRows = query->execute();
 
