@@ -21,6 +21,7 @@
 #include "kernel/string.h"
 #include "kernel/operators.h"
 #include "kernel/concat.h"
+#include "kernel/variables.h"
 
 
 ZEPHIR_INIT_CLASS(Fastorm_Db_Connection) {
@@ -50,7 +51,7 @@ ZEPHIR_INIT_CLASS(Fastorm_Db_Connection) {
  *       - run (bool) => enable profiler?
  *       - file => file to log
  *   - substitutes (array) => map of driver specific substitutes (under development)
-
+ *
  * @param  mixed   connection parameters
  * @param  string  connection name
  * @throws DibiException
@@ -331,9 +332,9 @@ PHP_METHOD(Fastorm_Db_Connection, getDriver) {
 PHP_METHOD(Fastorm_Db_Connection, query) {
 
 	int ZEPHIR_LAST_CALL_STATUS;
-	zephir_nts_static zephir_fcall_cache_entry *_1 = NULL, *_3 = NULL;
-	zend_bool _0;
-	zval *args = NULL, *metadata = NULL, *_2 = NULL;
+	zephir_nts_static zephir_fcall_cache_entry *_6 = NULL, *_8 = NULL;
+	zend_bool _4;
+	zval *args = NULL, *metadata = NULL, *_0 = NULL, *_1, *_2 = NULL, *_3, *_5 = NULL, *_7 = NULL;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 1, &args, &metadata);
@@ -346,19 +347,35 @@ PHP_METHOD(Fastorm_Db_Connection, query) {
 	}
 
 
-	_0 = Z_TYPE_P(metadata) == IS_OBJECT;
-	if (_0) {
-		_0 = (zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC));
+	php_printf("moc mi to nejde");
+	ZEPHIR_CPY_WRT(_0, args);
+	zephir_var_dump(&_0 TSRMLS_CC);
+	ZEPHIR_INIT_VAR(_1);
+	ZVAL_STRING(_1, "argumenty", 1);
+	zephir_var_dump(&_1 TSRMLS_CC);
+	ZEPHIR_CPY_WRT(_2, metadata);
+	zephir_var_dump(&_2 TSRMLS_CC);
+	ZEPHIR_INIT_VAR(_3);
+	ZVAL_STRING(_3, "metadata", 1);
+	zephir_var_dump(&_3 TSRMLS_CC);
+	_4 = Z_TYPE_P(metadata) == IS_OBJECT;
+	if (_4) {
+		_4 = (zephir_instance_of_ev(metadata, fastorm_objectmetadata_ce TSRMLS_CC));
 	}
-	if (!(_0)) {
-		ZEPHIR_CALL_FUNCTION(&args, "func_get_args", &_1);
+	if (!(_4)) {
+		php_printf("jdu tudy");
+		ZEPHIR_CPY_WRT(_5, args);
+		zephir_var_dump(&_5 TSRMLS_CC);
+		ZEPHIR_CALL_FUNCTION(&args, "func_get_args", &_6);
 		zephir_check_call_status();
 		ZEPHIR_INIT_NVAR(metadata);
 		ZVAL_NULL(metadata);
+	} else {
+		php_printf("proste si myslim, ze sem ten objekt");
 	}
-	ZEPHIR_CALL_METHOD(&_2, this_ptr, "translateargs", &_3, args);
+	ZEPHIR_CALL_METHOD(&_7, this_ptr, "translateargs", &_8, args);
 	zephir_check_call_status();
-	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "nativequery", NULL, _2, metadata);
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "nativequery", NULL, _7, metadata);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -487,7 +504,7 @@ PHP_METHOD(Fastorm_Db_Connection, nativeQuery) {
 			zephir_check_call_status();
 			ZEPHIR_CALL_METHOD(NULL, this_ptr, "onevent", NULL, _6);
 			zephir_check_call_status();
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 278 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 287 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -525,7 +542,7 @@ PHP_METHOD(Fastorm_Db_Connection, getAffectedRows) {
 		_4 = ZEPHIR_LT_LONG(rows, 0);
 	}
 	if (_4) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 297);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve number of affected rows.", "fastorm/db/Connection.zep", 306);
 		return;
 	}
 	RETURN_CCTOR(rows);
@@ -561,7 +578,7 @@ PHP_METHOD(Fastorm_Db_Connection, getInsertId) {
 	zephir_check_call_status();
 	id = zephir_get_intval(_2);
 	if (id < 1) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 318);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(fastorm_db_dbexception_ce, "Cannot retrieve last generated ID.", "fastorm/db/Connection.zep", 327);
 		return;
 	}
 	RETURN_MM_LONG(id);
@@ -616,7 +633,7 @@ PHP_METHOD(Fastorm_Db_Connection, begin) {
 			zephir_check_call_status();
 			ZEPHIR_CALL_METHOD(NULL, this_ptr, "onevent", NULL, _3);
 			zephir_check_call_status();
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 344 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 353 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -673,7 +690,7 @@ PHP_METHOD(Fastorm_Db_Connection, commit) {
 			zephir_check_call_status();
 			ZEPHIR_CALL_METHOD(NULL, this_ptr, "onevent", NULL, _3);
 			zephir_check_call_status();
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 369 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 378 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -730,7 +747,7 @@ PHP_METHOD(Fastorm_Db_Connection, rollback) {
 			zephir_check_call_status();
 			ZEPHIR_CALL_METHOD(NULL, this_ptr, "onevent", NULL, _3);
 			zephir_check_call_status();
-			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 394 TSRMLS_CC);
+			zephir_throw_exception_debug(e, "fastorm/db/Connection.zep", 403 TSRMLS_CC);
 			ZEPHIR_MM_RESTORE();
 			return;
 		}
@@ -844,7 +861,7 @@ PHP_METHOD(Fastorm_Db_Connection, update) {
 		_0 = (zephir_is_instance_of(args, SL("Traversable") TSRMLS_CC));
 	}
 	if (!(_0)) {
-		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 444);
+		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 453);
 		return;
 	}
 	ZEPHIR_CALL_METHOD(&_1, this_ptr, "command",  NULL);
@@ -892,14 +909,14 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
 		ZEPHIR_CPY_WRT(args, _0);
 	} else {
 		if (Z_TYPE_P(args) == IS_ARRAY == 0) {
-			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 462);
+			ZEPHIR_THROW_EXCEPTION_DEBUG_STR(spl_ce_InvalidArgumentException, "Arguments must be array or Traversable.", "fastorm/db/Connection.zep", 471);
 			return;
 		}
 	}
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "command",  NULL);
 	zephir_check_call_status();
 	ZEPHIR_INIT_VAR(_2);
-	array_init_size(_2, 6);
+	array_init_size(_2, 7);
 	ZEPHIR_INIT_VAR(_3);
 	ZVAL_STRING(_3, "%n", 1);
 	zephir_array_fast_append(_2, _3);
@@ -936,9 +953,9 @@ PHP_METHOD(Fastorm_Db_Connection, insert) {
  */
 PHP_METHOD(Fastorm_Db_Connection, delete) {
 
-	zval *_1;
+	zval *_2, *_4;
 	int ZEPHIR_LAST_CALL_STATUS;
-	zval *table, *_0 = NULL, *_2;
+	zval *table, *_0 = NULL, *_1 = NULL, *_3;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 0, &table);
@@ -947,16 +964,27 @@ PHP_METHOD(Fastorm_Db_Connection, delete) {
 
 	ZEPHIR_CALL_METHOD(&_0, this_ptr, "command",  NULL);
 	zephir_check_call_status();
-	ZEPHIR_INIT_VAR(_1);
-	array_init_size(_1, 3);
 	ZEPHIR_INIT_VAR(_2);
-	ZVAL_STRING(_2, "%n", 1);
-	zephir_array_fast_append(_1, _2);
-	zephir_array_fast_append(_1, table);
-	ZEPHIR_INIT_BNVAR(_2);
-	ZVAL_STRING(_2, "delete", 0);
-	ZEPHIR_RETURN_CALL_METHOD(_0, "__call", NULL, _2, _1);
-	zephir_check_temp_parameter(_2);
+	array_init_size(_2, 3);
+	ZEPHIR_INIT_VAR(_3);
+	ZVAL_STRING(_3, "%n", 1);
+	zephir_array_fast_append(_2, _3);
+	zephir_array_fast_append(_2, table);
+	ZEPHIR_INIT_BNVAR(_3);
+	ZVAL_STRING(_3, "delete", 0);
+	ZEPHIR_CALL_METHOD(&_1, _0, "__call", NULL, _3, _2);
+	zephir_check_temp_parameter(_3);
+	zephir_check_call_status();
+	ZEPHIR_INIT_VAR(_4);
+	array_init_size(_4, 3);
+	ZEPHIR_INIT_BNVAR(_3);
+	ZVAL_STRING(_3, "%n", 1);
+	zephir_array_fast_append(_4, _3);
+	zephir_array_fast_append(_4, table);
+	ZEPHIR_INIT_BNVAR(_3);
+	ZVAL_STRING(_3, "from", 0);
+	ZEPHIR_RETURN_CALL_METHOD(_1, "__call", NULL, _3, _4);
+	zephir_check_temp_parameter(_3);
 	zephir_check_call_status();
 	RETURN_MM();
 
@@ -979,7 +1007,7 @@ PHP_METHOD(Fastorm_Db_Connection, addEvent) {
 		ZEPHIR_OBS_NVAR(evArray);
 		zephir_read_static_property_ce(&evArray, fastorm_db_connection_ce, SL("events") TSRMLS_CC);
 	}
-	zephir_array_append(&evArray, eventHandler, PH_SEPARATE, "fastorm/db/Connection.zep", 487);
+	zephir_array_append(&evArray, eventHandler, PH_SEPARATE, "fastorm/db/Connection.zep", 496);
 	zephir_update_static_property_ce(fastorm_db_connection_ce, SL("events"), evArray TSRMLS_CC);
 	ZEPHIR_MM_RESTORE();
 
@@ -1016,7 +1044,7 @@ PHP_METHOD(Fastorm_Db_Connection, onEvent) {
 	}
 	if (_2) {
 		_3 = zephir_fetch_static_property_ce(fastorm_db_connection_ce, SL("events") TSRMLS_CC);
-		zephir_is_iterable(_3, &_5, &_4, 0, 0, "fastorm/db/Connection.zep", 497);
+		zephir_is_iterable(_3, &_5, &_4, 0, 0, "fastorm/db/Connection.zep", 506);
 		for (
 		  ; zephir_hash_get_current_data_ex(_5, (void**) &_6, &_4) == SUCCESS
 		  ; zephir_hash_move_forward_ex(_5, &_4)

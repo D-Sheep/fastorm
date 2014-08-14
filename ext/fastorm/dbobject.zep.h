@@ -56,7 +56,7 @@ ZEND_END_ARG_INFO()
 ZEPHIR_INIT_FUNCS(fastorm_dbobject_method_entry) {
 	PHP_ME(Fastorm_DbObject, getDbContext, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, getSelect, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(Fastorm_DbObject, getDbContextWithMetadata, arginfo_fastorm_dbobject_getdbcontextwithmetadata, ZEND_ACC_PRIVATE|ZEND_ACC_STATIC)
+	PHP_ME(Fastorm_DbObject, getDbContextWithMetadata, arginfo_fastorm_dbobject_getdbcontextwithmetadata, ZEND_ACC_PROTECTED|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, getById, arginfo_fastorm_dbobject_getbyid, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(Fastorm_DbObject, __call, arginfo_fastorm_dbobject___call, ZEND_ACC_PUBLIC)
 	PHP_ME(Fastorm_DbObject, onBeforeCreate, arginfo_fastorm_dbobject_onbeforecreate, ZEND_ACC_PROTECTED)

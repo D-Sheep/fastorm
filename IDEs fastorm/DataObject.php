@@ -86,7 +86,7 @@ class DataObject implements \ArrayAccess, \Serializable
      * @param id
      * @return void
      */
-    public function setId(id){}
+    public function setId($id){}
 
     /**
      * Sets data to object.
