@@ -467,8 +467,9 @@ class Connection {
 				throw new \InvalidArgumentException("Arguments must be array or Traversable.");
 			}
 		}
-		return this->command()->__call("insert", 
-			["%n", table, "(%n)", array_keys(args)])->__call("values", ["%l", args]);
+		return this->command()->__call("insert")
+						      ->__call("into", ["%n", table, "(%n)", array_keys(args)])
+							  ->__call("values", ["%l", args]);
 	}
 
 
@@ -479,7 +480,8 @@ class Connection {
 	 */
 	public function delete(table) -> <\Fastorm\Db\Query>
 	{
-		return this->command()->__call("delete", ["%n", table]);
+		return this->command()->__call("delete")
+							  ->__call("from", ["%n", table]);
 	}
 
 	public function addEvent(eventHandler) {
