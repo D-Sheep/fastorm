@@ -165,10 +165,8 @@ abstract class DbObject extends DataObject
         }
 
 		let query = db->queryArray(["INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql, %a", metadata->getTable(), data, lastInsert, data]);
-		
-		echo "probehlo to";
-		let this->_affectedRows = query->execute();
 
+		let this->_affectedRows = query;
 		if this->_affectedRows && autoincrement !== null {
 			try {
 				let this->{autoincrement} = db->getInsertId();
@@ -176,11 +174,10 @@ abstract class DbObject extends DataObject
 				e->getMessage();
 			}
 		}
-		echo "neco se deje";
+		
 		if this->_affectedRows {
 			this->onAfterUpdate();
 		}
-		echo "a mam hotovo";
 		return this;
 	}
 
