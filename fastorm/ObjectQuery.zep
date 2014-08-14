@@ -85,7 +85,7 @@ class ObjectQuery extends Db\Query
 	protected function query(args)
 	{
 		var res, setup;
-		let res = this->connection->query(args, this->metadata);
+		let res = this->connection->queryArray(args, this->metadata);
 		for setup in this->setups {
 			call_user_func_array([ res, array_shift(setup) ], setup);
 		}

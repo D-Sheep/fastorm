@@ -205,13 +205,18 @@ class Connection {
 	 * @return DibiResult|int   result set object (if any)
 	 * @throws DibiException
 	 */
-	public function query(args, metadata = null)
+	public function queryArray(funcArgs, <\Fastorm\ObjectMetadata> metadata = null)
 	{
-		if  !(typeof metadata === "object" && (metadata instanceof \Fastorm\ObjectMetadata)) {
-			let args = func_get_args();
-			let metadata = null;
-		} 
-		return this->nativeQuery(this->translateArgs(args), metadata);
+		return this->nativeQuery(this->translateArgs(funcArgs), metadata);
+	}
+
+	public function __call(funcName, arguments)
+	{
+		if funcName === "query" {
+			this->nativeQuery(this->translateArgs(arguments));
+		} else {
+			throw new Exception("Method not exists");
+		}
 	}
 
 

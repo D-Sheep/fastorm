@@ -321,7 +321,7 @@ class Query implements \IteratorAggregate
 	protected function query(queryArgs)
 	{
 		var res, setup;
-		let res = this->connection->query(queryArgs);
+		let res = this->connection->queryArray(queryArgs);
 		for setup in this->setups {
 			call_user_func_array([ res, array_shift(setup) ], setup);
 		}
