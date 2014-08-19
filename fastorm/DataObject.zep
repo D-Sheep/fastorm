@@ -136,10 +136,21 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function serialize() {
-        var retData, ret;
-        let retData = this->getDataForSerialization(false);
-        let ret = serialize(retData);
-        return ret;
+        var key, value, data, propertyName, propertyFlags, className;
+        let className = get_class(this);
+
+        let data = this->_data;
+        for propertyName, propertyFlags in self::_propCache[className] {
+            let data[propertyName] = this->{propertyName};
+        }
+
+        for key, value in data {
+            if value instanceof \DateTime {
+                let data[key] = value->format("Y-m-d H:i:s");
+            } 
+        }
+
+        return serialize(data);
     }
 
     public function unserialize(serialized) {
