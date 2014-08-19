@@ -304,7 +304,7 @@ class Result {
 				let row[key] = ((bool) value) && value !== "f" && value !== "F";
 
 			} else { if (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
-				if ((int) value !== 0 || substr((string) value, 0, 3) === "00:") { // "", null, false, "0000-00-00", ...
+				if (value !== "0000-00-00" && value !== "0000-00-00 00:00:00") { // "", null, false, "0000-00-00", ...
 					let row[key] = new \DateTime(value);
 				}
 

@@ -212,7 +212,7 @@ class Translator {
 
 					for k, v in value {
 						if typeof k === "string" {
-							let pair = explode("%", k, 2); // split into identifier & modifier
+							let pair = explode("%", (string) k, 2); // split into identifier & modifier
 							let k = this->delimite(pair[0]) . " ";
 							if !isset(pair[1]) {
 								let v = this->formatValue(v);
@@ -256,7 +256,7 @@ class Translator {
 
 							let vx[] = this->delimite(k . op);
 						} else {
-							let pair = explode("%", v, 2); // split into identifier & modifier
+							let pair = explode("%",(string)  v, 2); // split into identifier & modifier
 							let vx[] = this->delimite(pair[0]);
 						}
 					}
@@ -265,7 +265,7 @@ class Translator {
 
 				case "a": // key=val, key=val, ...
 					for k, v in value {
-						let pair = explode("%", k, 2); // split into identifier & modifier
+						let pair = explode("%", (string) k, 2); // split into identifier & modifier
 						let vx[] = this->delimite(pair[0]) . "=" . this->fomattedPairValue(pair, v);
 					}
 					return implode(", ", vx);
@@ -274,7 +274,7 @@ class Translator {
 				case "in":// replaces scalar %in modifier!
 				case "l": // (val, val, ...)
 					for k, v in value {
-						let pair = explode("%", k, 2); // split into identifier & modifier
+						let pair = explode("%", (string) k, 2); // split into identifier & modifier
 						let vx[] = this->fomattedPairValue(pair, v);
 					}
 					if vx || modifier === "l" {
@@ -285,7 +285,7 @@ class Translator {
 
 				case "v": // (key, key, ...) VALUES (val, val, ...)
 					for k, v in value {
-						let pair = explode("%", k, 2); // split into identifier & modifier
+						let pair = explode("%", (string) k, 2); // split into identifier & modifier
 						let kx[] = this->delimite(pair[0]);
 						let vx[] = this->fomattedPairValue(pair, v);
 					}
@@ -311,7 +311,7 @@ class Translator {
 							return "**Unexpected type " . gettype(v) . "**";
 						}
 
-						let pair = explode("%", k, 2); // split into identifier & modifier
+						let pair = explode("%", (string) k, 2); // split into identifier & modifier
 						let kx[] = this->delimite(pair[0]);
 
 						var k2, v2;
@@ -666,7 +666,7 @@ class Translator {
 	{
 		var parts, k, v;
 		//let value = this->connection->substitute(value);
-		let parts = explode(".", value);
+		let parts = explode(".", (string) value);
 		for k, v in parts {
 			if v !== "*" {
 				let parts[k] = this->driver->escape(v, Query::IDENTIFIER);
