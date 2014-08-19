@@ -140,7 +140,7 @@ class Query
 	 * Iterator over results
 	 * @param int offset
 	 * @param int limit
-	 * @return Fastorm\Db\ResultIterator
+	 * @return ResultIterator
 	 */
 	public function getIterator(offset = null, limit = null){}
 

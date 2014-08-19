@@ -136,7 +136,10 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function serialize() {
-        return serialize(this->getDataForSerialization(false));
+        var retData, ret;
+        let retData = this->getDataForSerialization(false);
+        let ret = serialize(retData);
+        return ret;
     }
 
     public function unserialize(serialized) {
