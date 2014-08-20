@@ -6,6 +6,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
 {
 	protected _data;
+    protected _myClassName;
 
 	protected static _idFieldCache;
 	protected static _metadataCache;
@@ -13,7 +14,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
 	public function __construct(id = null) {
         let this->_data = [];
-        self::_initialize();
+        let this->_myClassName = self::_initialize();
         if typeof id === "array" {
             this->setData(id);
         } else {
@@ -24,9 +25,8 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function getId() {
-		var className, key;
-    	let className = get_class(this);
-    	let key = self::_idFieldCache[className];
+		var key;
+    	let key = self::_idFieldCache[this->_myClassName];
     	if key == null {
     		return null;
     	} else {
@@ -35,17 +35,16 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function setId(id) {
-        var className, key;
-    	let className = get_class(this);
-    	let key = self::_idFieldCache[className];
+        var key;
+    	let key = self::_idFieldCache[this->_myClassName];
     	if key != null {
     		let this->{key} = id;
     	}
     }
 
     public function setData(array data) {
-		var className, key, value;
-    	let className = get_class(this);
+		var key, value, className;
+    	let className = this->_myClassName;
         
 		for key, value in data {
 			if isset self::_propCache[className][key] {
@@ -58,7 +57,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     public function getData() {
     	var data, propertyName, propertyFlags, className;
-    	let className = get_class(this);
+    	let className = this->_myClassName;
         let data = this->_data;
         for propertyName, propertyFlags  in self::_propCache[className] {
         	let data[propertyName] = this->{propertyName};
@@ -72,7 +71,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     public function offsetGet(offset) {
         var className;
-    	let className = get_class(this);
+    	let className = this->_myClassName;
         if isset self::_propCache[className][offset]{
             return this->{offset};
         } else {
@@ -86,7 +85,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     public function offsetSet(offset, value) {
         var className;
-    	let className = get_class(this);
+    	let className = this->_myClassName;
         if isset self::_propCache[className][offset] {
             let this->{offset} = value;
         } else {
@@ -96,7 +95,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     public function offsetUnset(offset) {
         var className;
-    	let className = get_class(this);
+    	let className = this->_myClassName;
         if isset self::_propCache[className][offset] {
             let this->{offset} = null;
         } else {
@@ -105,7 +104,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
 
-    protected static function _initialize() {
+    protected static function _initialize() -> string {
     	var className;
     	let className = get_called_class();
     	if !isset self::_propCache[className] {
@@ -113,6 +112,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 			let metadata = self::_processInitialization(className);
             self::initialize(metadata);
     	}
+        return (string) className;
     }
 
     protected static function initialize(<ObjectMetadata> metadata) {
@@ -137,7 +137,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     public function serialize() {
         var key, value, data, propertyName, propertyFlags, className;
-        let className = get_class(this);
+        let className = this->_myClassName;
 
         let data = this->_data;
         for propertyName, propertyFlags in self::_propCache[className] {
@@ -154,13 +154,16 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function unserialize(serialized) {
-    	var unserialized, key, value, className;
-    	let className = get_class(this);
+    	var unserialized, key, value, className, tmp;
+        if this->_myClassName === null {
+            let this->_myClassName = self::_initialize();
+        }
+    	let className = this->_myClassName;
 		let unserialized = unserialize(serialized);
         for key, value in unserialized {
-            
-            if preg_match("/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/", value) {
-            	let value = new \DateTime(value);
+            let tmp = value;
+            if preg_match("/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}/", tmp) && !(tmp instanceof \DateTime) {
+            	let value = new \DateTime(tmp);
             }
 
             if isset self::_propCache[className][key] {
@@ -196,7 +199,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     public function getDbFormatedData(boolean withoutAutoincrementKeys = false) -> array {
     	var propName, propFlag, className;
     	array data;
-    	let className = get_class(this);
+    	let className = this->_myClassName;
         let data = [];
 
         for propName, propFlag in self::_propCache[className] {
