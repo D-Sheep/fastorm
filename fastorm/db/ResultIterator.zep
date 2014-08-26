@@ -4,13 +4,13 @@ namespace Fastorm\Db;
 class ResultIterator implements \Iterator {
 
 	/** @var DibiResult */
-	private result;
+	protected result;
 
 	/** @var int */
-	private row;
+	protected row;
 
 	/** @var int */
-	private pointer;
+	protected pointer;
 
 
 	/**
@@ -82,6 +82,10 @@ class ResultIterator implements \Iterator {
 	public function count()
 	{
 		return this->result->getRowCount();
+	}
+
+	public function __destruct() {
+		let this->result = null;
 	}
 	
 }

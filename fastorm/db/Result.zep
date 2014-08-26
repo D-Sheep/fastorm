@@ -4,17 +4,17 @@ namespace Fastorm\Db;
 class Result {
 
 	/** @var array  IResultDriver */
-	private driver;
+	protected driver;
 
 	
-	private _types;
+	protected _types;
 
 	/** @var bool  Already fetched? Used for allowance for first seek(0) */
-	private fetched = false;
+	protected fetched = false;
 
-	private rowClass;
+	protected rowClass;
 
-	private metadata;
+	protected metadata;
 
 
 	public function __construct(<IResultDriver> driver, <\Fastorm\ObjectMetadata> metadata = null)
@@ -42,6 +42,12 @@ class Result {
 			let this->driver = null;
 			let this->metadata = null;
 		}
+		let this->metadata = null;
+		let this->rowClass = null;
+	}
+
+	public function __destruct() {
+		this->free();
 	}
 
 
@@ -117,10 +123,13 @@ class Result {
 	public function fetchRow()
 	{
 		var row;
+
 		let row = this->getResultDriver()->fetchRow(true);
+
 		if !is_array(row) {
 			return false;
 		}
+		
 		let this->fetched = true;
 		let row = this->normalize(row);
 
@@ -183,7 +192,7 @@ class Result {
 			}
 
 			// autodetect
-			let tmp = array_keys(row->toArray());
+			let tmp = array_keys(row);
 			let key = tmp[0];
 			if count(row) < 2 { // indexed-array
 				loop {
@@ -199,7 +208,7 @@ class Result {
 			let value = tmp[1];
 
 		} else {
-			if !property_exists(row, value) {
+			if !isset row[value] {
 				throw new \InvalidArgumentException("Unknown value column '".value."'.");
 			}
 
@@ -214,7 +223,7 @@ class Result {
 				return data;
 			}
 
-			if !property_exists(row, key) {
+			if !isset row[key] {
 				throw new \InvalidArgumentException("Unknown key column '".key."'.");
 			}
 		}
@@ -239,14 +248,17 @@ class Result {
 	 */
 	private function detectTypes()
 	{
-		var columns, col, nativetype, e;
+		var columns, col, nativetype, e, type;
 
 		try {
 			let this->_types = [];
 			let columns = this->getResultDriver()->getResultColumns();
 			for col in columns {
 				let nativetype = col["nativetype"];
-				let this->_types[col["name"]] = \Fastorm\Db\ColumnInfo::detectType(nativetype);
+				let type = \Fastorm\Db\ColumnInfo::detectType(nativetype);
+				if type !== Query::TYPE_TEXT {
+					let this->_types[col["name"]] = type;
+				}
 			}
 		} catch DbException, e {
 			return;
@@ -261,8 +273,8 @@ class Result {
 	 */
 	private function normalize(row)
 	{
-		var key, type, value, tmp, left, right;
 
+		var key, type, value;//, tmp, left, right;
 
 		if typeof row !== "array" {
 			let row = [];
@@ -270,26 +282,28 @@ class Result {
 
 		for key, type in this->_types {
 
-
 			if !isset(row[key]) { // null
 				continue;
 			}
 
 			let value = row[key];
 
-			if (value === false || value === null || type === Query::TYPE_TEXT) {
+			if (value === false || value === null/* || type === Query::TYPE_TEXT*/) {
 				continue;
 			} 
 
-			if (type === Query::TYPE_INTEGER) {
-				let tmp =  value * 1;
+			if (type === Query::TYPE_INTEGER || type === Query::TYPE_FLOAT) {
+				let row[key] = (float) value;
+
+				/*let tmp =  value * 1;
 				if is_float(tmp) {
 					let row[key] = value;
 				} else {
 					let row[key] = tmp;
-				}
+				}*/
+			} else { /* if (type === Query::TYPE_FLOAT) {
+				let row[key] = (float) value;
 
-			} else { if (type === Query::TYPE_FLOAT) {
 				let tmp = (float) value;
 				let left = ltrim((string) tmp, "0");
 				let right = ltrim(rtrim(rtrim(value, "0"), "."), "0");
@@ -300,7 +314,7 @@ class Result {
 					let row[key] = value;
 				}
 
-			} else { if (type === Query::TYPE_BOOL) {
+			} else { */if (type === Query::TYPE_BOOL) {
 				let row[key] = ((bool) value) && value !== "f" && value !== "F";
 
 			} else { if (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
@@ -310,7 +324,7 @@ class Result {
 
 			} else { if (type === Query::TYPE_BINARY) {
 				let row[key] = this->getResultDriver()->unescape(value, type);
-			}}}}}
+			}}}}//}
 		}
 
 		return row;

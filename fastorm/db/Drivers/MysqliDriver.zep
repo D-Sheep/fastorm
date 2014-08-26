@@ -8,24 +8,25 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	const ERROR_DATA_TRUNCATED = 1265;
 
 	/** @var mysqli  Connection resource */
-	private connection;
+	protected connection;
 
 	/** @var mysqli_result  Resultset resource */
-	private resultSet;
+	protected resultSet;
 
 	/** @var bool */
-	private autoFree = true;
+	protected autoFree = true;
 
 	/** @var bool  Is buffered (seekable and countable)? */
-	private buffered;
+	protected buffered;
 
-	private static types;
+	protected static types;
 
 	/**
 	 * @throws DibiNotSupportedException
 	 */
 	public function __construct()
 	{
+		let this->autoFree = true;
 		if !extension_loaded("mysqli") {
 			throw new \Fastorm\Db\DbException("Db not supported exception: PHP extension 'mysqli' is not loaded.");
 		}
@@ -397,7 +398,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 */
 	public function __destruct()
 	{
-		return this->autoFree && this->getResultResource() && this->free();
+		return this->autoFree && this->getResultResource() !== null && this->free();
 	}
 
 

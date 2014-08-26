@@ -8,15 +8,24 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 	protected _data;
 
 	protected static _idFieldCache;
-	protected static _metadataCache;
 	protected static _propCache;
 
 	public function __construct(id = null) {
-        let this->_data = [];
-        self::_initialize();
+        var className, key, flag;
+        let className = get_class(this);
+
+        if !isset self::_propCache[className] {
+            self::_initialize(className);
+        }
+        
         if typeof id === "array" {
-            this->setData(id);
+            let this->_data = id;
+            for key, flag in self::_propCache[className] {
+                let this->{key} = id[key];
+                unset this->_data[key];
+            }
         } else {
+            let this->_data = [];
             if id !== null {
                 this->setId(id);
             }
@@ -44,9 +53,8 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
     public function setData(array data) {
-		var className, key, value;
-    	let className = get_class(this);
-        
+		var key, value, className;
+        let className = get_class(this);
 		for key, value in data {
 			if isset self::_propCache[className][key] {
 	            let this->{key} = value;
@@ -105,26 +113,16 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     }
 
 
-    protected static function _initialize() {
-    	var className;
-    	let className = get_called_class();
-    	if !isset self::_propCache[className] {
-            var metadata;
-			let metadata = self::_processInitialization(className);
-            self::initialize(metadata);
-    	}
+    protected static function _initialize(string className) {
+    	var metadata;
+        let metadata = self::getMetadata(className);
+        let self::_propCache[className] = metadata->getFields();
+        let self::_idFieldCache[className] = metadata->getIdField();
+        self::initialize(metadata);
     }
 
     protected static function initialize(<ObjectMetadata> metadata) {
 
-    }
-
-    protected static function _processInitialization(string className) -> <ObjectMetadata> {
-		var metadata;
-		let metadata = self::getMetadata(className);
-		let self::_propCache[className] = metadata->getFields();
-		let self::_idFieldCache[className] = metadata->getIdField();
-        return metadata;
     }
 
     public static function getMetadata(string className = null) -> <ObjectMetadata>

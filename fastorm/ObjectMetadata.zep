@@ -64,7 +64,7 @@ class ObjectMetadata
 		return this->className;
 	}
 
-	public function newInstance(array data = null)
+	public function newInstance(var data = null)
 	{
 		var className;
 		let className = this->className;
