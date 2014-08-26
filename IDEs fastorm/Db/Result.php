@@ -97,7 +97,7 @@ class Result {
 	 * Define column type.
 	 * @param  string col column
 	 * @param  string type type (use constant Dibi::*)
-	 * @return self
+	 * @return $this
 	 */
 	public function setType($col, $type){}
 

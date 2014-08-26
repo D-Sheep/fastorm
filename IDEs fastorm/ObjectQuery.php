@@ -9,7 +9,7 @@ class ObjectQuery extends Db\Query
 	/**
      * Constructor.
      * @param \Fastorm\Connection connection
-      * @param \Fastorm\ObjectMetadata metadata 
+     * @param \Fastorm\ObjectMetadata metadata
      * @return
      */
 	public function __construct(Connection $connection, ObjectMetadata $metadata){}
@@ -34,21 +34,7 @@ class ObjectQuery extends Db\Query
      */
 	public function joinAll(){}
 
-	/**
-     * Joins refered table.
-     * @param property Name of column in refered table on which is join. 
-     * @param joinMetadata Metadata of joined table
-     * @param joinAlias Alias of joined table.
-     * @param array justColumns Joins just thise columns.
-     */
-	private function joinObjectWith($property, $joinMetadata, $joinAlias, $justColumns = null){}
 
-	/**
-     * TODO
-     * @param 
-     * @return
-     */
-	protected function query($args){}
 
 
 

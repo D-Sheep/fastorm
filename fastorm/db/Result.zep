@@ -335,7 +335,7 @@ class Result {
 	 * Define column type.
 	 * @param  string  column
 	 * @param  string  type (use constant Dibi::*)
-	 * @return self
+	 * @return Result
 	 */
 	public function setType(col, type)
 	{

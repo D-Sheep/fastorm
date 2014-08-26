@@ -448,7 +448,7 @@ class Connection {
 		if !(is_array(args) || (args instanceof \Traversable)) {
 			throw new \InvalidArgumentException("Arguments must be array or Traversable.");
 		}
-		return this->command()->__call("update", ["%n", table])->__call("set", args);
+		return this->command()->__call("update", ["%n", table])->__call("set", [args]);
 	}
 
 

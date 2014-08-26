@@ -102,8 +102,6 @@ class Query implements \IteratorAggregate
 	{
 		var sep, argument, removeArray, cursor;
 
-
-
 		let removeArray = count(clauseArgs) === 1 && clauseArgs[0] === false;
 
 		let clause = self::_formatClause(clause);
@@ -185,7 +183,7 @@ class Query implements \IteratorAggregate
 		}
 
 		for argument in clauseArgs {
-			if (argument instanceof self) {
+			if  typeof argument === "object" && (argument instanceof Query) {
 				let argument = "(" . argument->__toString() . ")";
 			}
 			let this->clauses[this->cursor][] = argument;
