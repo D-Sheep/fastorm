@@ -11,7 +11,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 	protected static _idFieldCache;
 	protected static _propCache;
 
-	public function __construct(id = null) {
+	public function __construct(var id = null) {
 
         var key, flag;
 
@@ -22,16 +22,20 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         }
 
         if typeof id === "array" {
-            let this->_data = id;
+            var setArray;
+            let setArray = id;
+            
             for key, flag in self::_propCache[this->_myClassName] {
                 
                 if isset id[key] {
-                    let this->{key} = id[key];
+                    let this->{key} = setArray[key];
                 }
-                if isset this->_data[key] {
-                    unset this->_data[key];
+                if isset id[key] {
+                    unset setArray[key];
                 }
             }
+
+            let this->_data = setArray;
         } else {
             let this->_data = [];
             if id !== null {
@@ -50,11 +54,11 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     	}
     }
 
-    public function setId(id) {
+    public function setId(var idKey) {
         var key;
     	let key = self::_idFieldCache[this->_myClassName];
     	if key != null {
-    		let this->{key} = id;
+    		let this->{key} = idKey;
     	}
     }
 

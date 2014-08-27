@@ -1,6 +1,6 @@
 namespace Fastorm\Db\Drivers;
 
-class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDriver {
+class MysqliDriver {
 
 
 	const ERROR_ACCESS_DENIED = 1045;
@@ -10,11 +10,8 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	/** @var mysqli  Connection resource */
 	protected connection;
 
-	/** @var mysqli_result  Resultset resource */
-	protected resultSet;
-
 	/** @var bool */
-	protected autoFree = true;
+	protected autoFree;
 
 	/** @var bool  Is buffered (seekable and countable)? */
 	protected buffered;
@@ -37,7 +34,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 * @return void
 	 * @throws DbException
 	 */
-	public function connect(config)
+	public function connect(var config)
 	{
 		mysqli_report(MYSQLI_REPORT_OFF);
 		if isset config["resource"] {
@@ -273,10 +270,7 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	 */
 	public function createResultDriver(<\mysqli_result> resourc)
 	{
-		var res;
-		let res = clone this;
-		let res->resultSet = resourc;
-		return res;
+		return new MysqliResultDriver(resourc, this->buffered);
 	}
 
 
@@ -344,20 +338,6 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 	}
 
 
-	/**
-	 * Decodes data from result set.
-	 * @param  string    value
-	 * @param  string    type (dibi::BINARY)
-	 * @return string    decoded value
-	 * @throws InvalidArgumentException
-	 */
-	public function unescape(value, type)
-	{
-		if type === \Fastorm\Db\Query::TYPE_BINARY {
-			return value;
-		}
-		throw new \InvalidArgumentException("Unsupported type.");
-	}
 
 
 	/**
@@ -389,133 +369,6 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 			return sql . " LIMIT " . lmtString . ofsString;
 		}
 		return "";
-	}
-
-
-	/**
-	 * Automatically frees the resources allocated for this result set.
-	 * @return void
-	 */
-	public function __destruct()
-	{
-		return this->autoFree && this->getResultResource() !== null && this->free();
-	}
-
-
-	/**
-	 * Returns the number of rows in a result set.
-	 * @return int
-	 */
-	public function getRowCount()
-	{
-		if !this->buffered {
-			throw new \Fastorm\Db\DbException("Db not supported exception: Row count is not available for unbuffered queries.");
-		}
-		//return mysqli_num_rows(this->resultSet);
-		return this->resultSet->num_rows;
-	}
-
-
-	/**
-	 * Fetches the row at current position and moves the internal cursor to the next position.
-	 * @param  bool     true for associative array, false for numeric
-	 * @return array    array on success, nonarray if no next record
-	 */
-	public function fetchRow(associative)
-	{
-		if associative {
-			return mysqli_fetch_array(this->resultSet, MYSQLI_ASSOC);
-		} else {
-			return mysqli_fetch_array(this->resultSet, MYSQLI_NUM);
-		}
-	}
-
-
-	/**
-	 * Moves cursor position without fetching row.
-	 * @param  int      the 0-based cursor pos to seek to
-	 * @return boolean  true on success, false if unable to seek to specified record
-	 * @throws DbException
-	 */
-	public function seek(row)
-	{
-		if !this->buffered {
-			throw new \Fastorm\Db\DbException("Db not supported exception: Cannot seek an unbuffered result set.");
-		}
-		return mysqli_data_seek(this->resultSet, row);
-	}
-
-
-	/**
-	 * Frees the resources allocated for this result set.
-	 * @return void
-	 */
-	public function free()
-	{
-		if this->resultSet !== null {
-			mysqli_free_result(this->resultSet);
-			let this->resultSet = null;
-		}
-	}
-
-
-	/**
-	 * Returns metadata for all columns in a result set.
-	 * @return array
-	 */
-	public function getResultColumns()
-	{
-
-		if empty(self::types) {
-			var consts, key, value;
-			let consts = get_defined_constants(true);
-			let self::types = [];
-			for key, value in consts["mysqli"] {
-				if strncmp(key, "MYSQLI_TYPE_", 12) === 0 {
-					let self::types[value] = substr(key, 12);
-				}
-			}
-			let self::types[MYSQLI_TYPE_TINY] = "INT";
-			let self::types[MYSQLI_TYPE_SHORT] = "INT"; 
-			let self::types[MYSQLI_TYPE_LONG] = "INT";
-		}
-
-		var row, count, i, table;
-		let count = mysqli_num_fields(this->resultSet) - 1;
-		var columns = [];
-		for i in range(0, count) {
-			let row = mysqli_fetch_field_direct(this->resultSet, i);
-
-			if row->table {
-				let table = row->table . "." . row->name;
-			} else {
-				let table = row->name;
-			}
-			//TODO - funguje detect type spravne?
-			let columns[] = [
-				"name" : row->name,
-				"table" : row->orgtable,
-				"fullname" : table,
-				"nativetype" : self::types[row->type],
-				"vendor" : row ];
-		}
-
-		return columns;
-	}
-
-
-	/**
-	 * Returns the result set resource.
-	 * @return mysqli_result
-	 */
-	public function getResultResource()
-	{
-		let this->autoFree = false;
-		if this->resultSet === null || this->resultSet->type === null {
-			return null;
-		} else {
-			return this->resultSet;
-		}
 	}
 
 }

@@ -101,18 +101,7 @@ class Connection {
 
 
 
-	/**
-	 * Automatically frees the resources allocated for this result set.
-	 * @return void
-	 */
-	public function __destruct()
-	{
-		// disconnects and rolls back transaction - do not rely on auto-disconnect and rollback!
-		if this->connected && this->driver !== null && this->driver->getResource() !== null {
-			this->disconnect();
-		}
-		
-	}
+	
 
 
 

@@ -26,9 +26,6 @@ class ResultIterator implements \Iterator, \Countable {
 	 */
 	public function rewind()
 	{
-		if (this->internalPosition == 3) {
-			//echo "\n\n WHY REWIND ?????????????? n\n";
-		}
 		let this->internalPosition = 0;
 		this->result->seek(0);
 		let this->_actual = this->result->fetchRow();

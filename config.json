@@ -1,6 +1,6 @@
 {
     "optimizations": {
-        "static-type-inference": true,
+        "static-type-inference": false,
         "static-type-inference-second-pass": false,
         "local-context-pass": true,
         "constant-folding": true,

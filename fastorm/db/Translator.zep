@@ -4,34 +4,34 @@ namespace Fastorm\Db;
 class Translator {
 
 	/** @var Connection */
-	private connection;
+	protected connection;
 
 	/** @var IDibiDriver */
-	private driver;
+	protected driver;
 
 	/** @var int */
-	private cursor;
+	protected cursor;
 
 	/** @var array */
-	private args;
+	protected args;
 
 	/** @var bool */
-	private hasError;
+	protected hasError;
 
 	/** @var bool */
-	private comment;
+	protected comment;
 
 	/** @var int */
-	private ifLevel;
+	protected ifLevel;
 
 	/** @var int */
-	private ifLevelStart;
+	protected ifLevelStart;
 
 	/** @var int */
-	private limit;
+	protected limit;
 
 	/** @var int */
-	private offset;
+	protected offset;
 
 
 	public function __construct(<Connection> connection)

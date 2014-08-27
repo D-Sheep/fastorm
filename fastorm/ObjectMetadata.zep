@@ -27,7 +27,7 @@ class ObjectMetadata
 
 	protected aliases;
 
-	protected function __construct(<\ReflectionClass> reflection, string className, var fields, var joins, string idField = null, string table = null, string storage = null)
+	protected function __construct(<\ReflectionClass> reflection, var className, var fields, var joins, var idField = null, var table = null, var storage = null)
 	{
 		let this->reflection = reflection;
 		let this->idField = idField;
@@ -39,17 +39,17 @@ class ObjectMetadata
 		let this->aliases = [];
 	}
 
-	public function getTable() -> string|null
+	public function getTable()
 	{
 		return this->table;
 	}
 
-	public function getStorage() -> string|null
+	public function getStorage() 
 	{
 		return this->storage;
 	}
 
-	public function getIdField() -> string|null
+	public function getIdField()
 	{
 		return this->idField;
 	}
@@ -75,7 +75,7 @@ class ObjectMetadata
 		return ret;
 	}
 
-	public function getReflection() -> <\ReflectionClass>
+	public function getReflection()
 	{
 		return this->reflection;
 	}
@@ -91,8 +91,7 @@ class ObjectMetadata
 
 	private static function createMetadata(string className) -> <ObjectMetadata>
 	{
-		var reflection, properties, docs, matches, property, propName, idField, table, storage;
-		int prop;
+		var reflection, properties, docs, matches, property, propName, idField, table, storage, prop;
 		var propertiesArray, joins;
 
 		let matches = null;

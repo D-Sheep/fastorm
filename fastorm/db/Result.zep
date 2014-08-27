@@ -1,26 +1,27 @@
 
 namespace Fastorm\Db;
 
-class Result {
+class Result implements \IteratorAggregate {
 
 	/** @var array  IResultDriver */
-	protected driver;
+	protected _driver;
 
 	
 	protected _types;
 
 	/** @var bool  Already fetched? Used for allowance for first seek(0) */
-	protected fetched = false;
+	protected _fetched;
 
-	protected rowClass;
+	protected _rowClass;
 
-	protected metadata;
+	protected _metadata;
 
 
 	public function __construct(<IResultDriver> driver, <\Fastorm\ObjectMetadata> metadata = null)
 	{
-		let this->driver = driver;
-		let this->metadata = metadata;
+		let this->_fetched = false;
+		let this->_driver = driver;
+		let this->_metadata = metadata;
 		this->detectTypes();
 	}
 
@@ -37,13 +38,13 @@ class Result {
 	 */
 	public function free()
 	{
-		if this->driver !== null {
-			this->driver->free();
-			let this->driver = null;
-			let this->metadata = null;
+		if this->_driver !== null {
+			this->_driver->free();
+			let this->_driver = null;
+			let this->_metadata = null;
 		}
-		let this->metadata = null;
-		let this->rowClass = null;
+		let this->_metadata = null;
+		let this->_rowClass = null;
 	}
 
 
@@ -54,11 +55,11 @@ class Result {
 	 */
 	public function getResultDriver() -> <IResultDriver>
 	{
-		if this->driver === null {
+		if this->_driver === null {
 			throw new \RuntimeException("Result-set was released from memory.");
 		}
 
-		return this->driver;
+		return this->_driver;
 	}
 
 
@@ -70,10 +71,10 @@ class Result {
 	 * @return boolean  true on success, false if unable to seek to specified record
 	 * @throws DbException
 	 */
-	public function seek(int row) -> boolean
+	public function seek(var seekRow) 
 	{
-		if row !== 0 && this->fetched {
-			return (boolean) this->getResultDriver()->seek(row);
+		if seekRow !== 0 && this->_fetched {
+			return (boolean) this->getResultDriver()->seek(seekRow);
 		} else {
 			return true;
 		}
@@ -84,7 +85,7 @@ class Result {
 	 * Required by the Countable interface.
 	 * @return int
 	 */
-	public function count() -> int
+	public function count()
 	{
 		return this->getResultDriver()->getRowCount();
 	}
@@ -94,7 +95,7 @@ class Result {
 	 * Returns the number of rows in a result set.
 	 * @return int
 	 */
-	public function getRowCount() -> int
+	public function getRowCount()
 	{
 		return this->getResultDriver()->getRowCount();
 	}
@@ -104,7 +105,7 @@ class Result {
 	 * Required by the IteratorAggregate interface.
 	 * @return ResultIterator
 	 */
-	public function getIterator() -> <ResultIterator>
+	public function getIterator()
 	{
 		return new ResultIterator(this);
 	}
@@ -118,23 +119,23 @@ class Result {
 	 */
 	public function fetchRow()
 	{
-		var row, normalized;
+		var resultedRow, normalized;
 
-		let row = this->getResultDriver()->fetchRow(true);
+		let resultedRow = this->getResultDriver()->fetchRow(true);
 
-		if typeof row !== "array" {
+		if typeof resultedRow !== "array" {
 			return false;
 		}
 
-		let this->fetched = true;
-		let normalized = this->normalize(row);
+		let this->_fetched = true;
+		let normalized = this->normalize(resultedRow);
 
-		if this->metadata !== null {
-			return this->metadata->newInstance(normalized);
+		if this->_metadata !== null {
+			return this->_metadata->newInstance(normalized);
 		} else {
-			if this->rowClass !== null {
+			if this->_rowClass !== null {
 				var className;
-				let className = this->rowClass;
+				let className = this->_rowClass;
 				return new {className}(normalized);
 			} else {
 				return normalized;
@@ -149,14 +150,14 @@ class Result {
 	 */
 	public function fetchSingle()
 	{
-		var row;
-		let row = this->getResultDriver()->fetchRow(true);
-		if !is_array(row) {
+		var singleRow, returnValue;
+		let singleRow = this->getResultDriver()->fetchRow(true);
+		if !is_array(singleRow) {
 			return false;
 		}
-		let this->fetched = true;
-		let row = this->normalize(row);
-		return reset(row);
+		let this->_fetched = true;
+		let returnValue = this->normalize(singleRow);
+		return reset(returnValue);
 	}
 
 
@@ -170,7 +171,7 @@ class Result {
 	 * @return array
 	 * @throws InvalidArgumentException
 	 */
-	public function fetchPairs(key = null, value = null) -> array
+	public function fetchPairs(key = null, value = null)
 	{
 		var row, tmp, data;
 		this->seek(0);
@@ -267,30 +268,32 @@ class Result {
 	 * @param  array
 	 * @return void
 	 */
-	private function normalize(var row)
+	private function normalize(var rawRow)
 	{
 
 		var key, type, value, ret;//, tmp, left, right;
 
-		if typeof row !== "array" {
-			let row = [];
+		if typeof rawRow !== "array" {
+			let rawRow = [];
 		}
 
-		let ret = row;
+		let ret = rawRow;
 
 		for key, type in this->_types {
 
-			if !isset(row[key]) {
+			if !isset(rawRow[key]) {
 				continue;
 			}
 
-			let value = row[key];
+			let value = rawRow[key];
 
 			if (value === false || value === null) {
 				continue;
 			} 
 
-			if (type === Query::TYPE_INTEGER || type === Query::TYPE_FLOAT) {
+			if (type === Query::TYPE_INTEGER) {
+				let ret[key] = (int) value;
+			} else { if (type === Query::TYPE_FLOAT) {
 				let ret[key] = (float) value;
 			} else { if (type === Query::TYPE_BOOL) {
 				let ret[key] = ((bool) value) && value !== "f" && value !== "F";
@@ -302,7 +305,7 @@ class Result {
 
 			} else { if (type === Query::TYPE_BINARY) {
 				let ret[key] = this->getResultDriver()->unescape(value, type);
-			}}}}
+			}}}}}
 		}
 
 		return ret;
