@@ -14,6 +14,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 	public function __construct(id = null) {
 
         var key, flag;
+
         let this->_myClassName = get_class(this);
 
         if !isset self::_propCache[this->_myClassName] {
@@ -23,8 +24,13 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         if typeof id === "array" {
             let this->_data = id;
             for key, flag in self::_propCache[this->_myClassName] {
-                let this->{key} = id[key];
-                unset this->_data[key];
+                
+                if isset id[key] {
+                    let this->{key} = id[key];
+                }
+                if isset this->_data[key] {
+                    unset this->_data[key];
+                }
             }
         } else {
             let this->_data = [];
@@ -52,7 +58,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
     	}
     }
 
-    public function setData(array data) {
+    public function setData(var data) {
 		var key, value;
 
 		for key, value in data {
@@ -178,10 +184,9 @@ abstract class DataObject implements \ArrayAccess, \Serializable
 
     }
 
-    public function getDataForSerialization(boolean justClass = false) -> array
+    public function getDataForSerialization(boolean justClass = false)
     {
-    	var key, value, iterate;
-    	array data;
+    	var key, value, iterate, data;
         let data = [];
         if justClass {
         	let iterate = this->getDbFormatedData();
@@ -198,9 +203,8 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         return data;
     }
 
-    public function getDbFormatedData(boolean withoutAutoincrementKeys = false) -> array {
-    	var propName, propFlag, className;
-    	array data;
+    public function getDbFormatedData(boolean withoutAutoincrementKeys = false) {
+    	var propName, propFlag, className, data;
     	let className = this->_myClassName;
         let data = [];
 

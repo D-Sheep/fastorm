@@ -46,10 +46,6 @@ class Result {
 		let this->rowClass = null;
 	}
 
-	public function __destruct() {
-		this->free();
-	}
-
 
 	/**
 	 * Safe access to property driver.
@@ -122,26 +118,26 @@ class Result {
 	 */
 	public function fetchRow()
 	{
-		var row;
+		var row, normalized;
 
 		let row = this->getResultDriver()->fetchRow(true);
 
-		if !is_array(row) {
+		if typeof row !== "array" {
 			return false;
 		}
-		
+
 		let this->fetched = true;
-		let row = this->normalize(row);
+		let normalized = this->normalize(row);
 
 		if this->metadata !== null {
-			return this->metadata->newInstance(row);
+			return this->metadata->newInstance(normalized);
 		} else {
 			if this->rowClass !== null {
 				var className;
 				let className = this->rowClass;
-				return new {className}(row);
+				return new {className}(normalized);
 			} else {
-				return row;
+				return normalized;
 			}
 		}
 	}
@@ -271,63 +267,45 @@ class Result {
 	 * @param  array
 	 * @return void
 	 */
-	private function normalize(row)
+	private function normalize(var row)
 	{
 
-		var key, type, value;//, tmp, left, right;
+		var key, type, value, ret;//, tmp, left, right;
 
 		if typeof row !== "array" {
 			let row = [];
 		}
 
+		let ret = row;
+
 		for key, type in this->_types {
 
-			if !isset(row[key]) { // null
+			if !isset(row[key]) {
 				continue;
 			}
 
 			let value = row[key];
 
-			if (value === false || value === null/* || type === Query::TYPE_TEXT*/) {
+			if (value === false || value === null) {
 				continue;
 			} 
 
 			if (type === Query::TYPE_INTEGER || type === Query::TYPE_FLOAT) {
-				let row[key] = (float) value;
-
-				/*let tmp =  value * 1;
-				if is_float(tmp) {
-					let row[key] = value;
-				} else {
-					let row[key] = tmp;
-				}*/
-			} else { /* if (type === Query::TYPE_FLOAT) {
-				let row[key] = (float) value;
-
-				let tmp = (float) value;
-				let left = ltrim((string) tmp, "0");
-				let right = ltrim(rtrim(rtrim(value, "0"), "."), "0");
-
-				if left === right {
-					let row[key] = tmp;
-				} else {
-					let row[key] = value;
-				}
-
-			} else { */if (type === Query::TYPE_BOOL) {
-				let row[key] = ((bool) value) && value !== "f" && value !== "F";
+				let ret[key] = (float) value;
+			} else { if (type === Query::TYPE_BOOL) {
+				let ret[key] = ((bool) value) && value !== "f" && value !== "F";
 
 			} else { if (type === Query::TYPE_DATE || type === Query::TYPE_DATETIME) {
-				if (value !== "0000-00-00" && value !== "0000-00-00 00:00:00") { // "", null, false, "0000-00-00", ...
-					let row[key] = new \DateTime(value);
+				if (value !== "0000-00-00" && value !== "0000-00-00 00:00:00") {
+					let ret[key] = new \DateTime(value);
 				}
 
 			} else { if (type === Query::TYPE_BINARY) {
-				let row[key] = this->getResultDriver()->unescape(value, type);
-			}}}}//}
+				let ret[key] = this->getResultDriver()->unescape(value, type);
+			}}}}
 		}
 
-		return row;
+		return ret;
 	}
 
 

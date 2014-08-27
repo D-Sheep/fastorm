@@ -1,24 +1,22 @@
 
 namespace Fastorm\Db;
 
-class ResultIterator implements \Iterator {
+class ResultIterator implements \Iterator, \Countable {
 
-	/** @var DibiResult */
 	protected result;
 
-	/** @var int */
-	protected row;
+	protected internalPosition;
 
-	/** @var int */
-	protected pointer;
+	public _actual;
 
 
 	/**
 	 * @param  DibiResult
 	 */
-	public function __construct(<Result> result)
+	public function __construct(<Result> resultData)
 	{
-		let this->result = result;
+		let this->result = resultData;
+		let this->_actual = null;
 	}
 
 
@@ -28,9 +26,12 @@ class ResultIterator implements \Iterator {
 	 */
 	public function rewind()
 	{
-		let this->pointer = 0;
+		if (this->internalPosition == 3) {
+			//echo "\n\n WHY REWIND ?????????????? n\n";
+		}
+		let this->internalPosition = 0;
 		this->result->seek(0);
-		let this->row = this->result->fetchRow();
+		let this->_actual = this->result->fetchRow();
 	}
 
 
@@ -40,7 +41,7 @@ class ResultIterator implements \Iterator {
 	 */
 	public function key()
 	{
-		return this->pointer;
+		return this->internalPosition;
 	}
 
 
@@ -50,7 +51,7 @@ class ResultIterator implements \Iterator {
 	 */
 	public function current()
 	{
-		return this->row;
+		return this->_actual;
 	}
 
 
@@ -60,8 +61,8 @@ class ResultIterator implements \Iterator {
 	 */
 	public function next()
 	{
-		let this->row = this->result->fetchRow();
-		let this->pointer++;
+		let this->_actual = this->result->fetchRow();
+		let this->internalPosition = this->internalPosition + 1;
 	}
 
 
@@ -71,7 +72,11 @@ class ResultIterator implements \Iterator {
 	 */
 	public function valid()
 	{
-		return !empty(this->row);
+		if this->_actual == false || this->_actual === null {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 
@@ -82,10 +87,6 @@ class ResultIterator implements \Iterator {
 	public function count()
 	{
 		return this->result->getRowCount();
-	}
-
-	public function __destruct() {
-		let this->result = null;
 	}
 	
 }

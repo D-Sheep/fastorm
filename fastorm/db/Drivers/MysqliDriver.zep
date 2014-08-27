@@ -411,7 +411,8 @@ class MysqliDriver extends \Fastorm\DbObject implements \Fastorm\Db\IResultDrive
 		if !this->buffered {
 			throw new \Fastorm\Db\DbException("Db not supported exception: Row count is not available for unbuffered queries.");
 		}
-		return mysqli_num_rows(this->resultSet);
+		//return mysqli_num_rows(this->resultSet);
+		return this->resultSet->num_rows;
 	}
 
 

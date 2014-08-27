@@ -1,9 +1,9 @@
 {
     "optimizations": {
-        "static-type-inference": false,
+        "static-type-inference": true,
         "static-type-inference-second-pass": false,
-        "local-context-pass": false,
-        "constant-folding": false,
+        "local-context-pass": true,
+        "constant-folding": true,
         "static-constant-class-folding": true
     },
     "namespace": "fastorm",

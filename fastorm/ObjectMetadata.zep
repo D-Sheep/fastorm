@@ -9,25 +9,25 @@ class ObjectMetadata
 	const AUTOINCREMENT = 4;
 	const JOINED = 8;
 
-	private static _metadataCache;
+	protected static _metadataCache;
 
-	private table;
+	protected table;
 
-	private storage;
+	protected storage;
 
-	private idField;
+	protected idField;
 
-	private reflection;
+	protected reflection;
 
-	private className;
+	protected className;
 
-	private fields;
+	protected fields;
 
-	private joins;
+	protected joins;
 
-	private aliases;
+	protected aliases;
 
-	protected function __construct(<\ReflectionClass> reflection, string className, array fields, array joins, string idField = null, string table = null, string storage = null)
+	protected function __construct(<\ReflectionClass> reflection, string className, var fields, var joins, string idField = null, string table = null, string storage = null)
 	{
 		let this->reflection = reflection;
 		let this->idField = idField;
@@ -54,7 +54,7 @@ class ObjectMetadata
 		return this->idField;
 	}
 
-	public function getFields() -> array
+	public function getFields() 
 	{
 		return this->fields;
 	}
@@ -66,9 +66,13 @@ class ObjectMetadata
 
 	public function newInstance(var data = null)
 	{
-		var className;
+		var className, ret;
 		let className = this->className;
-		return new {className}(data);
+		let ret = new {className}(data);
+		if !(ret instanceof \Fastorm\DataObject) {
+			throw new Exception(className);
+		}
+		return ret;
 	}
 
 	public function getReflection() -> <\ReflectionClass>
@@ -89,7 +93,7 @@ class ObjectMetadata
 	{
 		var reflection, properties, docs, matches, property, propName, idField, table, storage;
 		int prop;
-		array propertiesArray, joins;
+		var propertiesArray, joins;
 
 		let matches = null;
 		let reflection = new \ReflectionClass(className);
@@ -158,14 +162,14 @@ class ObjectMetadata
 		return isset this->joins[propName];
 	}
 
-	public function getJoins() -> array {
+	public function getJoins() {
 		return this->joins;
 	}
 
-	public function getAliases(string propName, <ObjectMetadata> joinedTable = null) -> array
+	public function getAliases(string propName, <ObjectMetadata> joinedTable = null) 
 	{
 		if !isset this->aliases[propName] {
-			array aliasTable;
+			var aliasTable;
 			var key, value, aliasName;
 			if joinedTable === null {
 				let joinedTable = this->getJoin(propName);
