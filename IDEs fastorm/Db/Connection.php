@@ -222,6 +222,12 @@ class Connection {
 	 */
 	public function delete($table){}
 
+    /**
+     * Returns query as string
+     * @return String
+     */
+    public function __toString(){}
+
 
 
 
