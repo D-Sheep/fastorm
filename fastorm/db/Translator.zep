@@ -179,16 +179,18 @@ class Translator {
 	 * @param  string
 	 * @return string
 	 */
-	public function formatValue(value, string modifier = null) -> string
+	public function formatValue(var value, var modifier = null)
 	{
-		var k, v, pair, vx, kx, proto;
-		string op;
+		var k, v, pair, vx, kx, proto, op, declared, k2, v2, helpValue;
 
 		//var_dump("formatValue", value, modifier);
 
 		if this->comment {
 			return "...";
 		}
+
+		//echo "value\n";
+		//var_dump(value);
 
 		if this->driver === null {
 			let this->driver = this->connection->getDriver();
@@ -198,7 +200,7 @@ class Translator {
 		if value instanceof \Traversable {
 			let value = iterator_to_array(value);
 		}
-
+		//echo "a\n";
 		if typeof value === "array" {
 			let vx = [];
 			let kx = [];
@@ -292,7 +294,7 @@ class Translator {
 					return "(" . implode(", ", kx) . ") VALUES (" . implode(", ", vx) . ")";
 
 				case "m": // (key, key, ...) VALUES (val, val, ...), (val, val, ...), ...
-					boolean declared;
+					
 					let declared = false;
 					let proto = null;
 					for k, v in value {
@@ -313,16 +315,16 @@ class Translator {
 
 						let pair = explode("%", (string) k, 2); // split into identifier & modifier
 						let kx[] = this->delimite(pair[0]);
-
-						var k2, v2;
-
 						for k2, v2 in v {
 							if !isset(vx[k2]) || typeof vx[k2] !== "array" {
-								let vx[k2] = [];
-							}
-							let vx[k2][] = this->fomattedPairValue(pair, v);
+								let helpValue = [];
+							} else {
+								let helpValue = vx[k2];
+							}let helpValue[] = this->fomattedPairValue(pair, v2);
+							let vx[k2] = helpValue;
 						}
 					}
+
 					for k, v in vx {
 						let vx[k] = "(" . implode(", ", v) . ")";
 					}
@@ -359,7 +361,7 @@ class Translator {
 			}
 		}
 
-
+		//echo "b\n";
 		// with modifier procession
 		if modifier !== null {
 			if (value !== null && !is_scalar(value) && !(value instanceof \DateTime) && !(value instanceof \DateTimeInterface)) {  // array is already processed
@@ -474,18 +476,22 @@ class Translator {
 			}
 		}
 
+		//echo "c\n";
 
 		// without modifier procession
 		if is_string(value) {
+			//echo "d\n";
 			return this->driver->escape(value, Query::TYPE_TEXT);
 
 		} else { if (is_int(value)) {
+			//echo "e\n";
 			return (string) value;
 
 		} else { if (is_float(value)) {
 			return rtrim(rtrim(number_format(value, 10, ".", ""), "0"), ".");
 
 		} else { if (is_bool(value)) {
+			//echo "g\n";
 			return this->driver->escape(value, Query::TYPE_BOOL);
 
 		} else { if (value === null) {
@@ -501,24 +507,26 @@ class Translator {
 		return "**Unexpected " . gettype(value) . "**";
 	}
 
-	private function fomattedPairValue(pairArray, value) -> string
+	private function fomattedPairValue(var pairArray, var initialValue)
 	{
 		if isset(pairArray[1]) {
-			return this->formatValue(value,  pairArray[1]);
+			return this->formatValue(initialValue,  pairArray[1]);
 		} else {
-			if typeof value === "array" {
-				return this->formatValue(value, "ex");
+			if typeof initialValue === "array" {
+				return this->formatValue(initialValue, "ex");
 			} else {
-				return this->formatValue(value);
+				var newVal;
+				let newVal = this->formatValue(initialValue);
+				return newVal;
 			}
 		}
 	}
 
-	private function nullEscape(value, modifier, compareWith = null) {
-		if value === compareWith {
+	private function nullEscape(nullValue, modifier, compareWith = null) {
+		if nullValue === compareWith {
 			return "null";
 		} else {
-			return this->driver->escape(value, modifier);
+			return this->driver->escape(nullValue, modifier);
 		}
 	}
 
