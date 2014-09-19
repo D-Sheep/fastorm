@@ -153,7 +153,6 @@ class Translator {
 			let sql[] = this->formatValue(arg, false);
 		} // while
 
-
 		if this->comment {
 			let sql[] = "*/";
 		}
@@ -363,7 +362,7 @@ class Translator {
 
 		//echo "b\n";
 		// with modifier procession
-		if modifier !== null {
+		if modifier {
 			if (value !== null && !is_scalar(value) && !(value instanceof \DateTime) && !(value instanceof \DateTimeInterface)) {  // array is already processed
 				let this->hasError = true;
 				return "**Unexpected type " . gettype(value) . "**";
@@ -507,7 +506,7 @@ class Translator {
 		return "**Unexpected " . gettype(value) . "**";
 	}
 
-	private function fomattedPairValue(var pairArray, var initialValue)
+	protected function fomattedPairValue(var pairArray, var initialValue)
 	{
 		if isset(pairArray[1]) {
 			return this->formatValue(initialValue,  pairArray[1]);
@@ -522,11 +521,11 @@ class Translator {
 		}
 	}
 
-	private function nullEscape(nullValue, modifier, compareWith = null) {
+	protected function nullEscape(var nullValue, var modificator, compareWith = null) {
 		if nullValue === compareWith {
 			return "null";
 		} else {
-			return this->driver->escape(nullValue, modifier);
+			return this->driver->escape(nullValue, modificator);
 		}
 	}
 

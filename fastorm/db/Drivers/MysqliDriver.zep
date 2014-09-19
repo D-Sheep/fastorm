@@ -344,15 +344,15 @@ class MysqliDriver {
 	 * Injects LIMIT/OFFSET to the SQL query.
 	 * @return void
 	 */
-	public function applyLimit(string sql, int limit, int offset) -> string
+	public function applyLimit(var sql, var limit, var offset) -> string
 	{
+		let limit = (int) limit;
+	    let offset = (int) offset;
+
 		if limit >= 0 || offset > 0 {
 			// see http://dev.mysql.com/doc/refman/5.0/en/select.html
-			string lmtString, ofsString;
-
-			let limit = (int) limit;
-			let offset = (int) offset;
-
+			var lmtString, ofsString;
+			
 			if limit < 0 {
 				let lmtString = "18446744073709551615" . "";
 			} else {
