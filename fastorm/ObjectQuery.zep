@@ -58,6 +58,37 @@ class ObjectQuery extends Db\Query
 		return this;
 	}
 
+	public function joinByAlias(var aliasName, array justColumns = null)
+	{
+		var relationMetadata, alias, realName, aliases, select, destinationField, joinAliasTable;
+		if false === this->metadata->hasRelationAlias(aliasName)
+		{
+			let aliasName = ObjectMetadata::toClassName(aliasName);
+		}
+		let relationMetadata = this->metadata->getRelationAlias(aliasName);
+
+		if relationMetadata === null {
+			throw new Exception("Property '".aliasName."' hasn't defined alias.");
+		}
+
+		let select = [];
+		let aliases = relationMetadata->getFieldAliases();
+		let joinAliasTable = relationMetadata->getTableAlias();
+		let destinationField = relationMetadata->getDestinationField();
+
+		for alias, realName in aliases {
+			if justColumns === null || in_array(realName, justColumns) || realName === destinationField  {
+				let select[] = joinAliasTable . "." . realName . " AS " . alias;
+			}
+		}
+
+		this->__call("select", [ implode(", ", select) ]);
+		this->__call("leftJoin", [relationMetadata->getMetadata()->getTable()." ".joinAliasTable]);
+		this->__call("on", [joinAliasTable.".".destinationField." = ".this->metadata->getTable().".".this->metadata->getIdField()]);
+		
+		return this;
+	}
+
 	public function joinAll() {
 		var property, className, joinMetadata, joinAlias;
 		for property, className in this->metadata->getJoins() {

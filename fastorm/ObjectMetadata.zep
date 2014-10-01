@@ -27,6 +27,8 @@ class ObjectMetadata
 
 	protected aliases;
 
+	protected relations;
+
 	protected function __construct(<\ReflectionClass> reflection, var className, var fields, var joins, var idField = null, var table = null, var storage = null)
 	{
 		let this->reflection = reflection;
@@ -37,6 +39,7 @@ class ObjectMetadata
 		let this->joins = joins;
 		let this->className = className;
 		let this->aliases = [];
+		let this->relations = [];
 	}
 
 	public function getTable()
@@ -73,6 +76,38 @@ class ObjectMetadata
 			throw new Exception(className);
 		}
 		return ret;
+	}
+
+	public function addOne(var className, var alias, var destinationProperty = null)
+	{
+		var relationMetadata;
+		if destinationProperty === null
+		{
+			let destinationProperty = this->idField;
+		}
+		let relationMetadata = new RelationMetadata(this, className, destinationProperty, alias);
+		let this->relations[className] = relationMetadata;
+	}
+
+	/*public function addMany(var className, var alias, var destinationProperty = null)
+	{
+		let this->oneRelations
+	}*/
+
+	//public function addManyToMany(var className, var alias, var middleTableName = null, var destinationProperty = null)
+
+	public function hasRelationAlias(var aliasName)
+	{
+		return isset this->relations[aliasName];
+	}
+
+	public function getRelationAlias(var aliasName)
+	{
+		if isset this->relations[aliasName] {
+			return this->relations[aliasName];
+		} else {
+			return null;
+		}
 	}
 
 	public function getReflection()
@@ -199,6 +234,18 @@ class ObjectMetadata
 		}
 
 		return implode("_", ret);
+	}
+
+	public static function toClassName(string propertyName)
+	{
+		var splited, k, v;
+		let splited = explode("_", propertyName);
+		for k, v in splited
+		{
+			let v = ucfirst(v);
+			let splited[k] = v;
+		}
+		return implode("", splited);
 	}
 
 	public static function makeAlias(string sourceProperty, string targetProperty) -> string {

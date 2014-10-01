@@ -28,10 +28,13 @@ abstract class DbObject extends DataObject
 	/**
 	 *	@metadata only for powerup (private)
 	 */
-	public static function getById(id, boolean joinAll = false, <ObjectMetadata> metadata = null) {
+	public static function getById(var id, boolean joinAll = false, <ObjectMetadata> metadata = null) {
 		var select;
 		if metadata === null {
 			let metadata = self::getMetadata();
+		}
+		if id === null {
+			return null;
 		}
 		let select = new ObjectQuery(self::getDbContextWithMetadata(metadata), metadata);
 		if typeof id === "string" {
@@ -58,10 +61,12 @@ abstract class DbObject extends DataObject
 		let propertyName = ObjectMetadata::toPropertyName(m[1]);
 		if metadata->hasJoin(propertyName."_id") {
 			let propertyName = propertyName . "_id";
-		} 
+		} else {
+			if isSetter === false && metadata->hasRelationAlias(m[1]) {
+				return this->processRelationAlias(metadata, m[1], method, args);
+			}
+		}
 		let joinedMetadata = metadata->getJoin(propertyName);
-
-		//var_dump("META", joinedMetadata, propertyName);
 
 		if joinedMetadata === null {
 			throw new Exception("Method '".method."' not implemented or target object not defined");
@@ -71,21 +76,23 @@ abstract class DbObject extends DataObject
 			if this->{propertyName} === null {
 				return null;
 			} else {
-				var ret, alias;
+				var ret, alias, key;
 				let alias = ObjectMetadata::makeAlias(propertyName, joinedMetadata->getIdField());
 				if isset this->_data[alias] {
-					var key, value;
 					let ret = joinedMetadata->newInstance();
-					for key, value in joinedMetadata->getFields() {
-						let alias = ObjectMetadata::makeAlias(propertyName, key);
+					for alias, key in metadata->getAliases(propertyName, joinedMetadata) {
 						if isset this->_data[alias] {
 							let ret->{key} = this->_data[alias];
 						}
 					}
 				} else {
-					var className;
-					let className = joinedMetadata->getClassName();
-					let ret = {className}::getById(this->{propertyName}, false, joinedMetadata);
+					if this->{propertyName} !== null {
+						var className;
+						let className = joinedMetadata->getClassName();
+						let ret = {className}::getById(this->{propertyName}, false, joinedMetadata);
+					} else {
+						let ret = null;
+					}
 				}
 				if isset args[0] && args[0] === true {
 					let this->_joinCache[propertyName] = ret;
@@ -107,6 +114,35 @@ abstract class DbObject extends DataObject
 			return this;
 		}
 
+	}
+
+	protected function processRelationAlias(var metadata, var aliasName, var method, var args)
+	{
+		var relationMetadata, relationField, ret;
+		let relationMetadata = metadata->getRelationAlias(aliasName);
+		let relationField = relationMetadata->getDestinationFieldAlias();
+
+		if isset this->_data[relationField] {
+			var alias, field;
+			let ret = relationMetadata->getMetadata()->newInstance();
+			for alias, field in relationMetadata->getFieldAliases() {
+				if isset this->_data[alias] {
+					let ret->{field} = this->_data[alias];
+				}
+			}
+		} else {
+			var className, idProperty;
+			let idProperty = self::_idFieldCache[this->_myClassName];
+
+			if this->{idProperty} === null {
+				let ret = null;
+			} else {
+				let className = relationMetadata->getDestinationClass();
+				let ret = {className}::getById(this->{idProperty}, false, relationMetadata->getMetadata());
+			}
+		}
+
+		return ret;
 	}
 
 	protected function onBeforeCreate(calledFromSave = false) {
@@ -248,11 +284,6 @@ abstract class DbObject extends DataObject
 
 		return this;
 	} 
-
-	protected static function hasMany() 
-	{
-
-	}
 
 	public function getAffectedRows() {
 		if this->_affectedRows === null {
