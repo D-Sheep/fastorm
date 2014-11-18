@@ -62,7 +62,7 @@ class DbObject extends DataObject
 	public function update(array $onlyColumns = null){}
 
     /**
-     * Updates a model instance.
+     * Deletes a model instance.
      * @return \Fastorm\DbObject
      */
     public function delete(){}
