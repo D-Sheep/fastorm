@@ -117,7 +117,7 @@ class Result implements \IteratorAggregate {
 	 * and moves the internal cursor to the next position
 	 * @return DibiRow|null  array on success, false if no next record
 	 */
-	public function fetchRow()
+	public function fetchRow(forceArray = false)
 	{
 		var resultedRow, normalized;
 
@@ -129,11 +129,15 @@ class Result implements \IteratorAggregate {
 
 		let this->_fetched = true;
 		let normalized = this->normalize(resultedRow);
-
+		
 		if this->_metadata !== null {
-			return this->_metadata->newInstance(normalized);
+			if forceArray {
+				return normalized;
+			} else {
+				return this->_metadata->newInstance(normalized);
+			}
 		} else {
-			if this->_rowClass !== null {
+			if this->_rowClass !== null && forceArray === false {
 				var className;
 				let className = this->_rowClass;
 				return new {className}(normalized);
@@ -175,8 +179,8 @@ class Result implements \IteratorAggregate {
 	{
 		var row, tmp, data;
 		this->seek(0);
-		let row = this->fetchRow();
-
+		let row = this->fetchRow(true);
+		let value = (string) value;
 		if !row {
 			return [];  // empty result set
 		}
@@ -194,7 +198,7 @@ class Result implements \IteratorAggregate {
 			if count(row) < 2 { // indexed-array
 				loop {
 					let data[] = row[key];
-					let row = this->fetchRow();
+					let row = this->fetchRow(true);
 					if !row {
 						break;
 					}
@@ -212,7 +216,7 @@ class Result implements \IteratorAggregate {
 			if key === null { // indexed-array
 				loop {
 					let data[] = row[value];
-					let row = this->fetchRow();
+					let row = this->fetchRow(true);
 					if !row {
 						break;
 					}
@@ -227,7 +231,7 @@ class Result implements \IteratorAggregate {
 
 		loop {
 			let data[ (string) row[key] ] = row[value];
-			let row = this->fetchRow();
+			let row = this->fetchRow(true);
 			if !row {
 				break;
 			}
