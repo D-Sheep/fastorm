@@ -114,10 +114,6 @@ class MysqliResultDriver implements \Fastorm\Db\IResultDriver {
 			let self::types[MYSQLI_TYPE_SHORT] = "INT"; 
 			let self::types[MYSQLI_TYPE_LONG] = "INT";
 		}
-		//echo "<pre>";
-		//var_export(self::types);
-		//exit();
-
 		
 		let columns = [];
 		let fieldsCount = this->resultSet->field_count;
