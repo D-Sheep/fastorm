@@ -153,7 +153,7 @@ abstract class DataObject implements \ArrayAccess, \Serializable
         }
 
         for key, value in data {
-            if value instanceof \DateTime {
+            if typeof value === "object" && value instanceof \DateTime {
                 let data[key] = value->format("Y-m-d H:i:s");
             } 
         }

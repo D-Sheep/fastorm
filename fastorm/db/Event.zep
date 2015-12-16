@@ -52,7 +52,7 @@ class Event
 		let this->connection = connection;
 		let this->type = type;
 		let this->sql = trim(sqlCommand);
-		let this->time = -microtime(true);
+		let this->time = microtime(true);
 
 		if empty self::types {
 			let self::types = [
@@ -95,7 +95,7 @@ class Event
 			}
 		}
 
-		let this->time += microtime(true);
+		let this->time = microtime(true) - this->time;
 		let self::elapsedTime = this->time;
 		let self::totalTime += this->time;
 		return this;
