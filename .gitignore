@@ -24,3 +24,4 @@ ext/mvc/view/engine/volt/lemon
 /vendor/
 composer.lock
 myinstall.sh
+*.log

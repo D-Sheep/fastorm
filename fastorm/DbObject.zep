@@ -156,15 +156,15 @@ abstract class DbObject extends DataObject
 		var propName, propFlag, e;
 
         for propName, propFlag in metadata->getFields() {
-    		if !(propFlag & ObjectMetadata::AUTOINCREMENT) {
-				let data[propName] = this->{propName};
-    		} else {
-    			let lastInsert = "`".propName."` = LAST_INSERT_ID(`".propName."`)";
+    		if (propFlag & ObjectMetadata::AUTOINCREMENT) && this->{propName} === null {
+    			let lastInsert = "`".propName."` = LAST_INSERT_ID(`".propName."`),";
     			let autoincrement = propName;
+    		} else {
+				let data[propName] = this->{propName};
     		}
         }
 
-		let query = db->queryArray(["INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql, %a", metadata->getTable(), data, lastInsert, data]);
+		let query = db->queryArray(["INSERT INTO %n %v ON DUPLICATE KEY UPDATE %sql %a", metadata->getTable(), data, lastInsert, data]);
 
 		let this->_affectedRows = query;
 		if this->_affectedRows && autoincrement !== null {
